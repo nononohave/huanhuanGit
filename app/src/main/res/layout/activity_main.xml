@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.cos.huanhuan.MainActivity"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/share"
+        android:background="@color/umeng_white">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/fenxiang"
+            android:layout_height="25dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="17sp"
+            android:text="分享"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="56dp"
+            android:textColor="@color/umeng_text_color"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/umeng_divide"
+            android:layout_marginLeft="56dp"/>
+        <ImageView
+            android:layout_width="8dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/umeng_arrow"
+            android:layout_height="14dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/umeng_menu"
+            android:background="@drawable/btnbg"
+            android:text="分享菜单模板"
+            android:padding="6dp"
+            android:textColor="@color/umeng_blue"
+            android:textSize="14sp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="60dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/auth"
+        android:background="@color/umeng_white">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/shouquan"
+            android:layout_height="25dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="17sp"
+            android:layout_centerVertical="true"
+            android:text="授权（第三方登录）"
+            android:layout_marginLeft="56dp"
+            android:textColor="@color/umeng_text_color"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/umeng_divide"
+            android:layout_marginLeft="56dp"/>
+        <ImageView
+            android:layout_width="8dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/umeng_arrow"
+            android:layout_height="25dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/shareBoard"
+        android:background="@color/umeng_white">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/shouquan"
+            android:layout_height="25dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="17sp"
+            android:layout_centerVertical="true"
+            android:text="分享平台"
+            android:layout_marginLeft="56dp"
+            android:textColor="@color/umeng_text_color"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:text="扣扣授权登录"
+            android:id="@+id/qqAuth"
+            />
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:text="微博授权登录"
+            android:id="@+id/wbAuth"
+            />
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:text="微信授权登录"
+            android:id="@+id/wxAuth"
+            />
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:text="弹出选择图片框"
+            android:id="@+id/chosePhotos"
+            />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/img"
+            />
+    </LinearLayout>
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/gridView"
+        android:numColumns="3"
+        ></GridView>
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/uploadImg"
+        android:text="上传图片"
+        />
+</LinearLayout>
