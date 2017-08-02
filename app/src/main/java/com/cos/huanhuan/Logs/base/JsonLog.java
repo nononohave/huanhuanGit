@@ -12,7 +12,8 @@ package com.cos.huanhuan.Logs.base;
  */
 
 import android.util.Log;
-import com.jingewenku.abrahamcaijin.commonutil.klog.KLogUtil;
+
+import com.cos.huanhuan.Logs.KLogUtil;
 import com.socks.library.KLog;
 import org.json.JSONArray;
 import org.json.JSONException;
