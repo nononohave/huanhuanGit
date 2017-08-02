@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(R.color.umeng_socialize_text_title));
         }
-
+        System.out.print(1110);
         setContentView(R.layout.activity_main);
         findViewById(R.id.share).setOnClickListener(this);
         findViewById(R.id.auth).setOnClickListener(this);
