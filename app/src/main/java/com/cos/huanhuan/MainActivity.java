@@ -33,6 +33,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.cos.huanhuan.activitys.BaseActivity;
 import com.cos.huanhuan.adapter.ImageGridAdapter;
 import com.cos.huanhuan.model.MultiPartStack;
 import com.cos.huanhuan.model.MultipartRequest;
@@ -61,7 +62,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private ImageView img;
     private static final int REQUEST_CAMERA_CODE = 11;
@@ -75,13 +76,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.umeng_socialize_text_title));
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Window window = getWindow();
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.setStatusBarColor(getResources().getColor(R.color.umeng_socialize_text_title));
+//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            setImmersive(true);
         }
-        System.out.print(1110);
-        setContentView(R.layout.activity_main);
+
+        setBaseContentView(R.layout.activity_main);
+        setLeftText("返回");
+        setRightButton("确定");
         findViewById(R.id.share).setOnClickListener(this);
         findViewById(R.id.auth).setOnClickListener(this);
         findViewById(R.id.shareBoard).setOnClickListener(this);
