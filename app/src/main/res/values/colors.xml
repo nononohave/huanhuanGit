@@ -16,4 +16,12 @@
     <color name="black">#000000</color>
 
     <color name="photopicker_background">#181819</color>
+
+    <color name="transWhite">#99ffffff</color>
+
+    <color name="titleBarTextColor">#FF6FA2</color>
+    <color name="dividLineColor">#B2B2B2</color>
+    <color name="phone_text">#333333</color>
+    <color name="dividLineXML">#EBEBEB</color>
+    <color name="forgetPassText">#FF999999</color>
 </resources>

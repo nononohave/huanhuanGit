@@ -61,10 +61,10 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.foamtrace:photopicker:1.0'
     compile 'me.neavo:volley:2014.12.09'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'com.github.zhaokaiqiang.klog:library:1.5.0'
+    testCompile 'junit:junit:4.12'
 }

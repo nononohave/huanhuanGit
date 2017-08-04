@@ -23,9 +23,12 @@
     <string name="umeng_sharebutton_copy">复制文本</string>
     <string name="umeng_sharebutton_copyurl">复制连接</string>
 
-
-
-
     <string name="sys_network_error">请检查网络连接是否正常</string>
     <string name="sys_exit_tip">再按一次退出程序</string>
+
+    <string name="register">立即注册</string>
+    <string name="login">登录</string>
+    <string name="phoneNumber">手机号</string>
+    <string name="password">密码</string>
+    <string name="forgetPassword">忘记密码？</string>
 </resources>

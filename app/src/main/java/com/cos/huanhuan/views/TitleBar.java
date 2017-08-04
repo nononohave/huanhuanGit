@@ -12,13 +12,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cos.huanhuan.utils.DensityUtils;
+
 import java.util.LinkedList;
 
 public class TitleBar extends ViewGroup implements View.OnClickListener {
-    private static final int DEFAULT_MAIN_TEXT_SIZE = 18;
+    private static final int DEFAULT_MAIN_TEXT_SIZE = 17;
     private static final int DEFAULT_SUB_TEXT_SIZE = 12;
     private static final int DEFAULT_ACTION_TEXT_SIZE = 15;
-    private static final int DEFAULT_TITLE_BAR_HEIGHT = 48;
+    private static final int DEFAULT_TITLE_BAR_HEIGHT = 64;
 
     private static final String STATUS_BAR_HEIGHT_RES_NAME = "status_bar_height";
 
@@ -58,7 +60,7 @@ public class TitleBar extends ViewGroup implements View.OnClickListener {
         if (mImmersive) {
             mStatusBarHeight = getStatusBarHeight();
         }
-        mActionPadding = dip2px(5);
+        mActionPadding = dip2px(14);
         mOutPadding = dip2px(8);
         mHeight = dip2px(DEFAULT_TITLE_BAR_HEIGHT);
         initView(context);
@@ -75,7 +77,6 @@ public class TitleBar extends ViewGroup implements View.OnClickListener {
         mLeftText.setTextSize(DEFAULT_ACTION_TEXT_SIZE);
         mLeftText.setSingleLine();
         mLeftText.setGravity(Gravity.CENTER_VERTICAL);
-        mLeftText.setPadding(mOutPadding + mActionPadding, 0, mOutPadding, 0);
 
         mCenterText = new TextView(context);
         mSubTitleText = new TextView(context);
@@ -87,6 +88,7 @@ public class TitleBar extends ViewGroup implements View.OnClickListener {
         mCenterText.setSingleLine();
         mCenterText.setGravity(Gravity.CENTER);
         mCenterText.setEllipsize(TextUtils.TruncateAt.END);
+        mCenterText.getPaint().setFakeBoldText(true);
 
         mSubTitleText.setTextSize(DEFAULT_SUB_TEXT_SIZE);
         mSubTitleText.setSingleLine();
@@ -95,6 +97,9 @@ public class TitleBar extends ViewGroup implements View.OnClickListener {
 
         mRightLayout.setPadding(mOutPadding, 0, mOutPadding, 0);
 
+        mLeftText.setPadding(mOutPadding + mActionPadding, DensityUtils.dip2px(context,20), mOutPadding, 0);
+        mCenterLayout.setPadding(0, DensityUtils.dip2px(context,20),0,0);
+        mRightLayout.setPadding(0, DensityUtils.dip2px(context,20),0,0);
         addView(mLeftText, layoutParams);
         addView(mCenterLayout);
         addView(mRightLayout, layoutParams);

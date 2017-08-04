@@ -29,5 +29,8 @@
     <dimen name="actionbar_item_height">45dip</dimen>
     <dimen name="actionbar_item_width">45dip</dimen>
 
+    <dimen name="phone_text_size">17dp</dimen>
+    <dimen name="password_text_size">17dp</dimen>
+    <dimen name="forgetTextSize">15dp</dimen>
 
 </resources>

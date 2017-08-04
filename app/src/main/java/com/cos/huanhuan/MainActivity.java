@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -79,15 +80,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            Window window = getWindow();
 //            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//            window.setStatusBarColor(getResources().getColor(R.color.umeng_socialize_text_title));
+//            window.setStatusBarColor(getResources().getColor(R.color.white));
 //        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            setImmersive(true);
-        }
 
-        setBaseContentView(R.layout.activity_main);
-        setLeftText("返回");
-        setRightButton("确定");
         findViewById(R.id.share).setOnClickListener(this);
         findViewById(R.id.auth).setOnClickListener(this);
         findViewById(R.id.shareBoard).setOnClickListener(this);
@@ -214,6 +209,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
                 )
         );
+        System.out.print(111);
         RequestQueue mSingleQueue = Volley.newRequestQueue(this,new MultiPartStack());
         mSingleQueue.add(multipartRequest);
     }

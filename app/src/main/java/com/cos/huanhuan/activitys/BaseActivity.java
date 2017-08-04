@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.utils.DensityUtils;
 import com.cos.huanhuan.views.TitleBar;
 
 /**
@@ -48,9 +49,11 @@ public class BaseActivity extends AppCompatActivity
             isImmersive = true;
         }
 
-        titleBar = (TitleBar) findViewById(R.id.title_bar);
-        contentView=(ViewGroup) findViewById(R.id.base_contentview);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
+        titleBar = (TitleBar) findViewById(R.id.title_bar);
+        titleBar.setTitleBackground(R.color.transWhite);
+        contentView=(ViewGroup) findViewById(R.id.base_contentview);
 
     }
 
@@ -63,7 +66,7 @@ public class BaseActivity extends AppCompatActivity
      * @param res
      */
     public void setTitleBarColor(int res){
-        titleBar.setBackgroundColor(res);
+        titleBar.setBackgroundColor(this.getResources().getColor(res));
     }
 
     /**
@@ -79,7 +82,7 @@ public class BaseActivity extends AppCompatActivity
      * @param res
      */
     public void setLeftTextColor(int res){
-        titleBar.setLeftTextColor(res);
+        titleBar.setLeftTextColor(this.getResources().getColor(res));
     }
 
     /**
@@ -110,7 +113,7 @@ public class BaseActivity extends AppCompatActivity
      * @param res
      */
     public void setTitleTextColor(int res){
-        titleBar.setTitleColor(res);
+        titleBar.setTitleColor(this.getResources().getColor(res));
     }
 
     /**
@@ -118,7 +121,7 @@ public class BaseActivity extends AppCompatActivity
      * @param res
      */
     public void setSubTitleColor(int res){
-        titleBar.setSubTitleColor(res);
+        titleBar.setSubTitleColor(this.getResources().getColor(res));
     }
 
     /**
@@ -126,7 +129,7 @@ public class BaseActivity extends AppCompatActivity
      * @param res
      */
     public void setDividerColor(int res){
-        titleBar.setDividerColor(res);
+        titleBar.setDividerColor(this.getResources().getColor(res));
     }
 
     /**
@@ -134,7 +137,7 @@ public class BaseActivity extends AppCompatActivity
      * @param res
      */
     public void setRightTextColor(int res){
-        titleBar.setActionTextColor(res);
+        titleBar.setActionTextColor(this.getResources().getColor(res));
     }
 
     public void setRightImage(int res1, final int res2, final String text1, final String text2){
