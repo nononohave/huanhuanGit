@@ -24,4 +24,6 @@
     <color name="phone_text">#333333</color>
     <color name="dividLineXML">#EBEBEB</color>
     <color name="forgetPassText">#FF999999</color>
+
+    <color name="sendMsgColor">#FFBAD3</color>
 </resources>

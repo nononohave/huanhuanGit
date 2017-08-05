@@ -1,5 +1,6 @@
 package com.cos.huanhuan.activitys;
 
+import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,8 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.cos.huanhuan.MainActivity;
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
+import com.cos.huanhuan.utils.AppValidationMgr;
+import com.cos.huanhuan.views.TitleBar;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
@@ -26,6 +31,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private Button btn_login;
     private TextView tv_forgetPassword;
     private LinearLayout ll_clearPhone,ll_showPassword;
+
+    private AppManager appManager;
 
     //是否点击了编辑框
     private boolean isPhoneEdit = false;
@@ -46,11 +53,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         setDividerColor(R.color.dividLineColor);
         setRightTextColor(R.color.titleBarTextColor);
         setTitleTextColor(R.color.titleBarTextColor);
-        setRightButton(this.getResources().getString(R.string.register));
         setTitle(this.getResources().getString(R.string.login));
         setBaseContentView(R.layout.activity_login);
-
+        appManager = AppManager.getAppManager();
+        appManager.addActivity(this);
         initView();
+
+        leftButtonClick(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                appManager.finishActivity();
+            }
+        });
+        setRightButton(new TitleBar.TextAction(this.getResources().getString(R.string.register)) {
+                    @Override
+                    public void performAction(View view) {
+                        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                        startActivity(intent);
+                    }
+         });
     }
 
     private void initView() {
@@ -69,6 +90,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         ll_clearPhone = (LinearLayout) findViewById(R.id.ll_clearPhone);
         ll_showPassword = (LinearLayout) findViewById(R.id.ll_showPassword);
 
+        tv_forgetPassword = (TextView) findViewById(R.id.tv_forgetPassword);
+
+        tv_forgetPassword.setOnClickListener(this);
         ll_clearPhone.setOnClickListener(this);
         ll_showPassword.setOnClickListener(this);
         btn_login.setOnClickListener(this);
@@ -159,7 +183,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_login:
-                AppToastMgr.longToast(LoginActivity.this," 登录");
+                String phone = et_phone.getText().toString();
+                String password = et_password.getText().toString();
+                if(isPhoneEdit) {
+                    if(isPassEdit) {
+                        if (AppValidationMgr.isPhone(phone)) {
+                            AppToastMgr.longToast(LoginActivity.this, " 登录");
+                        } else {
+                            AppToastMgr.longToast(LoginActivity.this, " 手机号有误！");
+                        }
+                    }else{
+                        AppToastMgr.longToast(LoginActivity.this, " 请输入密码!");
+                    }
+                }else{
+                    AppToastMgr.longToast(LoginActivity.this, " 请输入手机号!");
+                }
                 break;
             case R.id.iv_wxLogin:
                 //微信授权登录
@@ -172,6 +210,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             case R.id.iv_qqLogin:
                 //qq授权登录
                 AppToastMgr.longToast(LoginActivity.this,"qq授权登录");
+                break;
+            case R.id.tv_forgetPassword:
+                AppToastMgr.longToast(LoginActivity.this,"忘记密码");
                 break;
         }
     }

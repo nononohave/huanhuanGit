@@ -92,12 +92,12 @@ public class BaseActivity extends AppCompatActivity
     public void setLeftImageResource(int res){
         titleBar.setLeftImageResource(res);
     }
-
     /**
-     * 点击左边按钮的点击事件
+     * 左边那妞点击事件
+     * @param onClickListener
      */
-    public void onClickLeftButton() {
-
+    public void leftButtonClick(View.OnClickListener onClickListener) {
+        titleBar.setLeftClickListener(onClickListener);
     }
 
     /**
@@ -163,24 +163,12 @@ public class BaseActivity extends AppCompatActivity
     }
 
     /**
-     * 设置右边按钮文字
-     * @param text
+     * 设置右边按钮文字和事件
      */
-    public void setRightButton(String text){
-        titleBar.addAction(new TitleBar.TextAction(text) {
-            @Override
-            public void performAction(View view) {
-                rightButtonClick();
-            }
-        });
+    public void setRightButton(TitleBar.TextAction textAction) {
+        titleBar.addAction(textAction);
     }
 
-    /**
-     * 右边按钮点击事件
-     */
-    private void rightButtonClick() {
-
-    }
 //    titleBar.setActionTextColor(Color.WHITE);
 //    mCollectView = (ImageView) titleBar.addAction(new TitleBar.ImageAction(R.mipmap.collect) {
 //    @Override

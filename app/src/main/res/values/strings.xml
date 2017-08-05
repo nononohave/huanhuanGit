@@ -31,4 +31,17 @@
     <string name="phoneNumber">手机号</string>
     <string name="password">密码</string>
     <string name="forgetPassword">忘记密码？</string>
+
+    <string name="register1Title">注册（1/2）</string>
+    <string name="register2Title">注册（2/2）</string>
+    <string name="service_agree"><u>用户服务协议</u></string>
+    <string name="nextTips">点击「下一步」代表你已阅读并同意</string>
+    <string name="existAccounts">已有账号？</string>
+    <string name="existLogin"><u>立即登录</u></string>
+    <string name="nextStep">下一步</string>
+    <string name="verifyMsg1">短信验证码已发送至</string>
+    <string name="verifyMsg2">请注意查收</string>
+    <string name="enterVerifyCode">请输入验证码</string>
+    <string name="returnGet">重新获取</string>
+    <string name="registerFinish">完成</string>
 </resources>

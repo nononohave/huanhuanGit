@@ -42,7 +42,7 @@
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="597ebcaa04e20525eb00030c"></meta-data>
+            android:value="597ebcaa04e20525eb00030c" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -59,7 +59,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.sina.weibo.sdk.share.WbShareTransActivity"
             android:launchMode="singleTask"
@@ -130,6 +130,8 @@
         <activity
             android:name="com.foamtrace.photopicker.PhotoPreviewActivity"
             android:theme="@style/PhotoPickerTheme" />
+        <activity android:name=".activitys.RegisterActivity" />
+        <activity android:name=".activitys.RegisterSecondActivity"></activity>
     </application>
 
 </manifest>
