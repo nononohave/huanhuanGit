@@ -44,4 +44,10 @@
     <string name="enterVerifyCode">请输入验证码</string>
     <string name="returnGet">重新获取</string>
     <string name="registerFinish">完成</string>
+
+    <string name="resetPassword1">重设密码（1/3）</string>
+    <string name="resetPassword2">重设密码（2/3）</string>
+    <string name="resetPassword3">重设密码（3/3）</string>
+    <string name="sendVerifyCode">发送验证码</string>
+
 </resources>

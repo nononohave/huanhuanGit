@@ -131,7 +131,10 @@
             android:name="com.foamtrace.photopicker.PhotoPreviewActivity"
             android:theme="@style/PhotoPickerTheme" />
         <activity android:name=".activitys.RegisterActivity" />
-        <activity android:name=".activitys.RegisterSecondActivity"></activity>
+        <activity android:name=".activitys.RegisterSecondActivity" />
+        <activity android:name=".activitys.ResetActivityFirst" />
+        <activity android:name=".activitys.ResetActivitySecond" />
+        <activity android:name=".activitys.ResetActivityThird"></activity>
     </application>
 
 </manifest>
