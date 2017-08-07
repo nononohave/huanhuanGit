@@ -188,12 +188,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 if(isPhoneEdit) {
                     if(isPassEdit) {
                         if (AppValidationMgr.isPhone(phone)) {
-                            AppToastMgr.longToast(LoginActivity.this, " 登录");
+                            AppToastMgr.shortToast(LoginActivity.this, " 登录");
                         } else {
-                            AppToastMgr.longToast(LoginActivity.this, " 手机号有误！");
+                            AppToastMgr.shortToast(LoginActivity.this, " 手机号有误！");
                         }
                     }else{
-                        AppToastMgr.longToast(LoginActivity.this, " 请输入密码!");
+                        AppToastMgr.shortToast(LoginActivity.this, " 请输入密码!");
                     }
                 }else{
                     AppToastMgr.longToast(LoginActivity.this, " 请输入手机号!");
@@ -201,18 +201,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.iv_wxLogin:
                 //微信授权登录
-                AppToastMgr.longToast(LoginActivity.this,"微信授权登录");
+                AppToastMgr.shortToast(LoginActivity.this,"微信授权登录");
                 break;
             case R.id.iv_wbLogin:
                 //微博授权登录
-                AppToastMgr.longToast(LoginActivity.this,"微博授权登录");
+                AppToastMgr.shortToast(LoginActivity.this,"微博授权登录");
                 break;
             case R.id.iv_qqLogin:
                 //qq授权登录
-                AppToastMgr.longToast(LoginActivity.this,"qq授权登录");
+                AppToastMgr.shortToast(LoginActivity.this,"qq授权登录");
                 break;
             case R.id.tv_forgetPassword:
-                AppToastMgr.longToast(LoginActivity.this,"忘记密码");
+                Intent intent = new Intent(LoginActivity.this, ResetActivityFirst.class);
+                startActivity(intent);
                 break;
         }
     }

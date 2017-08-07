@@ -20,6 +20,12 @@ import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
+import com.cos.huanhuan.utils.HttpRequest;
+import com.squareup.okhttp.Request;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
 
@@ -173,21 +179,58 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
                 break;
             case R.id.btn_register_next:
-                Intent intentNext = new Intent(RegisterActivity.this,RegisterSecondActivity.class);
-                startActivity(intentNext);
-                String phone = et_register_phone.getText().toString();
-                String password = et_register_password.getText().toString();
+                final String phone = et_register_phone.getText().toString();
+                final String password = et_register_password.getText().toString();
                 if(isPhoneEdit) {
                     if(isPassEdit) {
                         if (AppValidationMgr.isPhone(phone)) {
+                            try {
+                                HttpRequest.loginSendMsgCode(phone,new StringCallback(){
+                                    @Override
+                                    public void onError(Request request, Exception e)
+                                    {
+                                        AppToastMgr.shortToast(RegisterActivity.this,"请求失败！");
+                                    }
+
+                                    @Override
+                                    public void onResponse(String response)
+                                    {
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(response);
+                                            Boolean success = jsonObject.getBoolean("success");
+                                            String errMsg = jsonObject.getString("errorMsg");
+                                            if(success){
+                                                JSONObject returnObj = jsonObject.getJSONObject("data");
+                                                String returnVerifyCode = returnObj.getString("verifyCode");
+                                                String returnPhone = returnObj.getString("phone");
+                                                Intent intentNext = new Intent(RegisterActivity.this,RegisterSecondActivity.class);
+                                                intentNext.putExtra("returnVerifyCode",returnVerifyCode);
+                                                intentNext.putExtra("returnPhone",returnPhone);
+                                                intentNext.putExtra("phone",phone);
+                                                intentNext.putExtra("password",password);
+                                                startActivity(intentNext);
+                                            }else{
+                                                AppToastMgr.shortToast(RegisterActivity.this,"请求失败！原因：" + errMsg);
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+//
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+//                            Intent intentNext = new Intent(RegisterActivity.this,RegisterSecondActivity.class);
+//                            startActivity(intentNext);
                         } else {
-                            AppToastMgr.longToast(RegisterActivity.this, " 手机号有误！");
+                            AppToastMgr.shortToast(RegisterActivity.this, " 手机号有误！");
                         }
                     }else{
-                        AppToastMgr.longToast(RegisterActivity.this, " 请输入密码!");
+                        AppToastMgr.shortToast(RegisterActivity.this, " 请输入密码!");
                     }
                 }else{
-                    AppToastMgr.longToast(RegisterActivity.this, " 请输入手机号!");
+                    AppToastMgr.shortToast(RegisterActivity.this, " 请输入手机号!");
                 }
                 break;
         }

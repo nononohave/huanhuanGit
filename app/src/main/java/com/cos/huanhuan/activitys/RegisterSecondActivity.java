@@ -16,7 +16,12 @@ import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class RegisterSecondActivity extends BaseActivity implements View.OnClickListener{
+
+    private String returnVerifyCode,returnPhone,phone,password;
 
     private TextView tv_register2_sendPhone,iv_register2_getCode;
     private EditText et_register2_code;
@@ -27,9 +32,19 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
 
     //是否点击了编辑框
     private boolean isVerifyEdit = false;
+
+    //倒计时
+    private int recLen = 10;
+    private Timer timer = new Timer();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        returnVerifyCode = this.getIntent().getExtras().getString("returnVerifyCode");
+        returnPhone = this.getIntent().getExtras().getString("returnPhone");
+        phone = this.getIntent().getExtras().getString("phone");
+        password = this.getIntent().getExtras().getString("password");
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             setImmersive(true);
         }
@@ -37,7 +52,7 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
         setLeftImageResource(R.mipmap.nav_back);
         setDividerColor(R.color.dividLineColor);
         setTitleTextColor(R.color.titleBarTextColor);
-        setTitle(this.getResources().getString(R.string.register1Title));
+        setTitle(this.getResources().getString(R.string.register2Title));
         setBaseContentView(R.layout.activity_register_second);
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
@@ -63,6 +78,9 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
         iv_register2_getCode.setOnClickListener(this);
         btn_register2_finish.setOnClickListener(this);
 
+        tv_register2_sendPhone.setText("+86" + phone);
+
+        timer.schedule(task, 1000, 1000);    // timeTask
         //手机号文本框监听事件
         et_register2_code.addTextChangedListener(new TextWatcher() {
             @Override
@@ -87,15 +105,32 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
         });
     }
 
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {   // UI thread
+                @Override
+                public void run() {
+                    recLen--;
+                    tv_register2_sendPhone.setText(recLen + "s");
+                    if(recLen < 0){
+                        timer.cancel();
+                        tv_register2_sendPhone.setText("重新获取");
+                    }
+                }
+            });
+        }
+    };
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.iv_register2_getCode:
                 String phone = et_register2_code.getText().toString();
                 if(isVerifyEdit){
-                    AppToastMgr.longToast(RegisterSecondActivity.this, " 重新获取验证码！");
+                    timer.schedule(task, 1000, 1000);    // timeTask
                 }else{
-                    AppToastMgr.longToast(RegisterSecondActivity.this, " 请输入验证码！");
+                    AppToastMgr.shortToast(RegisterSecondActivity.this, " 请输入验证码！");
                 }
                 break;
             case R.id.btn_register2_finish:

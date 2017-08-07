@@ -28,13 +28,13 @@
             android:layout_gravity="bottom|left"
             />
         <LinearLayout
-            android:id="@+id/ll_reset3_showPassword"
+            android:id="@+id/ll_reset3_clearPassword"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal|right">
 
             <ImageView
-                android:id="@+id/iv_reset3_showPassword"
+                android:id="@+id/iv_reset3_clearPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -65,13 +65,13 @@
             android:layout_gravity="bottom|left"
             />
         <LinearLayout
-            android:id="@+id/ll_reset3_confirmPassword"
+            android:id="@+id/ll_reset3_clearConfirmPassword"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal|right"
             >
             <ImageView
-                android:id="@+id/iv_reset3_confirmPassword"
+                android:id="@+id/iv_reset3_clearConfirmPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/close_dark"

@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppToastMgr;
+import com.cos.huanhuan.utils.AppValidationMgr;
 
 public class ResetActivityFirst extends  BaseActivity implements View.OnClickListener{
 
@@ -108,8 +110,18 @@ public class ResetActivityFirst extends  BaseActivity implements View.OnClickLis
                 }
                 break;
             case R.id.btn_reset_sendCode:
-                Intent intent = new Intent(ResetActivityFirst.this, ResetActivitySecond.class);
-                startActivity(intent);
+                String phone = et_reset_phone.getText().toString();
+                if(isPhoneEdit) {
+                    if (AppValidationMgr.isPhone(phone)) {
+                        Intent intent = new Intent(ResetActivityFirst.this, ResetActivitySecond.class);
+                        intent.putExtra("phone",phone);
+                        startActivity(intent);
+                    }else{
+                        AppToastMgr.shortToast(ResetActivityFirst.this, " 手机号有误！");
+                    }
+                }else{
+                    AppToastMgr.shortToast(ResetActivityFirst.this, " 请输入手机号!");
+                }
                 break;
         }
     }

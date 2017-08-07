@@ -28,9 +28,15 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
     //是否点击了编辑框
     private boolean isVerifyEdit = false;
     private CharSequence verifyTextChar="";
+
+    private String phone = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //从前一个界面获取手机号到这里
+
+        phone = this.getIntent().getExtras().getString("phone");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             setImmersive(true);
@@ -65,6 +71,9 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
         tv_reset2_getCode.setOnClickListener(this);
         btn_reset2_next.setOnClickListener(this);
 
+        //设置传入的手机号
+        tv_reset2_sendPhone.setText("+86" + phone);
+
         //手机号文本框监听事件
         et_reset2_code.addTextChangedListener(new TextWatcher() {
             @Override
@@ -95,15 +104,19 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
             case R.id.tv_reset2_getCode:
                 String phone = et_reset2_code.getText().toString();
                 if(isVerifyEdit){
-                    AppToastMgr.longToast(ResetActivitySecond.this, " 重新获取验证码！");
+                    AppToastMgr.shortToast(ResetActivitySecond.this, " 重新获取验证码！");
                 }else{
-                    AppToastMgr.longToast(ResetActivitySecond.this, " 请输入验证码！");
+                    AppToastMgr.shortToast(ResetActivitySecond.this, " 请输入验证码！");
                 }
                 break;
             case R.id.btn_reset2_next:
                 //点击完成校验验证码
-                Intent intent = new Intent(ResetActivitySecond.this,ResetActivityThird.class);
-                startActivity(intent);
+                if(isVerifyEdit){
+                    Intent intent = new Intent(ResetActivitySecond.this,ResetActivityThird.class);
+                    startActivity(intent);
+                }else{
+                    AppToastMgr.shortToast(ResetActivitySecond.this, " 请输入验证码！");
+                }
                 break;
         }
     }
