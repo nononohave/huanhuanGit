@@ -2,6 +2,7 @@ package com.cos.huanhuan.activitys;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
 
@@ -35,7 +37,10 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
 
     //倒计时
     private int recLen = 10;
-    private Timer timer = new Timer();
+
+    private Timer timer;
+    private TimerTask timerTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +85,9 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
 
         tv_register2_sendPhone.setText("+86" + phone);
 
-        timer.schedule(task, 1000, 1000);    // timeTask
+        initTimer();
+        timer.schedule(timerTask, 0, 1000);
+
         //手机号文本框监听事件
         et_register2_code.addTextChangedListener(new TextWatcher() {
             @Override
@@ -105,39 +112,85 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
         });
     }
 
-    TimerTask task = new TimerTask() {
-        @Override
-        public void run() {
-            runOnUiThread(new Runnable() {   // UI thread
-                @Override
-                public void run() {
-                    recLen--;
-                    tv_register2_sendPhone.setText(recLen + "s");
-                    if(recLen < 0){
-                        timer.cancel();
-                        tv_register2_sendPhone.setText("重新获取");
-                    }
-                }
-            });
-        }
-    };
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.iv_register2_getCode:
                 String phone = et_register2_code.getText().toString();
-                if(isVerifyEdit){
-                    timer.schedule(task, 1000, 1000);    // timeTask
-                }else{
-                    AppToastMgr.shortToast(RegisterSecondActivity.this, " 请输入验证码！");
-                }
+                initTimer();
+                timer.schedule(timerTask, 0, 1000);
                 break;
             case R.id.btn_register2_finish:
                 //点击完成校验验证码
-                Intent intent = new Intent(RegisterSecondActivity.this,LoginActivity.class);
-                startActivity(intent);
+                String verifyText = et_register2_code.getText().toString();
+                if(AppStringUtils.isNotEmpty(verifyText)){
+                    if(returnVerifyCode.equals(verifyText)){
+                        Intent intent = new Intent(RegisterSecondActivity.this,LoginActivity.class);
+                        startActivity(intent);
+                    }else{
+                        AppToastMgr.shortToast(RegisterSecondActivity.this,"验证码有误");
+                    }
+                }else{
+                    AppToastMgr.shortToast(RegisterSecondActivity.this,"请输入验证码");
+                }
                 break;
+        }
+    }
+
+    private void initTimer() {
+        recLen = 10;
+        timer = new Timer();
+        timerTask = new TimerTask() {
+
+            @Override
+            public void run() {
+                handler.sendEmptyMessage(0000);
+            }
+        };
+    }
+
+    Handler handler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            iv_register2_getCode.setText(recLen + "s");
+            recLen--;
+            if (recLen < 0) {
+                iv_register2_getCode.setEnabled(true);
+                iv_register2_getCode.setText("重新获取");
+                clearTimer();
+            }
+        };
+    };
+
+    private void clearTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
+    }
+
+    class MyTask extends TimerTask{
+
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {   // UI thread
+                @Override
+                public void run() {
+                    recLen--;
+                    iv_register2_getCode.setText(recLen + "s");
+                    if(recLen < 0){
+                        if (timer != null){
+                            timer.cancel();  //将原任务从队列中移除
+                        }
+                        iv_register2_getCode.setEnabled(true);
+                        iv_register2_getCode.setText("重新获取");
+                    }
+                }
+            });
         }
     }
 }

@@ -52,7 +52,7 @@
 
             <EditText
                 android:id="@+id/et_register2_code"
-                android:layout_width="220dp"
+                android:layout_width="250dp"
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:gravity="bottom"
@@ -60,7 +60,8 @@
                 android:inputType="number"
                 android:maxLength="6"
                 android:paddingLeft="15px"
-                android:textSize="@dimen/phone_text_size" />
+                android:textSize="@dimen/phone_text_size"
+                />
 
             <TextView
                 android:id="@+id/iv_register2_getCode"
@@ -68,9 +69,10 @@
                 android:layout_height="30dp"
                 android:layout_gravity="right|bottom"
                 android:background="@null"
-                android:text="@string/returnGet"
+                android:text="60s"
                 android:textSize="14dp"
-                android:gravity="center_vertical|right"
+                android:gravity="center_vertical|center_horizontal"
+                android:enabled="false"
                 />
         </LinearLayout>
         <View
