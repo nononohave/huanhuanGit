@@ -19,10 +19,17 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.MainActivity;
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
+import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.views.TitleBar;
+import com.squareup.okhttp.Request;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
@@ -188,7 +195,33 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 if(isPhoneEdit) {
                     if(isPassEdit) {
                         if (AppValidationMgr.isPhone(phone)) {
-                            AppToastMgr.shortToast(LoginActivity.this, " 登录");
+                            HttpRequest.login(phone, "phone", password, new StringCallback() {
+                                @Override
+                                public void onError(Request request, Exception e) {
+                                    AppToastMgr.shortToast(LoginActivity.this,"请求失败！");
+                                }
+
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        Boolean success = jsonObject.getBoolean("success");
+                                        String errorMsg = jsonObject.getString("errorMsg");
+                                        if(success){
+                                            JSONObject obj = jsonObject.getJSONObject("data");
+                                            AppACache appACache = AppACache.get(LoginActivity.this);
+                                            appACache.put("userJsonData",obj);//将用户的数据json串存入到缓存中
+                                            AppToastMgr.shortToast(LoginActivity.this, " 登录");
+                                        }else{
+                                            AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            });
                         } else {
                             AppToastMgr.shortToast(LoginActivity.this, " 手机号有误！");
                         }

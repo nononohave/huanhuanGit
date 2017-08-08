@@ -17,13 +17,19 @@ import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
+import com.cos.huanhuan.utils.HttpRequest;
+import com.squareup.okhttp.Request;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class RegisterSecondActivity extends BaseActivity implements View.OnClickListener{
 
-    private String returnVerifyCode,returnPhone,phone,password;
+    private String returnVerifyCode,returnPhone,phonePre,password;
 
     private TextView tv_register2_sendPhone,iv_register2_getCode;
     private EditText et_register2_code;
@@ -47,7 +53,7 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
 
         returnVerifyCode = this.getIntent().getExtras().getString("returnVerifyCode");
         returnPhone = this.getIntent().getExtras().getString("returnPhone");
-        phone = this.getIntent().getExtras().getString("phone");
+        phonePre = this.getIntent().getExtras().getString("phone");
         password = this.getIntent().getExtras().getString("password");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -83,7 +89,7 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
         iv_register2_getCode.setOnClickListener(this);
         btn_register2_finish.setOnClickListener(this);
 
-        tv_register2_sendPhone.setText("+86" + phone);
+        tv_register2_sendPhone.setText("+86" + phonePre);
 
         initTimer();
         timer.schedule(timerTask, 0, 1000);
@@ -126,6 +132,35 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                 String verifyText = et_register2_code.getText().toString();
                 if(AppStringUtils.isNotEmpty(verifyText)){
                     if(returnVerifyCode.equals(verifyText)){
+//                        String UserName,String Type,String Password,String VerifyCode, StringCallback
+//                        stringCallback
+                        try {
+                            HttpRequest.register(phonePre, "phone", password, verifyText, new StringCallback() {
+                                @Override
+                                public void onError(Request request, Exception e) {
+                                    AppToastMgr.shortToast(RegisterSecondActivity.this,"请求失败！");
+                                }
+
+                                @Override
+                                public void onResponse(String response) {
+                                    //{"success":"true","error":200,"errorMsg":null}
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        Boolean success = jsonObject.getBoolean("success");
+                                        if(success){
+                                            AppToastMgr.shortToast(RegisterSecondActivity.this,"注册成功！");
+                                        }else{
+                                            String errorMsg = jsonObject.getString("errorMsg");
+                                            AppToastMgr.shortToast(RegisterSecondActivity.this,"注册失败！原因：" + errorMsg);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         Intent intent = new Intent(RegisterSecondActivity.this,LoginActivity.class);
                         startActivity(intent);
                     }else{
