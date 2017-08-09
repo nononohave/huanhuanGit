@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
@@ -123,9 +124,9 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.iv_register2_getCode:
-                String phone = et_register2_code.getText().toString();
                 initTimer();
                 timer.schedule(timerTask, 0, 1000);
+                iv_register2_getCode.setEnabled(false);
                 break;
             case R.id.btn_register2_finish:
                 //点击完成校验验证码
@@ -149,6 +150,10 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                                         Boolean success = jsonObject.getBoolean("success");
                                         if(success){
                                             AppToastMgr.shortToast(RegisterSecondActivity.this,"注册成功！");
+                                            Intent intent = new Intent(RegisterSecondActivity.this,LoginActivity.class);
+                                            startActivity(intent);
+                                            AppACache appACache = AppACache.get(RegisterSecondActivity.this);
+                                            appACache.put("phone",phonePre);
                                         }else{
                                             String errorMsg = jsonObject.getString("errorMsg");
                                             AppToastMgr.shortToast(RegisterSecondActivity.this,"注册失败！原因：" + errorMsg);
@@ -161,8 +166,6 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Intent intent = new Intent(RegisterSecondActivity.this,LoginActivity.class);
-                        startActivity(intent);
                     }else{
                         AppToastMgr.shortToast(RegisterSecondActivity.this,"验证码有误");
                     }
@@ -205,27 +208,6 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
         if (timerTask != null) {
             timerTask.cancel();
             timerTask = null;
-        }
-    }
-
-    class MyTask extends TimerTask{
-
-        @Override
-        public void run() {
-            runOnUiThread(new Runnable() {   // UI thread
-                @Override
-                public void run() {
-                    recLen--;
-                    iv_register2_getCode.setText(recLen + "s");
-                    if(recLen < 0){
-                        if (timer != null){
-                            timer.cancel();  //将原任务从队列中移除
-                        }
-                        iv_register2_getCode.setEnabled(true);
-                        iv_register2_getCode.setText("重新获取");
-                    }
-                }
-            });
         }
     }
 }

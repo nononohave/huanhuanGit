@@ -2,10 +2,13 @@ package com.cos.huanhuan.activitys;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,8 +16,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
+import com.cos.huanhuan.utils.HttpRequest;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class ResetActivityThird extends BaseActivity implements View.OnClickListener{
 
@@ -32,9 +46,13 @@ public class ResetActivityThird extends BaseActivity implements View.OnClickList
 
     private Boolean isPhoneEdit = false,isConfirmEdit = false;
 
+    private String verifyCode,phone;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        verifyCode = getIntent().getExtras().getString("verifyCode");
+        phone = getIntent().getExtras().getString("phone");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             setImmersive(true);
@@ -148,12 +166,57 @@ public class ResetActivityThird extends BaseActivity implements View.OnClickList
                 }
                 break;
             case R.id.btn_reset3_finish:
-                String password = et_reset3_newPassword.getText().toString();
+                final String password = et_reset3_newPassword.getText().toString();
                 String confirmPass = et_reset3_confirmPassword.getText().toString();
                 if(password.equals(confirmPass)){
                     if(isConfirmEdit && isPhoneEdit) {
-                        Intent intent = new Intent(ResetActivityThird.this, LoginActivity.class);
-                        startActivity(intent);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    HttpRequest.resetPassword(password, verifyCode, phone, new Callback() {
+                                        @Override
+                                        public void onFailure(Request request, IOException e) {
+                                            AppToastMgr.shortToast(ResetActivityThird.this,"请求失败！");
+                                        }
+
+                                        @Override
+                                        public void onResponse(final Response response) throws IOException {
+                                                    try {
+                                                        if (null != response.cacheResponse()) {
+                                                            String str = response.cacheResponse().toString();
+                                                            Log.i("wangshu1", "cache---" + str);
+                                                        } else {
+                                                            try {
+                                                                String str1 = response.body().string();
+                                                                Log.i("地方撒阿达啥打法是否", "1111111111111111111111111---" + str1);
+                                                                JSONObject jsonObject = new JSONObject(str1);
+                                                                Boolean success = jsonObject.getBoolean("success");
+                                                                if(success){
+                                                                    AppACache appACache = AppACache.get(ResetActivityThird.this);
+                                                                    appACache.put("phone",phone);
+                                                                    Intent intent = new Intent(ResetActivityThird.this, LoginActivity.class);
+                                                                    startActivity(intent);
+                                                                }else{
+                                                                    String errorMsg = jsonObject.getString("errorMsg");
+                                                                    AppToastMgr.shortToast(ResetActivityThird.this,"修改失败！原因：" + errorMsg);
+                                                                }
+                                                            } catch (IOException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                            String str = response.networkResponse().toString();
+                                                            Log.i("wangshu3", "network---" + str);
+                                                        }
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                    });
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
                     }else{
                         AppToastMgr.shortToast(ResetActivityThird.this,"请输入重设密码");
                     }
@@ -163,4 +226,30 @@ public class ResetActivityThird extends BaseActivity implements View.OnClickList
                 break;
         }
     }
+
+    Runnable resetPassRun = new Runnable() {
+
+        @Override
+        public void run() {
+            // TODO
+            // 在这里进行 http request.网络请求相关操作
+            Message msg = new Message();
+            Bundle data = new Bundle();
+            data.putString("value", "请求结果");
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String val = data.getString("value");
+            Log.i("mylog", "请求结果为-->" + val);
+            // TODO
+            // UI界面的更新等相关操作
+        }
+    };
 }

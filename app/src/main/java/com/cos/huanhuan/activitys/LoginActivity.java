@@ -21,6 +21,7 @@ import com.cos.huanhuan.MainActivity;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
 import com.cos.huanhuan.utils.HttpRequest;
@@ -107,6 +108,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         iv_wxLogin.setOnClickListener(this);
         iv_wbLogin.setOnClickListener(this);
         iv_qqLogin.setOnClickListener(this);
+
+        String cachePhone = AppACache.get(this).getAsString("phone");
+        if(AppStringUtils.isNotEmpty(cachePhone)) {
+            et_phone.setText(cachePhone);
+            et_password.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    et_password.setFocusable(true);
+                    et_password.setFocusableInTouchMode(true);
+                }
+            }, 500);
+        }
 
         //手机号文本框监听事件
         et_phone.addTextChangedListener(new TextWatcher() {
@@ -215,7 +228,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                         }else{
                                             AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
                                         }
-
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }

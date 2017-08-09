@@ -17,6 +17,12 @@ import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
+import com.cos.huanhuan.utils.HttpRequest;
+import com.squareup.okhttp.Request;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ResetActivityFirst extends  BaseActivity implements View.OnClickListener{
 
@@ -110,12 +116,45 @@ public class ResetActivityFirst extends  BaseActivity implements View.OnClickLis
                 }
                 break;
             case R.id.btn_reset_sendCode:
-                String phone = et_reset_phone.getText().toString();
+                final String phone = et_reset_phone.getText().toString();
                 if(isPhoneEdit) {
                     if (AppValidationMgr.isPhone(phone)) {
-                        Intent intent = new Intent(ResetActivityFirst.this, ResetActivitySecond.class);
-                        intent.putExtra("phone",phone);
-                        startActivity(intent);
+                        try {
+                            HttpRequest.loginSendMsgCode(phone,new StringCallback(){
+                                @Override
+                                public void onError(Request request, Exception e)
+                                {
+                                    AppToastMgr.shortToast(ResetActivityFirst.this,"请求失败！");
+                                }
+
+                                @Override
+                                public void onResponse(String response)
+                                {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        Boolean success = jsonObject.getBoolean("success");
+                                        String errMsg = jsonObject.getString("errorMsg");
+                                        if(success){
+                                            JSONObject returnObj = jsonObject.getJSONObject("data");
+                                            String returnVerifyCode = returnObj.getString("verifyCode");
+                                            String returnPhone = returnObj.getString("phone");
+                                            Intent intentNext = new Intent(ResetActivityFirst.this,ResetActivitySecond.class);
+                                            intentNext.putExtra("returnVerifyCode",returnVerifyCode);
+                                            intentNext.putExtra("returnPhone",returnPhone);
+                                            intentNext.putExtra("intentPhone",phone);
+                                            startActivity(intentNext);
+                                        }else{
+                                            AppToastMgr.shortToast(ResetActivityFirst.this,"请求失败！原因：" + errMsg);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+//
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }else{
                         AppToastMgr.shortToast(ResetActivityFirst.this, " 手机号有误！");
                     }
