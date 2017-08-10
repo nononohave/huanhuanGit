@@ -345,12 +345,26 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             HttpRequest.oauthLogin(uid, type, new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
-
+                    AppToastMgr.shortToast(LoginActivity.this,"请求失败！");
                 }
 
                 @Override
                 public void onResponse(String response) {
-
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        Boolean success = jsonObject.getBoolean("success");
+                        String errorMsg = jsonObject.getString("errorMsg");
+                        if(success){
+                            JSONObject obj = jsonObject.getJSONObject("data");
+                            AppACache appACache = AppACache.get(LoginActivity.this);
+                            appACache.put("userJsonData",obj);//将用户的数据json串存入到缓存中
+                            AppToastMgr.shortToast(LoginActivity.this, " 登录");
+                        }else{
+                            AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
