@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
 import com.cos.huanhuan.utils.HttpRequest;
@@ -117,7 +118,7 @@ public class ResetActivityFirst extends  BaseActivity implements View.OnClickLis
                 break;
             case R.id.btn_reset_sendCode:
                 final String phone = et_reset_phone.getText().toString();
-                if(isPhoneEdit) {
+                if(AppStringUtils.isNotEmpty(phone)) {
                     if (AppValidationMgr.isPhone(phone)) {
                         try {
                             HttpRequest.loginSendMsgCode(phone,new StringCallback(){

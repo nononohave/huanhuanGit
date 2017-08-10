@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 
 import java.util.Timer;
@@ -127,7 +128,7 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
             case R.id.btn_reset2_next:
                 //点击完成校验验证码
                 String verifyCode = et_reset2_code.getText().toString();
-                if(isVerifyEdit){
+                if(AppStringUtils.isNotEmpty(verifyCode)){
                     if(verifyCode.equals(returnVerifyCode)) {
                         Intent intent = new Intent(ResetActivitySecond.this, ResetActivityThird.class);
                         intent.putExtra("verifyCode",verifyCode);

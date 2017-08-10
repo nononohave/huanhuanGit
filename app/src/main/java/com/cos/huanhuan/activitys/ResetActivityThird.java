@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.squareup.okhttp.Callback;
@@ -169,7 +170,7 @@ public class ResetActivityThird extends BaseActivity implements View.OnClickList
                 final String password = et_reset3_newPassword.getText().toString();
                 String confirmPass = et_reset3_confirmPassword.getText().toString();
                 if(password.equals(confirmPass)){
-                    if(isConfirmEdit && isPhoneEdit) {
+                    if(AppStringUtils.isNotEmpty(password) && AppStringUtils.isNotEmpty(confirmPass)) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

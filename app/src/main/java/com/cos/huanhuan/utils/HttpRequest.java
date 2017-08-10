@@ -91,10 +91,28 @@ public class HttpRequest {
     }
 
 
-    public static void resetPassword(StringCallback stringCallback){
+    public static void getUserAgreeMent(StringCallback stringCallback){
         String url = TEXT_HUANHUAN_HOST + "Members/UserAgreement";
         OkHttpUtils.get().url(url)
                 .build()
                 .execute(stringCallback);
+    }
+
+    /**
+     * 授权登录
+     * @param UserName
+     * @param Type
+     * @param callback
+     */
+    public static void oauthLogin(String UserName, String Type, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Members/OauthLogin";
+        RegisterModel registerModel = new RegisterModel();
+        registerModel.setUserName(UserName);
+        registerModel.setType(Type);
+        OkHttpUtils.postString().url(url)
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .content(new Gson().toJson(registerModel))
+                .build()
+                .execute(callback);
     }
 }

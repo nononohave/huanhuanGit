@@ -50,4 +50,6 @@
     <string name="resetPassword3">重设密码（3/3）</string>
     <string name="sendVerifyCode">发送验证码</string>
 
+    <string name="userAgreement">用户服务协议</string>
+
 </resources>

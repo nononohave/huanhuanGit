@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
 import com.cos.huanhuan.utils.HttpRequest;
@@ -176,13 +177,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 startActivity(intent);
                 break;
             case R.id.tv_serviceAgree:
-
+                Intent intentUserAgree = new Intent(RegisterActivity.this,UserAgreeActivity.class);
+                startActivity(intentUserAgree);
                 break;
             case R.id.btn_register_next:
                 final String phone = et_register_phone.getText().toString();
                 final String password = et_register_password.getText().toString();
-                if(isPhoneEdit) {
-                    if(isPassEdit) {
+                if(AppStringUtils.isNotEmpty(phone)) {
+                    if(AppStringUtils.isNotEmpty(password)) {
                         if (AppValidationMgr.isPhone(phone)) {
                             try {
                                 HttpRequest.loginSendMsgCode(phone,new StringCallback(){

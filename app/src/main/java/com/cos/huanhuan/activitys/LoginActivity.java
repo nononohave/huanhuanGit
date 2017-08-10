@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cos.huanhuan.MainActivity;
 import com.cos.huanhuan.R;
@@ -27,10 +28,15 @@ import com.cos.huanhuan.utils.AppValidationMgr;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.views.TitleBar;
 import com.squareup.okhttp.Request;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Map;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
@@ -50,6 +56,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private CharSequence phoneTextChar="";
     private CharSequence passTextChar="";
+
+    private UMShareAPI mShareAPI;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +73,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         setBaseContentView(R.layout.activity_login);
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
+
+        mShareAPI = UMShareAPI.get(this);
+
         initView();
 
         leftButtonClick(new View.OnClickListener(){
@@ -112,13 +123,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         String cachePhone = AppACache.get(this).getAsString("phone");
         if(AppStringUtils.isNotEmpty(cachePhone)) {
             et_phone.setText(cachePhone);
-            et_password.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    et_password.setFocusable(true);
-                    et_password.setFocusableInTouchMode(true);
-                }
-            }, 500);
+            et_password.requestFocus();
+            isPhoneEdit = true;
         }
 
         //手机号文本框监听事件
@@ -205,8 +211,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             case R.id.btn_login:
                 String phone = et_phone.getText().toString();
                 String password = et_password.getText().toString();
-                if(isPhoneEdit) {
-                    if(isPassEdit) {
+                if(AppStringUtils.isNotEmpty(phone)) {
+                    if(AppStringUtils.isNotEmpty(password)) {
                         if (AppValidationMgr.isPhone(phone)) {
                             HttpRequest.login(phone, "phone", password, new StringCallback() {
                                 @Override
@@ -250,16 +256,129 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.iv_wbLogin:
                 //微博授权登录
-                AppToastMgr.shortToast(LoginActivity.this,"微博授权登录");
+                mShareAPI.doOauthVerify(LoginActivity.this, SHARE_MEDIA.SINA, verifyAuthListener);
                 break;
             case R.id.iv_qqLogin:
                 //qq授权登录
-                AppToastMgr.shortToast(LoginActivity.this,"qq授权登录");
+                mShareAPI.doOauthVerify(LoginActivity.this, SHARE_MEDIA.QQ, verifyAuthListener);
                 break;
             case R.id.tv_forgetPassword:
                 Intent intent = new Intent(LoginActivity.this, ResetActivityFirst.class);
                 startActivity(intent);
                 break;
         }
+    }
+
+    //注意先需要调用一下获取doOauthVerify进行授权然后再掉获取用户资料的方法
+    private UMAuthListener verifyAuthListener = new UMAuthListener() {
+        /**
+         * @desc 授权开始的回调
+         * @param platform 平台名称
+         */
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+        }
+
+        /**
+         * @desc 授权成功的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param data 用户资料返回
+         */
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            if(platform == SHARE_MEDIA.QQ){
+                UMShareAPI.get(LoginActivity.this).getPlatformInfo(LoginActivity.this, SHARE_MEDIA.QQ, authListener);
+            }else if(platform == SHARE_MEDIA.SINA){
+                UMShareAPI.get(LoginActivity.this).getPlatformInfo(LoginActivity.this, SHARE_MEDIA.SINA, authListener);
+            }
+        }
+
+        /**
+         * @desc 授权失败的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param t 错误原因
+         */
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+        }
+
+        /**
+         * @desc 授权取消的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         */
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            AppToastMgr.shortToast(LoginActivity.this,"取消授权");
+        }
+    };
+
+    //注意先需要调用一下获取doOauthVerify进行授权然后再掉获取用户资料的方法
+    private UMAuthListener authListener = new UMAuthListener() {
+        /**
+         * @desc 授权开始的回调
+         * @param platform 平台名称
+         */
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+        }
+
+        /**
+         * @desc 授权成功的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param data 用户资料返回
+         */
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            String uid = data.get("uid");
+            String type = "";
+            if(platform == SHARE_MEDIA.QQ){
+                type = "QQ";
+            }else if(platform == SHARE_MEDIA.SINA){
+                type = "sina";
+            }else if(platform == SHARE_MEDIA.WEIXIN){
+                type = "wechat";
+            }
+            HttpRequest.oauthLogin(uid, type, new StringCallback() {
+                @Override
+                public void onError(Request request, Exception e) {
+
+                }
+
+                @Override
+                public void onResponse(String response) {
+
+                }
+            });
+        }
+
+        /**
+         * @desc 授权失败的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param t 错误原因
+         */
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+        }
+
+        /**
+         * @desc 授权取消的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         */
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            AppToastMgr.shortToast(LoginActivity.this,"取消授权");
+        }
+    };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mShareAPI.onActivityResult(requestCode, resultCode, data);
     }
 }

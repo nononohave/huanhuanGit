@@ -134,7 +134,8 @@
         <activity android:name=".activitys.RegisterSecondActivity" />
         <activity android:name=".activitys.ResetActivityFirst" />
         <activity android:name=".activitys.ResetActivitySecond" />
-        <activity android:name=".activitys.ResetActivityThird"></activity>
+        <activity android:name=".activitys.ResetActivityThird" />
+        <activity android:name=".activitys.UserAgreeActivity"></activity>
     </application>
 
 </manifest>
