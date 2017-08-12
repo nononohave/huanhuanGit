@@ -26,4 +26,11 @@
     <color name="forgetPassText">#FF999999</color>
 
     <color name="sendMsgColor">#FFBAD3</color>
+
+    <color name="homeNormalTextColor">#999999</color>
+
+    <color name="selector_grey">#DDDDDD</color>
+    <color name="tab_gb">#F3F5F4</color>
+
+    <color name="searchBg">#F2F2F2</color>
 </resources>

@@ -3,6 +3,7 @@ package com.cos.huanhuan.utils;
 import android.util.Log;
 
 import com.cos.huanhuan.model.RegisterModel;
+import com.cos.huanhuan.model.UserLogin;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -104,14 +105,17 @@ public class HttpRequest {
      * @param Type
      * @param callback
      */
-    public static void oauthLogin(String UserName, String Type, StringCallback callback){
+    public static void oauthLogin(String UserName, String Type, String Nickname, String Gender, String Figureurl, StringCallback callback){
         String url = TEXT_HUANHUAN_HOST + "Members/OauthLogin";
-        RegisterModel registerModel = new RegisterModel();
-        registerModel.setUserName(UserName);
-        registerModel.setType(Type);
+        UserLogin userLogin = new UserLogin();
+        userLogin.setUserName(UserName);
+        userLogin.setType(Type);
+        userLogin.setNickname(Nickname);
+        userLogin.setGender(Gender);
+        userLogin.setFigureurl(Figureurl);
         OkHttpUtils.postString().url(url)
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
-                .content(new Gson().toJson(registerModel))
+                .content(new Gson().toJson(userLogin))
                 .build()
                 .execute(callback);
     }

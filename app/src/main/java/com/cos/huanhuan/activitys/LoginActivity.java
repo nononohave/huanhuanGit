@@ -121,10 +121,22 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         iv_qqLogin.setOnClickListener(this);
 
         String cachePhone = AppACache.get(this).getAsString("phone");
+        String loginPhone = AppACache.get(this).getAsString("loginPhone");
+        String loginPass = AppACache.get(this).getAsString("loginPass");
         if(AppStringUtils.isNotEmpty(cachePhone)) {
             et_phone.setText(cachePhone);
             et_password.requestFocus();
             isPhoneEdit = true;
+        }
+
+        if(AppStringUtils.isNotEmpty(loginPhone)){
+            et_phone.setText(loginPhone);
+            isPhoneEdit = true;
+        }
+
+        if(AppStringUtils.isNotEmpty(loginPass)){
+            et_password.setText(loginPass);
+            isPassEdit = true;
         }
 
         //手机号文本框监听事件
@@ -209,8 +221,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_login:
-                String phone = et_phone.getText().toString();
-                String password = et_password.getText().toString();
+                final String phone = et_phone.getText().toString();
+                final String password = et_password.getText().toString();
                 if(AppStringUtils.isNotEmpty(phone)) {
                     if(AppStringUtils.isNotEmpty(password)) {
                         if (AppValidationMgr.isPhone(phone)) {
@@ -231,6 +243,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                             AppACache appACache = AppACache.get(LoginActivity.this);
                                             appACache.put("userJsonData",obj);//将用户的数据json串存入到缓存中
                                             AppToastMgr.shortToast(LoginActivity.this, " 登录");
+                                            Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
+                                            startActivity(intent);
+                                            appACache.put("loginPhone",phone);
+                                            appACache.put("loginPass",password);
                                         }else{
                                             AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
                                         }
@@ -335,14 +351,23 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
             String uid = data.get("uid");
             String type = "";
+            String nickName = "";
+            String gender = "";
+            String figureUrl = "";
             if(platform == SHARE_MEDIA.QQ){
                 type = "QQ";
+                nickName = data.get("name");
+                gender = data.get("gender");
+                figureUrl = data.get("iconurl");
             }else if(platform == SHARE_MEDIA.SINA){
                 type = "sina";
+                nickName = data.get("name");
+                gender = data.get("gender");
+                figureUrl = data.get("iconurl");
             }else if(platform == SHARE_MEDIA.WEIXIN){
                 type = "wechat";
             }
-            HttpRequest.oauthLogin(uid, type, new StringCallback() {
+            HttpRequest.oauthLogin(uid, type,nickName,gender, figureUrl, new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
                     AppToastMgr.shortToast(LoginActivity.this,"请求失败！");
@@ -359,6 +384,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                             AppACache appACache = AppACache.get(LoginActivity.this);
                             appACache.put("userJsonData",obj);//将用户的数据json串存入到缓存中
                             AppToastMgr.shortToast(LoginActivity.this, " 登录");
+                            Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
+                            startActivity(intent);
                         }else{
                             AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
                         }

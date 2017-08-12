@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context="com.cos.huanhuan.activitys.IndexActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        ></android.support.v4.view.ViewPager>
+
+    <com.cos.huanhuan.views.BottomBarLayout
+        android:id="@+id/bbl"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.cos.huanhuan.views.BottomBarItem
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:iconNormal="@mipmap/tab_home_normal"
+            app:iconSelected="@mipmap/tab_home_selected"
+            app:itemMarginTop="3dp"
+            app:itemPadding="2dp"
+            app:itemText="首页"
+            app:itemTextSize="14dp"
+            app:openTouchBg="true"
+            app:textColorNormal="@color/homeNormalTextColor"
+            app:textColorSelected="@color/titleBarTextColor"
+            app:touchDrawable="@drawable/selector_bg" />
+
+        <com.cos.huanhuan.views.BottomBarItem
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:iconNormal="@mipmap/tab_join_normal"
+            app:iconSelected="@mipmap/tab_join_selected"
+            app:itemMarginTop="3dp"
+            app:itemPadding="2dp"
+            app:itemText="合作"
+            app:itemTextSize="14dp"
+            app:openTouchBg="true"
+            app:textColorNormal="@color/homeNormalTextColor"
+            app:textColorSelected="@color/titleBarTextColor"
+            app:touchDrawable="@drawable/selector_bg" />
+
+
+        <com.cos.huanhuan.views.BottomBarItem
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:iconNormal="@mipmap/tab_message_normal"
+            app:iconSelected="@mipmap/tab_message_selected"
+            app:itemMarginTop="3dp"
+            app:itemPadding="2dp"
+            app:itemText="消息"
+            app:itemTextSize="14dp"
+            app:openTouchBg="true"
+            app:textColorNormal="@color/homeNormalTextColor"
+            app:textColorSelected="@color/titleBarTextColor"
+            app:touchDrawable="@drawable/selector_bg" />
+
+        <com.cos.huanhuan.views.BottomBarItem
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:iconNormal="@mipmap/tab_me_normal"
+            app:iconSelected="@mipmap/tab_me_selected"
+            app:itemMarginTop="3dp"
+            app:itemPadding="2dp"
+            app:itemText="我的"
+            app:itemTextSize="14dp"
+            app:openTouchBg="true"
+            app:textColorNormal="@color/homeNormalTextColor"
+            app:textColorSelected="@color/titleBarTextColor"
+            app:touchDrawable="@drawable/selector_bg" />
+
+    </com.cos.huanhuan.views.BottomBarLayout>
+
+</LinearLayout>

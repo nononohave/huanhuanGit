@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+        <LinearLayout
+            android:id="@+id/ll1"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:orientation="horizontal" >
+            <EditText
+                android:id="@+id/et_search_title"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:background="@drawable/search"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="5dp"
+                android:hint="海贼王，日漫"
+                android:textSize="@dimen/text_size_small"
+                android:drawableLeft="@mipmap/home_search"
+                />
+            <TextView
+                android:id="@+id/tv_title_publish"
+                android:layout_width="35dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="@string/publish"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/titleBarTextColor"
+                android:layout_gravity="right"
+                />
+        </LinearLayout>
+</LinearLayout>

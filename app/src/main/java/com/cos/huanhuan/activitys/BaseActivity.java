@@ -52,7 +52,6 @@ public class BaseActivity extends AppCompatActivity
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         titleBar = (TitleBar) findViewById(R.id.title_bar);
-        titleBar.setTitleBackground(R.color.transWhite);
         contentView=(ViewGroup) findViewById(R.id.base_contentview);
 
     }

@@ -51,5 +51,6 @@
     <string name="sendVerifyCode">发送验证码</string>
 
     <string name="userAgreement">用户服务协议</string>
+    <string name="publish">发布</string>
 
 </resources>
