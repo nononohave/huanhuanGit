@@ -14,5 +14,10 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/white" >
+        <com.cos.huanhuan.views.AutoScrollViewPager
+            android:id="@+id/scrollImg_index"
+            android:layout_width="match_parent"
+            android:layout_height="220dp">
+        </com.cos.huanhuan.views.AutoScrollViewPager>
     </FrameLayout>
 </LinearLayout>

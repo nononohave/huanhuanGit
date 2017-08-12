@@ -24,6 +24,7 @@
     <color name="phone_text">#333333</color>
     <color name="dividLineXML">#EBEBEB</color>
     <color name="forgetPassText">#FF999999</color>
+    <color name="titleBarBack">#FAFAFA</color>
 
     <color name="sendMsgColor">#FFBAD3</color>
 
@@ -33,4 +34,9 @@
     <color name="tab_gb">#F3F5F4</color>
 
     <color name="searchBg">#F2F2F2</color>
+
+    <!--页面背景的颜色-->
+    <color name="colorPageBg">#f2f4f5</color>
+    <!--item的水波纹颜色-->
+    <color name="itemBackgroundWhite">#cfff</color>
 </resources>

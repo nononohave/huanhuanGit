@@ -3,6 +3,7 @@ package com.cos.huanhuan.views;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.TabLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -22,18 +23,19 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
     private static final int DEFAULT_MAIN_TEXT_SIZE = 17;
     private static final int DEFAULT_SUB_TEXT_SIZE = 12;
     private static final int DEFAULT_ACTION_TEXT_SIZE = 15;
-    private static final int DEFAULT_TITLE_BAR_HEIGHT = 64;
+    private static final int DEFAULT_TITLE_BAR_HEIGHT = 104;
 
     private static final String STATUS_BAR_HEIGHT_RES_NAME = "status_bar_height";
 
     private EditText et_search_title;
     private TextView tv_title_publish;
+    private TabLayout top_titleBar;
     //private TextView mLeftText;
-    private LinearLayout mRightLayout;
-    private LinearLayout mCenterLayout;
-    private TextView mCenterText;
-    private TextView mSubTitleText;
-    private View mCustomCenterView;
+//    private LinearLayout mRightLayout;
+//    private LinearLayout mCenterLayout;
+//    private TextView mCenterText;
+//    private TextView mSubTitleText;
+//    private View mCustomCenterView;
     private View mDividerView;
 
     private LinearLayout mLeftLayout;
@@ -77,44 +79,57 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
         View view = View.inflate(context, R.layout.search_titlebar, null);
         et_search_title = (EditText) view.findViewById(R.id.et_search_title);
         tv_title_publish = (TextView) view.findViewById(R.id.tv_title_publish);
+        top_titleBar = (TabLayout) view.findViewById(R.id.top_titleBar);
 
         mLeftLayout = new LinearLayout(context);
         //mLeftText = new TextView(context);
-        mCenterLayout = new LinearLayout(context);
-        mRightLayout = new LinearLayout(context);
+//        mCenterLayout = new LinearLayout(context);
+//        mRightLayout = new LinearLayout(context);
         mDividerView = new View(context);
 
         LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
 
         mLeftLayout.addView(view);
 
-        mCenterText = new TextView(context);
-        mSubTitleText = new TextView(context);
-        mCenterLayout.addView(mCenterText);
-        mCenterLayout.addView(mSubTitleText);
+//        mCenterText = new TextView(context);
+//        mSubTitleText = new TextView(context);
+//        mCenterLayout.addView(mCenterText);
+//        mCenterLayout.addView(mSubTitleText);
+//
+//        mCenterLayout.setGravity(Gravity.CENTER);
+//        mCenterText.setTextSize(DEFAULT_MAIN_TEXT_SIZE);
+//        mCenterText.setSingleLine();
+//        mCenterText.setGravity(Gravity.CENTER);
+//        mCenterText.setEllipsize(TextUtils.TruncateAt.END);
+//        mCenterText.getPaint().setFakeBoldText(true);
+//
+//        mSubTitleText.setTextSize(DEFAULT_SUB_TEXT_SIZE);
+//        mSubTitleText.setSingleLine();
+//        mSubTitleText.setGravity(Gravity.CENTER);
+//        mSubTitleText.setEllipsize(TextUtils.TruncateAt.END);
+//
+//        mRightLayout.setPadding(mOutPadding, 0, mOutPadding, 0);
 
-        mCenterLayout.setGravity(Gravity.CENTER);
-        mCenterText.setTextSize(DEFAULT_MAIN_TEXT_SIZE);
-        mCenterText.setSingleLine();
-        mCenterText.setGravity(Gravity.CENTER);
-        mCenterText.setEllipsize(TextUtils.TruncateAt.END);
-        mCenterText.getPaint().setFakeBoldText(true);
-
-        mSubTitleText.setTextSize(DEFAULT_SUB_TEXT_SIZE);
-        mSubTitleText.setSingleLine();
-        mSubTitleText.setGravity(Gravity.CENTER);
-        mSubTitleText.setEllipsize(TextUtils.TruncateAt.END);
-
-        mRightLayout.setPadding(mOutPadding, 0, mOutPadding, 0);
-
-        mLeftLayout.setPadding(mOutPadding + mActionPadding - 2, DensityUtils.dip2px(context,28), mOutPadding, 0);
-        mCenterLayout.setPadding(0, DensityUtils.dip2px(context,20),0,0);
-        mRightLayout.setPadding(0, DensityUtils.dip2px(context,20),0,0);
+        mLeftLayout.setPadding(mOutPadding + mActionPadding - 6, DensityUtils.dip2px(context,28), mOutPadding + mActionPadding - 6, 0);
+//        mCenterLayout.setPadding(0, DensityUtils.dip2px(context,20),0,0);
+//        mRightLayout.setPadding(0, DensityUtils.dip2px(context,20),0,0);
 
         addView(mLeftLayout);
-        addView(mCenterLayout);
-        addView(mRightLayout, layoutParams);
+//        addView(mCenterLayout);
+//        addView(mRightLayout, layoutParams);
         addView(mDividerView, new LayoutParams(LayoutParams.MATCH_PARENT, 1));
+    }
+
+    public void setRightButtonClick(OnClickListener l){
+        tv_title_publish.setOnClickListener(l);
+    }
+
+    public String getEtText(){
+        return et_search_title.getText().toString();
+    }
+
+    public TabLayout getTabLayout(){
+        return top_titleBar;
     }
 
     public void setBaseImmersive(boolean immersive) {
@@ -133,74 +148,74 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
 
 
 
-    public void setTitle(CharSequence title) {
-        int index = title.toString().indexOf("\n");
-        if (index > 0) {
-            setTitle(title.subSequence(0, index), title.subSequence(index + 1, title.length()), LinearLayout.VERTICAL);
-        } else {
-            index = title.toString().indexOf("\t");
-            if (index > 0) {
-                setTitle(title.subSequence(0, index), "  " + title.subSequence(index + 1, title.length()), LinearLayout.HORIZONTAL);
-            } else {
-                mCenterText.setText(title);
-                mSubTitleText.setVisibility(View.GONE);
-            }
-        }
-    }
+//    public void setTitle(CharSequence title) {
+//        int index = title.toString().indexOf("\n");
+//        if (index > 0) {
+//            setTitle(title.subSequence(0, index), title.subSequence(index + 1, title.length()), LinearLayout.VERTICAL);
+//        } else {
+//            index = title.toString().indexOf("\t");
+//            if (index > 0) {
+//                setTitle(title.subSequence(0, index), "  " + title.subSequence(index + 1, title.length()), LinearLayout.HORIZONTAL);
+//            } else {
+//                mCenterText.setText(title);
+//                mSubTitleText.setVisibility(View.GONE);
+//            }
+//        }
+//    }
 
-    private void setTitle(CharSequence title, CharSequence subTitle, int orientation) {
-        mCenterLayout.setOrientation(orientation);
-        mCenterText.setText(title);
+//    private void setTitle(CharSequence title, CharSequence subTitle, int orientation) {
+//        mCenterLayout.setOrientation(orientation);
+//        mCenterText.setText(title);
+//
+//        mSubTitleText.setText(subTitle);
+//        mSubTitleText.setVisibility(View.VISIBLE);
+//    }
 
-        mSubTitleText.setText(subTitle);
-        mSubTitleText.setVisibility(View.VISIBLE);
-    }
-
-    public void setCenterClickListener(OnClickListener l) {
-        mCenterLayout.setOnClickListener(l);
-    }
-
-    public void setTitle(int resid) {
-        setTitle(getResources().getString(resid));
-    }
-
-    public void setTitleColor(int resid) {
-        mCenterText.setTextColor(resid);
-    }
-
-    public void setTitleSize(float size) {
-        mCenterText.setTextSize(size);
-    }
-
-    public void setTitleBackground(int resid) {
-        mCenterText.setBackgroundResource(resid);
-    }
-
-    public void setSubTitleColor(int resid) {
-        mSubTitleText.setTextColor(resid);
-    }
-
-    public void setSubTitleSize(float size) {
-        mSubTitleText.setTextSize(size);
-    }
-
-    public void setCustomTitle(View titleView) {
-        if (titleView == null) {
-            mCenterText.setVisibility(View.VISIBLE);
-            if (mCustomCenterView != null) {
-                mCenterLayout.removeView(mCustomCenterView);
-            }
-
-        } else {
-            if (mCustomCenterView != null) {
-                mCenterLayout.removeView(mCustomCenterView);
-            }
-            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            mCustomCenterView = titleView;
-            mCenterLayout.addView(titleView, layoutParams);
-            mCenterText.setVisibility(View.GONE);
-        }
-    }
+//    public void setCenterClickListener(OnClickListener l) {
+//        mCenterLayout.setOnClickListener(l);
+//    }
+//
+//    public void setTitle(int resid) {
+//        setTitle(getResources().getString(resid));
+//    }
+//
+//    public void setTitleColor(int resid) {
+//        mCenterText.setTextColor(resid);
+//    }
+//
+//    public void setTitleSize(float size) {
+//        mCenterText.setTextSize(size);
+//    }
+//
+//    public void setTitleBackground(int resid) {
+//        mCenterText.setBackgroundResource(resid);
+//    }
+//
+//    public void setSubTitleColor(int resid) {
+//        mSubTitleText.setTextColor(resid);
+//    }
+//
+//    public void setSubTitleSize(float size) {
+//        mSubTitleText.setTextSize(size);
+//    }
+//
+//    public void setCustomTitle(View titleView) {
+//        if (titleView == null) {
+//            mCenterText.setVisibility(View.VISIBLE);
+//            if (mCustomCenterView != null) {
+//                mCenterLayout.removeView(mCustomCenterView);
+//            }
+//
+//        } else {
+//            if (mCustomCenterView != null) {
+//                mCenterLayout.removeView(mCustomCenterView);
+//            }
+//            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+//            mCustomCenterView = titleView;
+//            mCenterLayout.addView(titleView, layoutParams);
+//            mCenterText.setVisibility(View.GONE);
+//        }
+//    }
 
     public void setDivider(Drawable drawable) {
         mDividerView.setBackgroundDrawable(drawable);
@@ -218,14 +233,14 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
         mActionTextColor = colorResId;
     }
 
-    /**
-     * Function to set a click listener for Title TextView
-     *
-     * @param listener the onClickListener
-     */
-    public void setOnTitleClickListener(OnClickListener listener) {
-        mCenterText.setOnClickListener(listener);
-    }
+//    /**
+//     * Function to set a click listener for Title TextView
+//     *
+//     * @param listener the onClickListener
+//     */
+//    public void setOnTitleClickListener(OnClickListener listener) {
+//        mCenterText.setOnClickListener(listener);
+//    }
 
     @Override
     public void onClick(View view) {
@@ -240,74 +255,74 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
      * Adds a list of {@link TitleBar.Action}s.
      * @param actionList the actions to add
      */
-    public void addActions(TitleBar.ActionList actionList) {
-        int actions = actionList.size();
-        for (int i = 0; i < actions; i++) {
-            addAction(actionList.get(i));
-        }
-    }
+//    public void addActions(TitleBar.ActionList actionList) {
+//        int actions = actionList.size();
+//        for (int i = 0; i < actions; i++) {
+//            addAction(actionList.get(i));
+//        }
+//    }
 
-    /**
-     * Adds a new {@link TitleBar.Action}.
-     * @param action the action to add
-     */
-    public View addAction(TitleBar.Action action) {
-        final int index = mRightLayout.getChildCount();
-        return addAction(action, index);
-    }
+//    /**
+//     * Adds a new {@link TitleBar.Action}.
+//     * @param action the action to add
+//     */
+//    public View addAction(TitleBar.Action action) {
+//        final int index = mRightLayout.getChildCount();
+//        return addAction(action, index);
+//    }
 
-    /**
-     * Adds a new {@link TitleBar.Action} at the specified index.
-     * @param action the action to add
-     * @param index the position at which to add the action
-     */
-    public View addAction(TitleBar.Action action, int index) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                LayoutParams.MATCH_PARENT);
-        View view = inflateAction(action);
-        mRightLayout.addView(view, index, params);
-        return view;
-    }
-
-    /**
-     * Removes all action views from this action bar
-     */
-    public void removeAllActions() {
-        mRightLayout.removeAllViews();
-    }
-
-    /**
-     * Remove a action from the action bar.
-     * @param index position of action to remove
-     */
-    public void removeActionAt(int index) {
-        mRightLayout.removeViewAt(index);
-    }
-
-    /**
-     * Remove a action from the action bar.
-     * @param action The action to remove
-     */
-    public void removeAction(TitleBar.Action action) {
-        int childCount = mRightLayout.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View view = mRightLayout.getChildAt(i);
-            if (view != null) {
-                final Object tag = view.getTag();
-                if (tag instanceof TitleBar.Action && tag.equals(action)) {
-                    mRightLayout.removeView(view);
-                }
-            }
-        }
-    }
-
-    /**
-     * Returns the number of actions currently registered with the action bar.
-     * @return action count
-     */
-    public int getActionCount() {
-        return mRightLayout.getChildCount();
-    }
+//    /**
+//     * Adds a new {@link TitleBar.Action} at the specified index.
+//     * @param action the action to add
+//     * @param index the position at which to add the action
+//     */
+//    public View addAction(TitleBar.Action action, int index) {
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+//                LayoutParams.MATCH_PARENT);
+//        View view = inflateAction(action);
+//        mRightLayout.addView(view, index, params);
+//        return view;
+//    }
+//
+//    /**
+//     * Removes all action views from this action bar
+//     */
+//    public void removeAllActions() {
+//        mRightLayout.removeAllViews();
+//    }
+//
+//    /**
+//     * Remove a action from the action bar.
+//     * @param index position of action to remove
+//     */
+//    public void removeActionAt(int index) {
+//        mRightLayout.removeViewAt(index);
+//    }
+//
+//    /**
+//     * Remove a action from the action bar.
+//     * @param action The action to remove
+//     */
+//    public void removeAction(TitleBar.Action action) {
+//        int childCount = mRightLayout.getChildCount();
+//        for (int i = 0; i < childCount; i++) {
+//            View view = mRightLayout.getChildAt(i);
+//            if (view != null) {
+//                final Object tag = view.getTag();
+//                if (tag instanceof TitleBar.Action && tag.equals(action)) {
+//                    mRightLayout.removeView(view);
+//                }
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Returns the number of actions currently registered with the action bar.
+//     * @return action count
+//     */
+//    public int getActionCount() {
+//        return mRightLayout.getChildCount();
+//    }
 
     /**
      * Inflates a {@link View} with the given {@link TitleBar.Action}.
@@ -354,16 +369,16 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
         }
         mScreenWidth = MeasureSpec.getSize(widthMeasureSpec);
         measureChild(mLeftLayout, widthMeasureSpec, heightMeasureSpec);
-        measureChild(mRightLayout, widthMeasureSpec, heightMeasureSpec);
-        if (mLeftLayout.getMeasuredWidth() > mRightLayout.getMeasuredWidth()) {
-            mCenterLayout.measure(
-                    MeasureSpec.makeMeasureSpec(mScreenWidth - 2 * mLeftLayout.getMeasuredWidth(), MeasureSpec.EXACTLY)
-                    , heightMeasureSpec);
-        } else {
-            mCenterLayout.measure(
-                    MeasureSpec.makeMeasureSpec(mScreenWidth - 2 * mRightLayout.getMeasuredWidth(), MeasureSpec.EXACTLY)
-                    , heightMeasureSpec);
-        }
+        //measureChild(mRightLayout, widthMeasureSpec, heightMeasureSpec);
+//        if (mLeftLayout.getMeasuredWidth() > mRightLayout.getMeasuredWidth()) {
+//            mCenterLayout.measure(
+//                    MeasureSpec.makeMeasureSpec(mScreenWidth - 2 * mLeftLayout.getMeasuredWidth(), MeasureSpec.EXACTLY)
+//                    , heightMeasureSpec);
+//        } else {
+//            mCenterLayout.measure(
+//                    MeasureSpec.makeMeasureSpec(mScreenWidth - 2 * mRightLayout.getMeasuredWidth(), MeasureSpec.EXACTLY)
+//                    , heightMeasureSpec);
+//        }
         measureChild(mDividerView, widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height);
     }
@@ -371,15 +386,15 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         mLeftLayout.layout(0, mStatusBarHeight, mLeftLayout.getMeasuredWidth(), mLeftLayout.getMeasuredHeight() + mStatusBarHeight);
-        mRightLayout.layout(mScreenWidth - mRightLayout.getMeasuredWidth(), mStatusBarHeight,
-                mScreenWidth, mRightLayout.getMeasuredHeight() + mStatusBarHeight);
-        if (mLeftLayout.getMeasuredWidth() > mRightLayout.getMeasuredWidth()) {
-            mCenterLayout.layout(mLeftLayout.getMeasuredWidth(), mStatusBarHeight,
-                    mScreenWidth - mLeftLayout.getMeasuredWidth(), getMeasuredHeight());
-        } else {
-            mCenterLayout.layout(mRightLayout.getMeasuredWidth(), mStatusBarHeight,
-                    mScreenWidth - mRightLayout.getMeasuredWidth(), getMeasuredHeight());
-        }
+//        mRightLayout.layout(mScreenWidth - mRightLayout.getMeasuredWidth(), mStatusBarHeight,
+//                mScreenWidth, mRightLayout.getMeasuredHeight() + mStatusBarHeight);
+//        if (mLeftLayout.getMeasuredWidth() > mRightLayout.getMeasuredWidth()) {
+//            mCenterLayout.layout(mLeftLayout.getMeasuredWidth(), mStatusBarHeight,
+//                    mScreenWidth - mLeftLayout.getMeasuredWidth(), getMeasuredHeight());
+//        } else {
+//            mCenterLayout.layout(mRightLayout.getMeasuredWidth(), mStatusBarHeight,
+//                    mScreenWidth - mRightLayout.getMeasuredWidth(), getMeasuredHeight());
+//        }
         mDividerView.layout(0, getMeasuredHeight() - mDividerView.getMeasuredHeight(), getMeasuredWidth(), getMeasuredHeight());
     }
 
