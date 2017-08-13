@@ -68,5 +68,6 @@ dependencies {
     compile 'com.github.zhaokaiqiang.klog:library:1.5.0'
     compile 'com.zhy:okhttputils:2.0.0'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:design:26.0.0-alpha1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.jude:rollviewpager:1.2.9'
 }

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
     <com.cos.huanhuan.views.TitleSearchBar
         android:id="@+id/title_search_bar"
@@ -13,11 +16,28 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/white" >
-        <com.cos.huanhuan.views.AutoScrollViewPager
-            android:id="@+id/scrollImg_index"
+        android:background="@color/white"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        >
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="220dp">
-        </com.cos.huanhuan.views.AutoScrollViewPager>
+            android:layout_height="120dp"
+            android:orientation="vertical"
+            android:layout_marginTop="15dp"
+            >
+        <com.jude.rollviewpager.RollPagerView
+            android:id="@+id/roll_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:rollviewpager_play_delay="3000"
+            app:rollviewpager_hint_gravity = "right"
+            app:rollviewpager_hint_paddingLeft = "7dp"
+            app:rollviewpager_hint_paddingRight = "7dp"
+            app:rollviewpager_hint_paddingTop = "7dp"
+            app:rollviewpager_hint_paddingBottom = "7dp"
+            />
+        </LinearLayout>
     </FrameLayout>
+
 </LinearLayout>

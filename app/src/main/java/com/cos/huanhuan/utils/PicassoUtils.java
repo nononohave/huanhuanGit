@@ -136,7 +136,7 @@ public class PicassoUtils {
     public void LoadImageWithWidtAndHeight(Context context,String path,ImageView imageView,int targetWidth,int targetHeight,String bitmapShowType,float roundRadius){
         if(bitmapShowType.equals(PICASSO_BITMAP_SHOW_CIRCLE_TYPE)){
             Picasso.with(context).load(path).resize(targetWidth, targetHeight).centerCrop().transform(new CircleTransform()).into(imageView);
-        }else if(bitmapShowType.equals(PICASSO_BITMAP_SHOW_ROUND_TYPE)){
+        }else if(bitmapShowType.equals(PICASSO_BITMAP_SHOW_ROUND_TYPE)){Picasso.with(context).load(path).resize(targetWidth, targetHeight).centerCrop().transform(new RoundTransform(roundRadius)).into(imageView);
             Picasso.with(context).load(path).resize(targetWidth, targetHeight).centerCrop().transform(new RoundTransform(roundRadius)).into(imageView);
         }else {
             Picasso.with(context).load(path).resize(targetWidth, targetHeight).centerCrop().into(imageView);
@@ -183,7 +183,7 @@ public class PicassoUtils {
     /**
      * 绘制圆角
      */
-    public class RoundTransform implements Transformation{
+    public static class RoundTransform implements Transformation{
         private float radius;
         public RoundTransform(float radius) {
             this.radius=radius;
@@ -201,9 +201,6 @@ public class PicassoUtils {
             int y = (bitmap.getHeight() - size) / 2;
 
             Bitmap squaredBitmap = Bitmap.createBitmap(bitmap, x, y, size, size);
-            if (squaredBitmap != bitmap) {
-                bitmap.recycle();
-            }
             Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Config.ARGB_8888);
             Canvas canvas = new Canvas(output);
@@ -221,6 +218,7 @@ public class PicassoUtils {
             paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
             canvas.drawBitmap(bitmap, rect, rect, paint);
             squaredBitmap.recycle();
+            bitmap.recycle();
             return output;
         }
 
