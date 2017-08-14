@@ -2,6 +2,7 @@ package com.cos.huanhuan.utils;
 
 import android.util.Log;
 
+import com.cos.huanhuan.model.ExchangeList;
 import com.cos.huanhuan.model.RegisterModel;
 import com.cos.huanhuan.model.UserLogin;
 import com.google.gson.Gson;
@@ -26,6 +27,8 @@ import java.io.IOException;
 public class HttpRequest {
 
     public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
+
+    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn";
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -118,5 +121,40 @@ public class HttpRequest {
                 .content(new Gson().toJson(userLogin))
                 .build()
                 .execute(callback);
+    }
+
+    public static void getExchangeClass(StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "ExchangeClasses";
+        OkHttpUtils.get().url(url)
+                .build()
+                .execute(callback);
+    }
+
+    public static void getExchangeList(ExchangeList exchange,StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Exchanges";
+        if(AppStringUtils.isEmpty(exchange.getCid()) && AppStringUtils.isEmpty(exchange.getEid())){
+            OkHttpUtils.get().url(url)
+                    .addParams("pageIndex", String.valueOf(exchange.getPageIndex()))
+                    .addParams("pageSize", String.valueOf(exchange.getPageSize()))
+                    .addParams("sea", String.valueOf(exchange.getSea()))
+                    .build()
+                    .execute(callback);}
+        if(AppStringUtils.isNotEmpty(exchange.getCid()) && AppStringUtils.isEmpty(exchange.getEid())){
+            OkHttpUtils.get().url(url)
+                    .addParams("pageIndex", String.valueOf(exchange.getPageIndex()))
+                    .addParams("pageSize", String.valueOf(exchange.getPageSize()))
+                    .addParams("sea", String.valueOf(exchange.getSea()))
+                    .addParams("cid",exchange.getCid())
+                    .build()
+                    .execute(callback);}
+        if(AppStringUtils.isNotEmpty(exchange.getCid()) && AppStringUtils.isNotEmpty(exchange.getEid())){
+            OkHttpUtils.get().url(url)
+                    .addParams("pageIndex", String.valueOf(exchange.getPageIndex()))
+                    .addParams("pageSize", String.valueOf(exchange.getPageSize()))
+                    .addParams("sea", String.valueOf(exchange.getSea()))
+                    .addParams("cid",exchange.getCid())
+                    .addParams("Eid",exchange.getEid())
+                    .build()
+                    .execute(callback);}
     }
 }

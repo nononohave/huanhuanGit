@@ -52,5 +52,6 @@
 
     <string name="userAgreement">用户服务协议</string>
     <string name="publish">发布</string>
+    <string name="viewAllExchange">查看全部</string>
 
 </resources>

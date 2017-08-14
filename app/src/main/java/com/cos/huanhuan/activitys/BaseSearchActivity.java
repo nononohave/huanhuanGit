@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -12,7 +11,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.cos.huanhuan.R;
-import com.cos.huanhuan.views.TitleBar;
 import com.cos.huanhuan.views.TitleSearchBar;
 
 /**
@@ -28,7 +26,7 @@ public class BaseSearchActivity extends FragmentActivity
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_titlebar);
+        setContentView(R.layout.fragment_index);
         boolean isImmersive = false;
         if (hasKitKat() && !hasLollipop()) {
             isImmersive = true;

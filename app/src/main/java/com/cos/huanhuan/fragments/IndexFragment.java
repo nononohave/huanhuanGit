@@ -4,28 +4,51 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.activitys.LoginActivity;
+import com.cos.huanhuan.adapter.CardGridAdapter;
+import com.cos.huanhuan.model.CardExchange;
+import com.cos.huanhuan.model.Classify;
+import com.cos.huanhuan.model.ExchangeList;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
+import com.cos.huanhuan.utils.DensityUtils;
+import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.PicassoUtils;
 import com.cos.huanhuan.views.PublicView;
-import com.cos.huanhuan.views.RoundedTransformationBuilder;
+import com.cos.huanhuan.views.SpacesItemDecoration;
 import com.cos.huanhuan.views.TitleSearchBar;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
+import com.squareup.okhttp.Request;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/8/11.
@@ -38,15 +61,19 @@ public class IndexFragment extends Fragment{
     private boolean mIsSelected;
     public ViewGroup contentView;
     private TabLayout tabLayout;
-    private RollPagerView roll_view_pager;
-    private String[] paths = {"https://ss3.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/image/h%3D200/sign=c493b482b47eca800d053ee7a1229712/8cb1cb1349540923abd671df9658d109b2de49d7.jpg",
-            "https://ss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/image/h%3D200/sign=45fbfa5555da81cb51e684cd6267d0a4/2f738bd4b31c8701491ea047237f9e2f0608ffe3.jpg",
-            "https://ss2.baidu.com/-vo3dSag_xI4khGko9WTAnF6hhy/image/h%3D200/sign=ae0e95c0fc1986185e47e8847aec2e69/0b46f21fbe096b63eb314ef108338744ebf8ac62.jpg",
-            "https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/image/h%3D200/sign=1fad2b46952397ddc9799f046983b216/dc54564e9258d109c94bbb13d558ccbf6d814de2.jpg",
-            "https://ss1.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/image/h%3D200/sign=ff0999f6d4160924c325a51be406359b/86d6277f9e2f070861ccd4a0ed24b899a801f241.jpg"};
+
+    private RecyclerView recyclerview;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private GridLayoutManager mLayoutManager;
+    private CardGridAdapter cardGridAdapter;
+    private int pageIndex = 0;
+    private int pageNum = 4;
+    private List<CardExchange> listCard;
+    private List<Classify> listClassify;
+    private int selectedTab = 0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_search_titlebar, container, false);
+        return inflater.inflate(R.layout.fragment_index, container, false);
     }
 
     @Override
@@ -75,35 +102,34 @@ public class IndexFragment extends Fragment{
 
         titleBar = (TitleSearchBar) getActivity().findViewById(R.id.title_search_bar);
         contentView=(ViewGroup) getActivity().findViewById(R.id.base_search_contentview);
-        roll_view_pager = (RollPagerView) getActivity().findViewById(R.id.roll_view_pager);
-        roll_view_pager.setBackgroundResource(R.drawable.rollpage_corner);
+
+        recyclerview = (RecyclerView) getActivity().findViewById(R.id.index_grid_recycler);
+        swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.grid_swipe_refresh);
+
+        mLayoutManager=new GridLayoutManager(getActivity(),2,GridLayoutManager.VERTICAL,false);//设置为一个2列的纵向网格布局
+        recyclerview.setLayoutManager(mLayoutManager);
+        swipeRefreshLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+        listCard = new ArrayList<CardExchange>();
+
+        cardGridAdapter = new CardGridAdapter(getActivity(),listCard);
+        recyclerview.setAdapter(cardGridAdapter);
+        setHeader(recyclerview);
+        int leftRight = DensityUtils.dip2px(getActivity(),5);
+        int topBottom = DensityUtils.dip2px(getActivity(),0);
+        recyclerview.addItemDecoration(new SpacesItemDecoration(leftRight, topBottom));
+
         titleBar.setBackgroundColor(getResources().getColor(R.color.titleBarBack));
         titleBar.setDividerColor(getResources().getColor(R.color.dividLineColor));
+
         tabLayout = titleBar.getTabLayout();
 
-        //设置播放时间间隔
-        roll_view_pager.setPlayDelay(5000);
-        //设置透明度
-        roll_view_pager.setAnimationDurtion(300);
-        //设置适配器
-        roll_view_pager.setAdapter(new TestNormalAdapter(getActivity(),paths));
 
-
-        //设置指示器（顺序依次）
-        //自定义指示器图片
-        //设置圆点指示器颜色
-        //设置文字指示器
-        //隐藏指示器
-        //mRollViewPager.setHintView(new IconHintView(this, R.drawable.point_focus, R.drawable.point_normal));
-        roll_view_pager.setHintView(new ColorPointHintView(getActivity(), getActivity().getResources().getColor(R.color.titleBarTextColor),Color.WHITE));
-        //mRollViewPager.setHintView(new TextHintView(this));
-        //mRollViewPager.setHintView(null);
 
         tabLayout.addTab(tabLayout.newTab().setText("推荐"));
-        tabLayout.addTab(tabLayout.newTab().setText("古风"));
-        tabLayout.addTab(tabLayout.newTab().setText("游戏"));
-        tabLayout.addTab(tabLayout.newTab().setText("动漫"));
-        tabLayout.addTab(tabLayout.newTab().setText("综合"));
+//        tabLayout.addTab(tabLayout.newTab().setText("古风"));
+//        tabLayout.addTab(tabLayout.newTab().setText("游戏"));
+//        tabLayout.addTab(tabLayout.newTab().setText("动漫"));
+//        tabLayout.addTab(tabLayout.newTab().setText("综合"));
         //tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabLayout.post(new Runnable() {
@@ -115,17 +141,28 @@ public class IndexFragment extends Fragment{
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                AppToastMgr.shortToast(getActivity(),"选中的"+tab.getText() + tab.getPosition());
+                selectedTab = tab.getPosition();
+                //AppToastMgr.shortToast(getActivity(),"选中的"+tab.getText() + tab.getPosition());
+                ExchangeList exChange = new ExchangeList();
+                String searchText = titleBar.getEtText();
+                if(listClassify != null && listClassify.size() > 0 && selectedTab != 0){
+                    exChange.setCid(listClassify.get(selectedTab-1).getClassifyId());
+                }else{
+                    exChange.setCid("");
+                }
+                exChange.setEid("");
+                exChange.setSea(searchText);
+                getData(exChange);
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                AppToastMgr.shortToast(getActivity(),"未选中的"+tab.getText());
+                //AppToastMgr.shortToast(getActivity(),"未选中的"+tab.getText());
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                AppToastMgr.shortToast(getActivity(),"复选中的"+tab.getText() + tab.getPosition());
+                //AppToastMgr.shortToast(getActivity(),"复选中的"+tab.getText() + tab.getPosition());
             }
         });
         titleBar.setRightButtonClick(new View.OnClickListener() {
@@ -135,6 +172,33 @@ public class IndexFragment extends Fragment{
                 AppToastMgr.shortToast(getActivity(),"发布" + text);
             }
         });
+
+        titleBar.etTextWatcherListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                ExchangeList exChange = new ExchangeList();
+                String searchText = titleBar.getEtText();
+                if(listClassify != null && listClassify.size() > 0 && selectedTab != 0){
+                    exChange.setCid(listClassify.get(selectedTab-1).getClassifyId());
+                }else{
+                    exChange.setCid("");
+                }
+                exChange.setEid("");
+                exChange.setSea(searchText);
+                getData(exChange);
+            }
+        });
+
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             if (tab != null) {
@@ -145,6 +209,206 @@ public class IndexFragment extends Fragment{
                 }
             }
         }
+
+        cardGridAdapter.setOnImageClick(new CardGridAdapter.OnImageClick() {
+            @Override
+            public void OnImageClick(View view, int position) {
+                AppToastMgr.shortToast(getActivity(),"选中"+position);
+            }
+        });
+        cardGridAdapter.setOnUserClick(new CardGridAdapter.OnUserClick() {
+            @Override
+            public void OnUserClick(View view, int position) {
+                AppToastMgr.shortToast(getActivity(),"选中"+position);
+            }
+        });
+        initData();
+
+        ExchangeList exChange = new ExchangeList();
+        exChange.setCid("");
+        exChange.setEid("");
+        exChange.setSea("");
+        getData(exChange);
+    }
+
+    private void initData() {
+        listClassify = new ArrayList<Classify>();
+        HttpRequest.getExchangeClass(new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                AppToastMgr.shortToast(getActivity(),"请求分类接口失败！");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Boolean success = jsonObject.getBoolean("success");
+                    String errorMsg = jsonObject.getString("errorMsg");
+                    if(success) {
+                        JSONArray arr = jsonObject.getJSONArray("list");
+                        for (int i = 0; i < arr.length(); i++) {
+                            Classify classify = new Classify();
+                            String id = arr.getJSONObject(i).getString("id");
+                            String className = arr.getJSONObject(i).getString("className");
+                            String classUsName = arr.getJSONObject(i).getString("classUsName");
+                            classify.setClassifyId(id);
+                            classify.setClassName(className);
+                            classify.setClassUsName(classUsName);
+                            listClassify.add(classify);
+                        }
+                        addTabClass(listClassify);
+                    }else{
+                        AppToastMgr.shortToast(getActivity(), " 请求分类接口失败！原因：" + errorMsg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ExchangeList exChange = new ExchangeList();
+                exChange.setCid("");
+                if(listClassify != null && listClassify.size() > 0 && selectedTab != 0){
+                    exChange.setCid(listClassify.get(selectedTab-1).getClassifyId());
+                }else{
+                    exChange.setCid("");
+                }
+                exChange.setSea("");
+                getData(exChange);
+            }
+        });
+
+        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem ;
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                //判断RecyclerView的状态 是空闲时，同时，是最后一个可见的ITEM时才加载
+                if(newState==RecyclerView.SCROLL_STATE_IDLE&&lastVisibleItem+1==cardGridAdapter.getItemCount()){
+                    pageIndex  = pageIndex + 1;
+                    ExchangeList exChange = new ExchangeList();
+                    String searchText = titleBar.getEtText();
+                    exChange.setPageIndex(pageIndex);
+                    exChange.setPageSize(pageNum);
+                    if(listClassify != null && listClassify.size() > 0 && selectedTab != 0){
+                        exChange.setCid(listClassify.get(selectedTab-1).getClassifyId());
+                    }else{
+                        exChange.setCid("");
+                    }
+                    exChange.setEid("");
+                    if(AppStringUtils.isNotEmpty(searchText)){
+                        exChange.setSea(searchText);
+                    }else{
+                        exChange.setSea("");
+                    }
+                    HttpRequest.getExchangeList(exChange, new StringCallback() {
+                        @Override
+                        public void onError(Request request, Exception e) {
+                            AppToastMgr.shortToast(getActivity(),"请求失败！");
+                        }
+
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                Boolean success = jsonObject.getBoolean("success");
+                                String errorMsg = jsonObject.getString("errorMsg");
+                                if(success) {
+                                    JSONObject obj = jsonObject.getJSONObject("data");
+                                    JSONArray arr = obj.getJSONArray("data");
+                                    for (int i = 0; i < arr.length(); i++) {
+                                        CardExchange cardExchange = new CardExchange();
+                                        String id = arr.getJSONObject(i).getString("id");
+                                        String title = arr.getJSONObject(i).getString("title");
+                                        String official = arr.getJSONObject(i).getString("official");
+                                        String nickname = arr.getJSONObject(i).getString("nickname");
+                                        String cover = arr.getJSONObject(i).getString("cover");
+                                        cardExchange.setCardId(id);
+                                        cardExchange.setCardTitle(title);
+                                        cardExchange.setOfficial(official);
+                                        cardExchange.setCreateName(nickname);
+                                        cardExchange.setCardImgUrl(HttpRequest.IMG_HUANHUAN_HOST + cover);
+                                        listCard.add(cardExchange);
+                                    }
+                                    cardGridAdapter.notifyDataSetChanged();
+                                }else{
+                                    AppToastMgr.shortToast(getActivity(), " 请求失败！原因：" + errorMsg);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //最后一个可见的ITEM
+                lastVisibleItem=layoutManager.findLastVisibleItemPosition();
+            }
+        });
+
+    }
+
+    private void addTabClass(List<Classify> listClassify) {
+        for (Classify claffify:listClassify ) {
+            tabLayout.addTab(tabLayout.newTab().setText(claffify.getClassName()));
+        }
+    }
+
+    private void getData(ExchangeList exChange) {
+        pageIndex = 1;
+        exChange.setPageIndex(pageIndex);
+        exChange.setPageSize(pageNum);
+        HttpRequest.getExchangeList(exChange, new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                AppToastMgr.shortToast(getActivity(),"请求失败！");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Boolean success = jsonObject.getBoolean("success");
+                    String errorMsg = jsonObject.getString("errorMsg");
+                    if(success) {
+                        JSONObject obj = jsonObject.getJSONObject("data");
+                        JSONArray arr = obj.getJSONArray("data");
+                        listCard.removeAll(listCard);
+                        for (int i = 0; i < arr.length(); i++) {
+                            CardExchange cardExchange = new CardExchange();
+                            String id = arr.getJSONObject(i).getString("id");
+                            String title = arr.getJSONObject(i).getString("title");
+                            String official = arr.getJSONObject(i).getString("official");
+                            String nickname = arr.getJSONObject(i).getString("nickname");
+                            String cover = arr.getJSONObject(i).getString("cover");
+                            cardExchange.setCardId(id);
+                            cardExchange.setCardTitle(title);
+                            cardExchange.setOfficial(official);
+                            cardExchange.setCreateName(nickname);
+                            cardExchange.setCardImgUrl(HttpRequest.IMG_HUANHUAN_HOST + cover);
+                            listCard.add(cardExchange);
+                        }
+                        cardGridAdapter.notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }else{
+                        AppToastMgr.shortToast(getActivity(), " 请求失败！原因：" + errorMsg);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private View.OnClickListener mTabOnClickListener = new View.OnClickListener() {
@@ -164,6 +428,9 @@ public class IndexFragment extends Fragment{
         }
     };
 
+
+
+
     public static boolean hasKitKat() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
@@ -172,49 +439,9 @@ public class IndexFragment extends Fragment{
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
-    private class TestNormalAdapter extends StaticPagerAdapter {
-        private Context context;
-        private String[] paths;
-        private Transformation transformation;
-        private int[] imgs = {
-                R.mipmap.banner1,
-                R.mipmap.banner2,
-                R.mipmap.banner1,
-                R.mipmap.banner2
-        };
-
-        public TestNormalAdapter(FragmentActivity activity, String[] paths) {
-            this.context = activity;
-            this.paths = paths;
-
-            transformation = new RoundedTransformationBuilder()
-                    .borderColor(Color.WHITE)
-                    .borderWidthDp(1)
-                    .cornerRadiusDp(10)
-                    .oval(false)
-                    .build();
-        }
-
-        @Override
-        public View getView(ViewGroup container, int position) {
-            View view = View.inflate(context, R.layout.scroll_img, null);
-            ImageView img = (ImageView) view.findViewById(R.id.scrollImg);
-            //Picasso.with(context).load(paths[position]).transform(transformation).into(img);//
-            //Context context,String path,ImageView imageView,int placeholderimage,int errorimage,String bitmapShowType,float roundRadius
-            float roundRadius = 15;
-            PicassoUtils.getinstance().LoadImage(context,paths[position],img,R.mipmap.ic_launcher,R.mipmap.ic_launcher,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,roundRadius);
-            //img.setImageResource(imgs[position]);
-            //Picasso.with(context).load(paths[position]).into(img);
-            //img.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            //设置拉伸方式
-            img.setScaleType(ImageView.ScaleType.FIT_XY);
-            return view;
-        }
-
-
-        @Override
-        public int getCount() {
-            return imgs.length;
-        }
+    private void setHeader(RecyclerView view) {
+        View header = LayoutInflater.from(getActivity()).inflate(R.layout.head_scroll_img, view, false);
+        cardGridAdapter.setHeaderView(header);
     }
+
 }

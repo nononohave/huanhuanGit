@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.TabLayout;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -126,6 +127,10 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
 
     public String getEtText(){
         return et_search_title.getText().toString();
+    }
+
+    public void etTextWatcherListener(TextWatcher textWatcher){
+        et_search_title.addTextChangedListener(textWatcher);
     }
 
     public TabLayout getTabLayout(){

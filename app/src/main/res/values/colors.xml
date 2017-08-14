@@ -39,4 +39,6 @@
     <color name="colorPageBg">#f2f4f5</color>
     <!--item的水波纹颜色-->
     <color name="itemBackgroundWhite">#cfff</color>
+
+    <color name="greyDivideLine">#EEEEEE</color>
 </resources>

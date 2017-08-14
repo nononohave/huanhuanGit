@@ -16,7 +16,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/dividLineColor"
+        android:background="@color/greyDivideLine"
         ></View>
     <com.cos.huanhuan.views.BottomBarLayout
         android:id="@+id/bbl"
