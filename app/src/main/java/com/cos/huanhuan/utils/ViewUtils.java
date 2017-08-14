@@ -12,10 +12,15 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.*;
 import android.view.View.MeasureSpec;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description:主要功能:
@@ -113,7 +118,12 @@ public class ViewUtils {
     public static View showPopupWindow(Context context, int resId, View root, int paramsType) {
         View popupView;
         popupView = LayoutInflater.from(context).inflate(resId, null);
-
+        ListView listView = (ListView)popupView.findViewById(R.id.popListView);
+        List<String> list = new ArrayList<String>();
+        list.add("全部兑换");list.add("已结束");list.add("已兑换");list.add("可兑换");list.add("回收中");list.add("审核中");
+        ArrayAdapter adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, list);
+        //最后一个参数是List或String[]均可
+        listView.setAdapter(adapter);
         switch (paramsType) {
             case 1:
                 popupWindow = new PopupWindow(popupView,

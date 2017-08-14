@@ -34,6 +34,7 @@ import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.PicassoUtils;
+import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.PublicView;
 import com.cos.huanhuan.views.SpacesItemDecoration;
 import com.cos.huanhuan.views.TitleSearchBar;
@@ -229,6 +230,8 @@ public class IndexFragment extends Fragment{
         exChange.setEid("");
         exChange.setSea("");
         getData(exChange);
+
+        ViewUtils.showPopupWindow(getActivity(),R.layout.popwindow,titleBar,4);
     }
 
     private void initData() {
