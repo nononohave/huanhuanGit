@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bigkoo.pickerview.TimePickerView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.adapter.CardGridAdapter;
 import com.cos.huanhuan.model.CardExchange;
@@ -47,6 +48,8 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class AllExchangeActivity extends BaseActivity implements AdapterView.OnItemClickListener,View.OnClickListener{
@@ -146,6 +149,18 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
         imageClose.setOnClickListener(this);
         publishExchange.setOnClickListener(this);
         publishCoo.setOnClickListener(this);
+
+        //时间选择器
+        TimePickerView pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
+            @Override
+            public void onTimeSelect(Date date, View v) {//选中事件回调
+                AppToastMgr.shortToast(AllExchangeActivity.this,date.toString());
+            }
+        })
+         .setType(new boolean[]{true, true, true, true, true, false})
+        .build();
+        pvTime.setDate(Calendar.getInstance());//注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
+        pvTime.show();
     }
 
     private void initData() {
