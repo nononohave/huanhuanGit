@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="65dp">
+    <TextView
+        android:id="@+id/popWindowText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/popTextSize"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:text="全部兑换"
+        android:paddingTop="13dp"
+        android:paddingBottom="13dp"
+        />
+</LinearLayout>

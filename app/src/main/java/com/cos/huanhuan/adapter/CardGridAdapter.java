@@ -1,6 +1,7 @@
 package com.cos.huanhuan.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.activitys.AllExchangeActivity;
 import com.cos.huanhuan.fragments.IndexFragment;
 import com.cos.huanhuan.model.CardExchange;
 import com.cos.huanhuan.utils.AppStringUtils;
@@ -85,9 +87,16 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
             //设置适配器
             ((HeaderHolder)holder).roll_view_pager.setAdapter(new TestNormalAdapter(mContext,paths));
             ((HeaderHolder)holder).roll_view_pager.setHintView(new ColorPointHintView(mContext, mContext.getResources().getColor(R.color.titleBarTextColor), Color.WHITE));
+            ((HeaderHolder)holder).tv_viewAllExchange.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, AllExchangeActivity.class);
+                    mContext.startActivity(intent);
+                }
+            });
         }else{
             final int pos = getRealPosition(holder);
-            PicassoUtils.getinstance().LoadImage(mContext,cardList.get(pos).getCardImgUrl(),((MyViewHolder) holder).card_img_adapter,R.mipmap.ic_launcher,R.mipmap.ic_launcher,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,0);
+            PicassoUtils.getinstance().LoadImage(mContext,cardList.get(pos).getCardImgUrl(),((MyViewHolder) holder).card_img_adapter,R.mipmap.public_placehold,R.mipmap.public_placehold,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,0);
             ((MyViewHolder) holder).card_title_adapter.setText(cardList.get(pos).getCardTitle());
             ((MyViewHolder) holder).card_user_adapter.setText(cardList.get(pos).getCreateName());
 

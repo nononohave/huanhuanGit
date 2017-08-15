@@ -41,4 +41,6 @@
     <color name="itemBackgroundWhite">#cfff</color>
 
     <color name="greyDivideLine">#EEEEEE</color>
+
+    <color name="popPublishColor">#99000000</color>
 </resources>

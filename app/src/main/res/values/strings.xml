@@ -54,4 +54,10 @@
     <string name="publish">发布</string>
     <string name="viewAllExchange">查看全部</string>
 
+    <string name="allExchange">全部兑换</string>
+    <string name="publish_exchange">发布兑换</string>
+    <string name="publish_exchange_text">开启我的二次元生活</string>
+    <string name="publish_coop">发布合作</string>
+    <string name="publish_coop_text">漫展，COS活动点我吧</string>
+
 </resources>

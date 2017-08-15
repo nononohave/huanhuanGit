@@ -148,6 +148,14 @@ public class TitleBar extends ViewGroup implements View.OnClickListener {
         mLeftText.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
+    public void setCenLayoutClickListener(OnClickListener l){
+        mCenterLayout.setOnClickListener(l);
+    }
+
+    public TextView getCenTextView(){
+        return mCenterText;
+    }
+
     public void setTitle(CharSequence title) {
         int index = title.toString().indexOf("\n");
         if (index > 0) {

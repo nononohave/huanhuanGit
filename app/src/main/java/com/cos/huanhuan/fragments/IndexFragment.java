@@ -230,8 +230,6 @@ public class IndexFragment extends Fragment{
         exChange.setEid("");
         exChange.setSea("");
         getData(exChange);
-
-        ViewUtils.showPopupWindow(getActivity(),R.layout.popwindow,titleBar,4);
     }
 
     private void initData() {

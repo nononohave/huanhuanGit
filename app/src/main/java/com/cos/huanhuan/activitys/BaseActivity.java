@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.DensityUtils;
@@ -60,6 +61,10 @@ public class BaseActivity extends AppCompatActivity
         contentView.addView(View.inflate(this, res, null));
     }
 
+    public void setCenLayoutClickListener(View.OnClickListener l){
+        titleBar.setOnClickListener(l);
+    }
+
     /**
      * 设置titlebar背景色
      * @param res
@@ -105,6 +110,10 @@ public class BaseActivity extends AppCompatActivity
      */
     public void setTitle(String text){
         titleBar.setTitle(text);
+    }
+
+    public TextView getCenTextView(){
+        return titleBar.getCenTextView();
     }
 
     /**

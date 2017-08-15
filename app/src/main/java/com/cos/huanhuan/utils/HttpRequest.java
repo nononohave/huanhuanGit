@@ -156,5 +156,20 @@ public class HttpRequest {
                     .addParams("Eid",exchange.getEid())
                     .build()
                     .execute(callback);}
+        if(AppStringUtils.isEmpty(exchange.getCid()) && AppStringUtils.isNotEmpty(exchange.getEid())){
+            OkHttpUtils.get().url(url)
+                    .addParams("pageIndex", String.valueOf(exchange.getPageIndex()))
+                    .addParams("pageSize", String.valueOf(exchange.getPageSize()))
+                    .addParams("sea", String.valueOf(exchange.getSea()))
+                    .addParams("Eid",exchange.getEid())
+                    .build()
+                    .execute(callback);}
+    }
+
+    public static void getExchangeStatus(StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "ExchangeExamines";
+        OkHttpUtils.get().url(url)
+                .build()
+                .execute(callback);
     }
 }

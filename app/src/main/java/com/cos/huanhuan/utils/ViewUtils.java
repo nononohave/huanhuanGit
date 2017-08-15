@@ -9,7 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.view.*;
 import android.view.View.MeasureSpec;
 import android.widget.ArrayAdapter;
@@ -18,6 +20,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.activitys.AllExchangeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,20 +113,19 @@ public class ViewUtils {
     /**
      * 显示PopupWindow
      * @param context
-     * @param resId
      * @param root
      * @param paramsType
      * @return
      */
-    public static View showPopupWindow(Context context, int resId, View root, int paramsType) {
-        View popupView;
-        popupView = LayoutInflater.from(context).inflate(resId, null);
-        ListView listView = (ListView)popupView.findViewById(R.id.popListView);
-        List<String> list = new ArrayList<String>();
-        list.add("全部兑换");list.add("已结束");list.add("已兑换");list.add("可兑换");list.add("回收中");list.add("审核中");
-        ArrayAdapter adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, list);
+    public static View showPopupWindow(final Context context,View root, int paramsType,View popupView) {
+        //View popupView;
+//        //popupView = LayoutInflater.from(context).inflate(resId, null);
+//        ListView listView = (ListView)popupView.findViewById(R.id.popListView);
+//        List<String> list = new ArrayList<String>();
+//        list.add("全部兑换");list.add("已结束");list.add("已兑换");list.add("可兑换");list.add("回收中");list.add("审核中");
+//        ArrayAdapter adapter = new ArrayAdapter<String>(context, R.layout.pop_list_item, list);
         //最后一个参数是List或String[]均可
-        listView.setAdapter(adapter);
+        //listView.setAdapter(adapter);
         switch (paramsType) {
             case 1:
                 popupWindow = new PopupWindow(popupView,
@@ -141,6 +143,10 @@ public class ViewUtils {
                 popupWindow = new PopupWindow(popupView,
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
                 break;
+            case 5:
+                popupWindow = new PopupWindow(popupView,
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+                break;
             default:
                 popupWindow = new PopupWindow(popupView,
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
@@ -149,8 +155,22 @@ public class ViewUtils {
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setTouchable(true);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        popupWindow.showAsDropDown(root);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        if(paramsType == 5){
+            popupWindow.setClippingEnabled(false);
+            popupWindow.showAtLocation(root, Gravity.NO_GRAVITY, 0, 0);
+        }else{
+            popupWindow.showAsDropDown(root,-235,40);
+            setBackgroundAlpha(0.8f,context);
+        }
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                // popupWindow隐藏时恢复屏幕正常透明度
+                setBackgroundAlpha(1.0f,context);
+            }
+        });
         return popupView;
     }
 
@@ -163,6 +183,7 @@ public class ViewUtils {
             popupWindow = null;
         }
     }
+
 
     /**
      *截图
@@ -307,5 +328,83 @@ public class ViewUtils {
         throw new IllegalStateException("View " + view + " is not attached to an Activity");
     }
 
+    /**
+     * 设置添加屏幕的背景透明度
+     *
+     * @param bgAlpha
+     *            屏幕透明度0.0-1.0 1表示完全不透明
+     */
+    public static void setBackgroundAlpha(float bgAlpha,Context mContext) {
+        WindowManager.LayoutParams lp = ((Activity) mContext).getWindow()
+                .getAttributes();
+        lp.alpha = bgAlpha;
+        ((Activity) mContext).getWindow().setAttributes(lp);
+    }
+    /**
+     * 屏幕截图
+     *
+     * @param activity
+     * @return
+     */
+    public static Bitmap takeScreenShot(Activity activity) {
+        // View是你需要截图的View
+        View view = activity.getWindow().getDecorView();
+        view.setDrawingCacheEnabled(false);
+        view.buildDrawingCache();
+        Bitmap b1 = view.getDrawingCache();
 
+        // 获取状态栏高度
+        Rect frame = new Rect();
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+        int statusBarHeight = frame.top;
+
+        // 获取屏幕长和高
+        int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+        int height = activity.getWindowManager().getDefaultDisplay()
+                .getHeight();
+        // 去掉标题栏
+        // Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
+        Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, height
+                - statusBarHeight);
+        view.destroyDrawingCache();
+        return b;
+    }
+
+    public static void blur(Bitmap bkg, View view,Context context) {
+        long startMs = System.currentTimeMillis();
+        float radius = 2;
+        float scaleFactor = 8;
+
+        Bitmap overlay = Bitmap.createBitmap(
+                (int) (view.getMeasuredWidth() / scaleFactor),
+                (int) (view.getMeasuredHeight() / scaleFactor),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(overlay);
+        canvas.translate(-view.getLeft() / scaleFactor, -view.getTop()
+                / scaleFactor);
+        canvas.scale(1 / scaleFactor, 1 / scaleFactor);
+        Paint paint = new Paint();
+        paint.setFlags(Paint.FILTER_BITMAP_FLAG);
+        canvas.drawBitmap(bkg, 0, 0, paint);
+        overlay = FastBlur.doBlur(overlay, (int) radius, true);
+        view.setBackground(new BitmapDrawable(context.getResources(), overlay));
+    }
+
+    public static Bitmap getViewBitmap(View addViewContent) {
+
+        addViewContent.setDrawingCacheEnabled(true);
+
+        addViewContent.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        addViewContent.layout(0, 0,
+                addViewContent.getMeasuredWidth(),
+                addViewContent.getMeasuredHeight());
+
+        addViewContent.buildDrawingCache();
+        Bitmap cacheBitmap = addViewContent.getDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+
+        return bitmap;
+    }
 }
