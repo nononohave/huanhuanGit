@@ -59,5 +59,16 @@
     <string name="publish_exchange_text">开启我的二次元生活</string>
     <string name="publish_coop">发布合作</string>
     <string name="publish_coop_text">漫展，COS活动点我吧</string>
+    <string name="cancel">取消</string>
+    <string name="publishExchange">发布兑换</string>
+    <string name="confirmPublish">确认发布</string>
+    <string name="cosHint">COS作品标题</string>
+    <string name="cosAuthorHint">请输入物品原作</string>
+    <string name="cosRoleHint">请输入物品角色</string>
+    <string name="cosContainHint">物品包含（如服装，鞋子，配饰等）</string>
+    <string name="cosFromHint">物品来源(如淘宝等)</string>
+    <string name="priceUnit">元</string>
+    <string name="detail_describe">请填写详细描述</string>
+    <string name="exchange_upload_Page">上传封面图片</string>
 
 </resources>

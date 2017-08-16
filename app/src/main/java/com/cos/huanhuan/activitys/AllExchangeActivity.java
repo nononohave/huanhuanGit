@@ -1,7 +1,9 @@
 package com.cos.huanhuan.activitys;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -151,16 +153,25 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
         publishCoo.setOnClickListener(this);
 
         //时间选择器
-        TimePickerView pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
-            @Override
-            public void onTimeSelect(Date date, View v) {//选中事件回调
-                AppToastMgr.shortToast(AllExchangeActivity.this,date.toString());
-            }
-        })
-         .setType(new boolean[]{true, true, true, true, true, false})
-        .build();
-        pvTime.setDate(Calendar.getInstance());//注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
-        pvTime.show();
+//        TimePickerView pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
+//            @Override
+//            public void onTimeSelect(Date date, View v) {//选中事件回调
+//                AppToastMgr.shortToast(AllExchangeActivity.this,date.toString());
+//            }
+//        })
+//        .setType(new boolean[]{true, true, true, true, true, false})
+//        .setCancelText("取消")//取消按钮文字
+//        .setSubmitText("确定")//确认按钮文字
+//        .setTitleText("选择时间")//标题文字
+//        .setOutSideCancelable(true)
+//        .setTitleSize(20)//标题文字大小
+//        .setTitleColor(getResources().getColor(R.color.black))//标题文字颜色
+//        .setSubmitColor(getResources().getColor(R.color.titleBarTextColor))//确定按钮文字颜色
+//        .setCancelColor(getResources().getColor(R.color.titleBarTextColor))//取消按钮文字颜色
+//        .setBgColor(getResources().getColor(R.color.white))
+//        .build();
+//        pvTime.setDate(Calendar.getInstance());//注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
+//        pvTime.show();
     }
 
     private void initData() {
@@ -352,8 +363,9 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
                 ViewUtils.dismissPopup();
                 break;
             case R.id.ll_popWindow_publishExchange:
-                AppToastMgr.shortToast(AllExchangeActivity.this,"发布兑换");
                 ViewUtils.dismissPopup();
+                Intent intent = new Intent(AllExchangeActivity.this,PublishExchangeActivity.class);
+                startActivity(intent);
                 break;
             case R.id.ll_popWindow_publishCoo:
                 AppToastMgr.shortToast(AllExchangeActivity.this,"发布合作");

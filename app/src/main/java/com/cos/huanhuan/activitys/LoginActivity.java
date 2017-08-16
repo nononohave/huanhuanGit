@@ -243,7 +243,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                             AppACache appACache = AppACache.get(LoginActivity.this);
                                             appACache.put("userJsonData",obj);//将用户的数据json串存入到缓存中
                                             AppToastMgr.shortToast(LoginActivity.this, " 登录");
-                                            Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
+                                            Intent intent = new Intent(LoginActivity.this, PublishExchangeActivity.class);
                                             startActivity(intent);
                                             appACache.put("loginPhone",phone);
                                             appACache.put("loginPass",password);

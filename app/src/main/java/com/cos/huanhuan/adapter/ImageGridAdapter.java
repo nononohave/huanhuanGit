@@ -30,7 +30,7 @@ public class ImageGridAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return listUrls.size();
+        return listUrls.size() + 1;
     }
 
     @Override
@@ -56,15 +56,11 @@ public class ImageGridAdapter extends BaseAdapter {
         }else {
             imageView = (ImageView) convertView.getTag();
         }
-        //Picasso.with(MainActivity.this).load(getItem(position)).placeholder(R.mipmap.default_error).into(imageView);
-        Picasso.with(context).load(new File(getItem(position))).placeholder(R.mipmap.default_error).resize(300, 300).into(imageView);
-            /*Glide.with(MainActivity.this)
-                    .load(new File(getItem(position)))
-                    .placeholder(R.mipmap.default_error)
-                    .error(R.mipmap.default_error)
-                    .centerCrop()
-                    .crossFade()
-                    .into(imageView);*/
+        if (position < listUrls.size()) {
+            Picasso.with(context).load(new File(getItem(position))).placeholder(R.mipmap.default_error).resize(300, 300).into(imageView);
+        }else{
+            imageView.setImageResource(R.mipmap.img_add);
+        }
         return convertView;
     }
 }

@@ -43,4 +43,6 @@
     <color name="greyDivideLine">#EEEEEE</color>
 
     <color name="popPublishColor">#99000000</color>
+
+    <color name="publishTextColor">#FF666666</color>
 </resources>
