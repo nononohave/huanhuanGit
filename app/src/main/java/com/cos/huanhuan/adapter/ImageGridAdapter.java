@@ -46,17 +46,17 @@ public class ImageGridAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
-        if(convertView == null){
+//        if(convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.item_image, null);
             imageView = (ImageView) convertView.findViewById(R.id.imageView);
             convertView.setTag(imageView);
             // 重置ImageView宽高
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(columnWidth, columnWidth);
-            imageView.setLayoutParams(params);
-        }else {
-            imageView = (ImageView) convertView.getTag();
-        }
-        if (position < listUrls.size()) {
+//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(columnWidth, columnWidth);
+//            imageView.setLayoutParams(params);
+//        }else {
+//            imageView = (ImageView) convertView.getTag();
+//        }
+        if (position < getCount()-1) {
             Picasso.with(context).load(new File(getItem(position))).placeholder(R.mipmap.default_error).resize(300, 300).into(imageView);
         }else{
             imageView.setImageResource(R.mipmap.img_add);

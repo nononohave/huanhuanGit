@@ -19,39 +19,63 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.adapter.ImageGridAdapter;
+import com.cos.huanhuan.model.Classify;
+import com.cos.huanhuan.model.MultiPartStack;
+import com.cos.huanhuan.model.MultipartRequest;
+import com.cos.huanhuan.model.PublishExchanges;
+import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
+import com.cos.huanhuan.utils.FileUtils;
 import com.cos.huanhuan.utils.GetUriPath;
+import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.SelectDialog;
 import com.cos.huanhuan.utils.SoftHideKeyBoardUtil;
+import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.MyGridView;
 import com.cos.huanhuan.views.TitleBar;
 import com.foamtrace.photopicker.ImageCaptureManager;
 import com.foamtrace.photopicker.PhotoPickerActivity;
 import com.foamtrace.photopicker.SelectModel;
 import com.foamtrace.photopicker.intent.PhotoPickerIntent;
+import com.squareup.okhttp.Request;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PublishExchangeActivity extends BaseActivity implements View.OnClickListener,AdapterView.OnItemClickListener {
 
@@ -62,6 +86,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
     private LinearLayout ll_publishExchange_classify;
     private MyGridView gridView_publish;
     private ImageView select_img_page;
+    private TextView tv_publish_cosClassify;
 
     //单张图片返回码
     private static final int REQUEST_CAMERA_CODE = 11;
@@ -80,6 +105,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
     private static final int CROP_PHOTO_CODE = 442;
     private static final int DOUBLE_CROP_CAMERA_CODE = 443;
     private static final int DOUBLE_CROP_PHOTO_CODE = 444;
+    private static final int DOUBLE_CROP_PHOTO_CODE_END = 445;
 
     private ArrayList<String> imagePaths = null;
     private ArrayList<String> double_imagePaths = null;
@@ -89,6 +115,22 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
     private List<String> pathsReturn = new ArrayList<String>();
 
     private Uri imageUri;
+
+    private List<Classify> listClassify;
+    private List<String> listClassifyString;
+
+    private PopViewListAdapter adapter;
+
+    //用于上传的封面图片地址
+    private ArrayList<String> imagePathsSelectdPage = null;
+
+    //用于上传的图片列表地址
+    private ArrayList<String> imagePathsSelectdList = null;
+
+    private int coverId = -1;
+    private String mutiImgId = "";
+
+    private String userId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,10 +160,11 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
         setRightButton(new TitleBar.TextAction(this.getResources().getString(R.string.confirmPublish)) {
             @Override
             public void performAction(View view) {
-
+                upLoadCoverImag();
             }
         });
     }
+
 
     private void initView() {
         et_publish_cosTitle = (EditText) findViewById(R.id.et_publish_cosTitle);
@@ -138,8 +181,63 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
 
         select_img_page = (ImageView) findViewById(R.id.select_img_page);
 
+        tv_publish_cosClassify = (TextView) findViewById(R.id.tv_publish_cosClassify);
+
         select_img_page.setOnClickListener(this);
         gridView_publish.setOnItemClickListener(this);
+        ll_publishExchange_classify.setOnClickListener(this);
+
+        listClassify = new ArrayList<Classify>();
+        listClassifyString = new ArrayList<>();
+
+        HttpRequest.getExchangeClass(new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                AppToastMgr.shortToast(PublishExchangeActivity.this,"请求分类接口失败！");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Boolean success = jsonObject.getBoolean("success");
+                    String errorMsg = jsonObject.getString("errorMsg");
+                    if(success) {
+                        JSONArray arr = jsonObject.getJSONArray("list");
+                        for (int i = 0; i < arr.length(); i++) {
+                            Classify classify = new Classify();
+                            String id = arr.getJSONObject(i).getString("id");
+                            String className = arr.getJSONObject(i).getString("className");
+                            String classUsName = arr.getJSONObject(i).getString("classUsName");
+                            classify.setClassifyId(id);
+                            classify.setClassName(className);
+                            classify.setClassUsName(classUsName);
+                            listClassify.add(classify);
+                            listClassifyString.add(className);
+                        }
+                    }else{
+                        AppToastMgr.shortToast(PublishExchangeActivity.this, " 请求分类接口失败！原因：" + errorMsg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        AppACache appACache = AppACache.get(PublishExchangeActivity.this);
+        JSONObject userObj = appACache.getAsJSONObject("userJsonData");
+        if(userObj != null){
+            try {
+                userId = userObj.getString("id");
+                if(AppStringUtils.isEmpty(userId)){
+                    AppToastMgr.shortToast(PublishExchangeActivity.this, "用户未登录");
+                    return;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         ArrayList<String> listItem = new ArrayList<String>();
         loadAdpater(listItem);
     }
@@ -184,6 +282,35 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                         }
                     }
                 }, names);
+                break;
+            case R.id.ll_publishExchange_classify:
+//                final View popupView = LayoutInflater.from(this).inflate(R.layout.popwindow_noimg, null);
+//                ListView listView = (ListView)popupView.findViewById(R.id.popListView);
+//                listClassify = new ArrayList<String>();
+//                listClassify.add("11111");
+//                adapter = new PopViewListAdapter(PublishExchangeActivity.this,listClassify);
+//                listView.setAdapter(adapter);
+//                ViewUtils.showPopupWindow(PublishExchangeActivity.this,ll_publishExchange_classify,6,popupView);
+                int position = 0;
+                String selectItem = tv_publish_cosClassify.getText().toString();
+                if(AppStringUtils.isNotEmpty(selectItem) && listClassifyString != null && listClassifyString.size() > 0){
+                    position = listClassifyString.indexOf(selectItem);
+                }
+                //条件选择器
+                OptionsPickerView pvOptions = new  OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int option2, int options3 ,View v) {
+                        //返回的分别是三个级别的选中位置
+                        String className = listClassifyString.get(options1);
+                        tv_publish_cosClassify.setText(className);
+                    }
+                }).setContentTextSize(20).isDialog(true)
+                .setSelectOptions(position)
+                .setCancelColor(getResources().getColor(R.color.titleBarTextColor))
+                .setSubmitColor(getResources().getColor(R.color.titleBarTextColor))
+                .build();
+                pvOptions.setPicker(listClassifyString, null, null);
+                pvOptions.show();
                 break;
         }
     }
@@ -331,7 +458,6 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                         pathsReturn.add(captureManager.getCurrentPhotoPath());
                         if (pathsReturn != null && pathsReturn.size() > 0) {
                             startCrop(imageUri,CROP_CAMERA_CODE);
-                            //Picasso.with(PublishExchangeActivity.this).load(new File(pathsReturn.get(0))).placeholder(R.mipmap.default_error).into(select_img_page);
                         }
                     }
                     break;
@@ -347,17 +473,27 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                 // 调用相机拍照
                 case DOUBLE_REQUEST_TAKE_PHOTO:
                     if (captureManager.getCurrentPhotoPath() != null) {
-                        captureManager.galleryAddPic();
-                        ArrayList<String> paths = new ArrayList<>();
-                        paths.add(captureManager.getCurrentPhotoPath());
-                        loadAdpater(paths);
+                        startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", new File(captureManager.getCurrentPhotoPath())),DOUBLE_CROP_CAMERA_CODE);
                     }
                     break;
                 case CROP_PHOTO_CODE:
+                    imagePaths = new ArrayList<>();
+                    imagePaths.add(GetUriPath.getPath(PublishExchangeActivity.this,UCrop.getOutput(data)));
                     Picasso.with(PublishExchangeActivity.this).load(UCrop.getOutput(data)).placeholder(R.mipmap.default_error).into(select_img_page);
                     break;
                 case CROP_CAMERA_CODE:
+                    imagePaths = new ArrayList<>();
+                    imagePaths.add(GetUriPath.getPath(PublishExchangeActivity.this,UCrop.getOutput(data)));
                     Picasso.with(PublishExchangeActivity.this).load(UCrop.getOutput(data)).placeholder(R.mipmap.default_error).into(select_img_page);
+                    break;
+                case DOUBLE_CROP_CAMERA_CODE:
+                    if (captureManager.getCurrentPhotoPath() != null) {
+                        ArrayList<String> paths = new ArrayList<>();
+                        captureManager.galleryAddPic();
+                        paths.addAll(double_imagePaths);
+                        paths.add(captureManager.getCurrentPhotoPath());
+                        loadAdpater(paths);
+                    }
                     break;
             }
         }
@@ -452,5 +588,265 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    class PopViewListAdapter extends BaseAdapter {
+
+        private Context context;
+        private List<String> list;
+
+        public PopViewListAdapter(Context context,List<String> list) {
+            this.context = context;
+            this.list = list;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return list.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup viewGroup) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(context).inflate(R.layout.pop_list_item, null);
+            }
+            TextView tv = (TextView)convertView.findViewById(R.id.popWindowText);
+            tv.setText(list.get(position));
+            return convertView;
+        }
+    }
+
+    private void upLoadCoverImag() {
+        String cosTitle = et_publish_cosTitle.getText().toString();
+        String cosAuthor = et_publish_cosAuthor.getText().toString();
+        String cosRole = et_publish_cosRole.getText().toString();
+        String cosContain = et_publish_cosContain.getText().toString();
+        String cosFrom = et_publish_cosFrom.getText().toString();
+        String cosPriceText = et_publish_cosPrice.getText().toString();
+        Double cosPrice = 0.0;
+        String cosDetailDesc = et_publish_cosDetailDesc.getText().toString();
+        String selectCosClassText = tv_publish_cosClassify.getText().toString();
+        String selectClassifyId = "";
+        if(AppStringUtils.isNotEmpty(selectCosClassText)){
+            int position = listClassifyString.indexOf(tv_publish_cosClassify.getText().toString());
+            selectClassifyId = listClassify.get(position).getClassifyId();
+        }
+        if(AppStringUtils.isEmpty(cosTitle)){
+            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入标题");
+            return;
+        }
+        if(AppStringUtils.isEmpty(cosAuthor)){
+            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品原作");
+            return;
+        }
+        if(AppStringUtils.isEmpty(cosRole)){
+            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品角色");
+            return;
+        }
+        if(AppStringUtils.isEmpty(cosContain)){
+            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品包含");
+            return;
+        }
+        if(AppStringUtils.isEmpty(cosFrom)){
+            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品来源");
+            return;
+        }
+        if(AppStringUtils.isEmpty(cosPriceText)){
+            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品价格");
+            return;
+        }
+        if(AppStringUtils.isEmpty(selectCosClassText)){
+            AppToastMgr.shortToast(PublishExchangeActivity.this, "请选择物品类别");
+            return;
+        }
+        if(AppStringUtils.isEmpty(cosDetailDesc)){
+            AppToastMgr.shortToast(PublishExchangeActivity.this, "请填写描述信息");
+            return;
+        }
+        cosPrice = Double.parseDouble(cosPriceText);
+        if(cosPrice <= 0){
+            AppToastMgr.shortToast(PublishExchangeActivity.this, "物品价格不能小于0");
+            return;
+        }
+        if(imagePaths != null && imagePaths.size() > 0) {
+            if(double_imagePaths != null && double_imagePaths.size() > 0) {
+                if(double_imagePaths.size() >= 3) {
+                    List<File> listFile = new ArrayList<File>();
+                    Map<String, String> params = new HashMap<String, String>();
+                    for (int i = 0; i < imagePaths.size(); i++) {
+                        File file = new File(imagePaths.get(i));
+                        listFile.add(file);
+                        params.put("file" + i, imagePaths.get(i));
+                    }
+                    MultipartRequest multipartRequest = new MultipartRequest(HttpRequest.TEXT_HUANHUAN_HOST + "Imgs", mErrorListener, mResonseListenerString, "files", listFile, params);
+                    multipartRequest.setRetryPolicy(
+                            new DefaultRetryPolicy(
+                                    500000,//默认超时时间，应设置一个稍微大点儿的，例如本处的500000
+                                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,//默认最大尝试次数
+                                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                            )
+                    );
+                    RequestQueue mSingleQueue = Volley.newRequestQueue(this, new MultiPartStack());
+                    mSingleQueue.add(multipartRequest);
+                }else{
+                    AppToastMgr.shortToast(PublishExchangeActivity.this, "请至少选择三张图片");
+                }
+            }else{
+                AppToastMgr.shortToast(PublishExchangeActivity.this, "请选择图片");
+            }
+        }else{
+            AppToastMgr.shortToast(PublishExchangeActivity.this, "请选择封面图片");
+        }
+    }
+
+    //单张图片上传图片成功监听器
+    Response.Listener<String> mResonseListenerString = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            Log.i("2", response.toString());
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Boolean success = jsonObject.getBoolean("success");
+                String errorMsg = jsonObject.getString("errorMsg");
+                if(success){
+                    coverId = jsonObject.getInt("data");
+                    Log.i("单张图片",String.valueOf(coverId));
+                    upLoadMutiImag();
+                }else{
+                    AppToastMgr.shortToast(PublishExchangeActivity.this, " 封面图片上传失败！原因：" + errorMsg);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    //单张上传图片失败监听器
+    Response.ErrorListener mErrorListener = new Response.ErrorListener() {
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            if (error != null) {
+                if (error.networkResponse != null)
+                    Log.i("3", " error "
+                            + new String(error.networkResponse.data));
+            }
+        }
+    };
+
+    private void upLoadMutiImag() {
+        List<File> listFile = new ArrayList<File>();
+        Map<String, String> params = new HashMap<String, String>();
+        for (int i = 0; i < double_imagePaths.size(); i++) {
+            File file = new File(double_imagePaths.get(i));
+            listFile.add(file);
+            params.put("file" + i, double_imagePaths.get(i));
+        }
+        MultipartRequest multipartRequest = new MultipartRequest(HttpRequest.TEXT_HUANHUAN_HOST + "Imgs", mErrorMutiListener, mResonseMutiListenerString, "files", listFile, params);
+        multipartRequest.setRetryPolicy(
+                new DefaultRetryPolicy(
+                        500000,//默认超时时间，应设置一个稍微大点儿的，例如本处的500000
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,//默认最大尝试次数
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                )
+        );
+        RequestQueue mSingleQueue = Volley.newRequestQueue(this, new MultiPartStack());
+        mSingleQueue.add(multipartRequest);
+    }
+
+    //单张图片上传图片成功监听器
+    Response.Listener<String> mResonseMutiListenerString = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            Log.i("2", response.toString());
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Boolean success = jsonObject.getBoolean("success");
+                String errorMsg = jsonObject.getString("errorMsg");
+                if(success){
+                    mutiImgId = jsonObject.getString("data");
+                    String cosTitle = et_publish_cosTitle.getText().toString();
+                    String cosAuthor = et_publish_cosAuthor.getText().toString();
+                    String cosRole = et_publish_cosRole.getText().toString();
+                    String cosContain = et_publish_cosContain.getText().toString();
+                    String cosFrom = et_publish_cosFrom.getText().toString();
+                    String cosPriceText = et_publish_cosPrice.getText().toString();
+                    String cosDetailDesc = et_publish_cosDetailDesc.getText().toString();
+                    String selectClassifyId = "";
+                    int position = listClassifyString.indexOf(tv_publish_cosClassify.getText().toString());
+                    selectClassifyId = listClassify.get(position).getClassifyId();
+                    PublishExchanges publishExchanges = new PublishExchanges();
+                    publishExchanges.setTitle(cosTitle);
+                    publishExchanges.setItemName(cosAuthor);
+                    publishExchanges.setItemCharacter(cosRole);
+                    publishExchanges.setConstitute(cosContain);
+                    publishExchanges.setSource(cosFrom);
+                    publishExchanges.setPrice(Double.parseDouble(cosPriceText));
+                    publishExchanges.setClassId(Integer.valueOf(selectClassifyId));
+                    publishExchanges.setDescribe(cosDetailDesc);
+                    publishExchanges.setCover(coverId);
+                    publishExchanges.setImgList(mutiImgId);
+                    publishExchanges.setUserId(userId);
+                    PublishAllMessage(publishExchanges);
+                }else{
+                    AppToastMgr.shortToast(PublishExchangeActivity.this, " 多张图片上传失败！原因：" + errorMsg);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    //单张上传图片失败监听器
+    Response.ErrorListener mErrorMutiListener = new Response.ErrorListener() {
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            if (error != null) {
+                if (error.networkResponse != null)
+                    Log.i("3", " error "
+                            + new String(error.networkResponse.data));
+            }
+        }
+    };
+
+    /**
+     * 上传发布兑换信息
+     * @param publishExchanges
+     */
+    private void PublishAllMessage(PublishExchanges publishExchanges) {
+        HttpRequest.publishExchanges(publishExchanges, new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                AppToastMgr.shortToast(PublishExchangeActivity.this,"请求失败！");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Boolean success = jsonObject.getBoolean("success");
+                    String errorMsg = jsonObject.getString("errorMsg");
+                    if(success) {
+                        AppToastMgr.shortToast(PublishExchangeActivity.this, " 发布成功");
+                    }else{
+                        AppToastMgr.shortToast(PublishExchangeActivity.this, " 发布失败！原因：" + errorMsg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

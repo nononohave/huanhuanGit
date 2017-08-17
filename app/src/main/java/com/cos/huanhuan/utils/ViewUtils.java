@@ -1,6 +1,7 @@
 package com.cos.huanhuan.utils;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
@@ -15,6 +16,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.*;
 import android.view.View.MeasureSpec;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -147,9 +149,13 @@ public class ViewUtils {
                 popupWindow = new PopupWindow(popupView,
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
                 break;
+            case 6:
+                popupWindow = new PopupWindow(popupView,
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+                break;
             default:
                 popupWindow = new PopupWindow(popupView,
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
                 break;
         }
         popupWindow.setFocusable(true);
@@ -160,6 +166,8 @@ public class ViewUtils {
         if(paramsType == 5){
             popupWindow.setClippingEnabled(false);
             popupWindow.showAtLocation(root, Gravity.NO_GRAVITY, 0, 0);
+        }else if(paramsType == 6){
+            popupWindow.showAtLocation(root, Gravity.CENTER, 0, 0);
         }else{
             popupWindow.showAsDropDown(root,-235,40);
             setBackgroundAlpha(0.8f,context);
@@ -173,6 +181,7 @@ public class ViewUtils {
         });
         return popupView;
     }
+
 
     /**
      * 关闭PopupWindow
@@ -406,5 +415,24 @@ public class ViewUtils {
         Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
 
         return bitmap;
+    }
+
+    /**
+     * 创建自定义ProgressDialog
+     *
+     * @param context
+     * @return
+     */
+    public static Dialog createLoadingDialog(Context context) {
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View v = inflater.inflate(R.layout.layout_loading_dialog, null); // 得到加载view
+        LinearLayout layout = (LinearLayout) v.findViewById(R.id.dialog_view); // 加载布局
+        Dialog loadingDialog = new Dialog(context, R.style.loading_dialog); // 创建自定义样式dialog
+        loadingDialog.setCancelable(false); // 不可以用"返回键"取消
+        loadingDialog.setContentView(layout, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        return loadingDialog;
     }
 }

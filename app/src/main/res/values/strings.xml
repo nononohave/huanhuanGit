@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">huanhuan</string>
+    <string name="app_name">幻幻</string>
 
     <string name="umeng_update_content">版本号：6.4.5\n1.更新了QQ精简版与完整版支持轻聊\n2.更新了新浪SDK，修复了授权在部分rom上不能唤起客户端的bug\n3.有道云笔记更新为官方SDK</string>
     <string name="umeng_home_title">U-Share产品Demo</string>

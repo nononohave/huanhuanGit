@@ -3,6 +3,7 @@ package com.cos.huanhuan.utils;
 import android.util.Log;
 
 import com.cos.huanhuan.model.ExchangeList;
+import com.cos.huanhuan.model.PublishExchanges;
 import com.cos.huanhuan.model.RegisterModel;
 import com.cos.huanhuan.model.UserLogin;
 import com.google.gson.Gson;
@@ -172,4 +173,19 @@ public class HttpRequest {
                 .build()
                 .execute(callback);
     }
+
+    /**
+     * 发布兑换接口
+     * @param publishExchanges
+     * @param stringCallback
+     */
+    public static void publishExchanges(PublishExchanges publishExchanges, StringCallback stringCallback){
+        String url = TEXT_HUANHUAN_HOST + "Exchanges";
+        OkHttpUtils.postString().url(url)
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .content(new Gson().toJson(publishExchanges))
+                .build()
+                .execute(stringCallback);
+    }
+
 }

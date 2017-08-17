@@ -139,7 +139,7 @@
         <activity android:name=".activitys.IndexActivity" />
         <activity android:name=".activitys.AllExchangeActivity"/>
         <activity android:name=".activitys.PublishExchangeActivity" android:launchMode="singleTask"
-            android:screenOrientation="portrait" ></activity>
+            android:screenOrientation="portrait"  android:windowSoftInputMode="adjustUnspecified|stateHidden" ></activity>
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

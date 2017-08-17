@@ -1,5 +1,6 @@
 package com.cos.huanhuan.activitys;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,7 @@ import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
 import com.cos.huanhuan.utils.HttpRequest;
+import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.TitleBar;
 import com.squareup.okhttp.Request;
 import com.umeng.socialize.UMAuthListener;
@@ -58,6 +60,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private CharSequence passTextChar="";
 
     private UMShareAPI mShareAPI;
+
+    private Dialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,10 +92,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         setRightButton(new TitleBar.TextAction(this.getResources().getString(R.string.register)) {
                     @Override
                     public void performAction(View view) {
-                        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, PublishExchangeActivity.class);
                         startActivity(intent);
                     }
          });
+
+        dialog = ViewUtils.createLoadingDialog(this);
+        dialog.show();
     }
 
     private void initView() {
@@ -243,7 +251,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                             AppACache appACache = AppACache.get(LoginActivity.this);
                                             appACache.put("userJsonData",obj);//将用户的数据json串存入到缓存中
                                             AppToastMgr.shortToast(LoginActivity.this, " 登录");
-                                            Intent intent = new Intent(LoginActivity.this, PublishExchangeActivity.class);
+                                            Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
                                             startActivity(intent);
                                             appACache.put("loginPhone",phone);
                                             appACache.put("loginPass",password);
