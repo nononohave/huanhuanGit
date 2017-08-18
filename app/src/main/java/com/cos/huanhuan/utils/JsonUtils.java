@@ -1,5 +1,6 @@
 package com.cos.huanhuan.utils;
 
+import com.cos.huanhuan.model.JsonBean;
 import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,6 +10,7 @@ import org.json.JSONTokener;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -311,5 +313,4 @@ public class JsonUtils {
         }
         return sb.toString();
     }
-
 }

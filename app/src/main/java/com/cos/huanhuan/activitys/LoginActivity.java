@@ -61,8 +61,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private UMShareAPI mShareAPI;
 
-    private Dialog dialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,15 +88,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             }
         });
         setRightButton(new TitleBar.TextAction(this.getResources().getString(R.string.register)) {
-                    @Override
-                    public void performAction(View view) {
-                        Intent intent = new Intent(LoginActivity.this, PublishExchangeActivity.class);
-                        startActivity(intent);
-                    }
+            @Override
+            public void performAction(View view) {
+                Intent intent = new Intent(LoginActivity.this, PublishCoopActivity.class);
+                startActivity(intent);
+            }
          });
-
-        dialog = ViewUtils.createLoadingDialog(this);
-        dialog.show();
     }
 
     private void initView() {

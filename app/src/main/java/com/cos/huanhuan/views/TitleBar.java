@@ -73,7 +73,6 @@ public class TitleBar extends ViewGroup implements View.OnClickListener {
         mDividerView = new View(context);
 
         LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-
         mLeftText.setTextSize(DEFAULT_ACTION_TEXT_SIZE);
         mLeftText.setSingleLine();
         mLeftText.setGravity(Gravity.CENTER_VERTICAL);

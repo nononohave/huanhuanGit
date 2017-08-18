@@ -5,7 +5,7 @@ package com.cos.huanhuan.model;
  */
 
 public class PublishExchanges {
-    private String UserId;//发布会员id
+    private int UserId;//发布会员id
     private String Title;//标题
     private String Describe;//内容
     private String ItemName;//物品名称
@@ -17,11 +17,11 @@ public class PublishExchanges {
     private int ClassId;//分类
     private String Source;//物品来源
 
-    public String getUserId() {
+    public int getUserId() {
         return UserId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         UserId = userId;
     }
 

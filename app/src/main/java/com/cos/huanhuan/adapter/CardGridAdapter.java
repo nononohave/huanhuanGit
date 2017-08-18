@@ -111,12 +111,12 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
                     }
                 });
             }
-            if(mOnItemLongClickListener != null){
+            if(mOnUserClickListener != null){
                 ((MyViewHolder) holder).card_user_adapter.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         int position = holder.getLayoutPosition();
-                        mOnItemLongClickListener.OnUserClick(holder.itemView,position);
+                        mOnUserClickListener.OnUserClick(holder.itemView,position);
                         //返回true 表示消耗了事件 事件不会继续传递
                     }
                 });
@@ -149,14 +149,14 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
         void OnUserClick(View view,int position);
     }
     private OnImageClick mOnItemClickListener;
-    private OnUserClick mOnItemLongClickListener;
+    private OnUserClick mOnUserClickListener;
 
     public void setOnImageClick(OnImageClick onClickListener){
         this.mOnItemClickListener = onClickListener;
     }
 
     public void setOnUserClick(OnUserClick onClickListener) {
-        this.mOnItemLongClickListener = onClickListener;
+        this.mOnUserClickListener = onClickListener;
     }
     class HeaderHolder extends RecyclerView.ViewHolder {
 

@@ -2,7 +2,9 @@ package com.cos.huanhuan.utils;
 
 import android.util.Log;
 
+import com.cos.huanhuan.model.CoopList;
 import com.cos.huanhuan.model.ExchangeList;
+import com.cos.huanhuan.model.PublishCoop;
 import com.cos.huanhuan.model.PublishExchanges;
 import com.cos.huanhuan.model.RegisterModel;
 import com.cos.huanhuan.model.UserLogin;
@@ -188,4 +190,25 @@ public class HttpRequest {
                 .execute(stringCallback);
     }
 
+    /**
+     * 发布合作接口
+     * @param publishCoop
+     * @param stringCallback
+     */
+    public static void publishExchanges(PublishCoop publishCoop, StringCallback stringCallback){
+        String url = TEXT_HUANHUAN_HOST + "Cooperations";
+        OkHttpUtils.postString().url(url)
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .content(new Gson().toJson(publishCoop))
+                .build()
+                .execute(stringCallback);
+    }
+
+    public static void getCooperateList(CoopList coopList, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Cooperations";
+        OkHttpUtils.get().url(url)
+                .addParams("pageIndex", String.valueOf(coopList.getPageIndex()))
+                .addParams("pageSize", String.valueOf(coopList.getPageSize()))
+                .build()
+                .execute(callback);}
 }

@@ -2,33 +2,30 @@ package com.cos.huanhuan.activitys;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,17 +35,21 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.bigkoo.pickerview.TimePickerView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.adapter.ImageGridAdapter;
 import com.cos.huanhuan.model.Classify;
+import com.cos.huanhuan.model.JsonBean;
 import com.cos.huanhuan.model.MultiPartStack;
 import com.cos.huanhuan.model.MultipartRequest;
+import com.cos.huanhuan.model.PublishCoop;
 import com.cos.huanhuan.model.PublishExchanges;
 import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
-import com.cos.huanhuan.utils.FileUtils;
+import com.cos.huanhuan.utils.DateUtil;
+import com.cos.huanhuan.utils.GetJsonDataUtil;
 import com.cos.huanhuan.utils.GetUriPath;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.SelectDialog;
@@ -60,6 +61,7 @@ import com.foamtrace.photopicker.ImageCaptureManager;
 import com.foamtrace.photopicker.PhotoPickerActivity;
 import com.foamtrace.photopicker.SelectModel;
 import com.foamtrace.photopicker.intent.PhotoPickerIntent;
+import com.google.gson.Gson;
 import com.squareup.okhttp.Request;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
@@ -78,16 +80,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PublishExchangeActivity extends BaseActivity implements View.OnClickListener,AdapterView.OnItemClickListener {
+public class PublishCoopActivity extends BaseActivity implements View.OnClickListener,AdapterView.OnItemClickListener{
+
+    private EditText et_coop_cosTitle,et_publishCoop_cosAddressDetail,et_publish_cosRequest,et_publishCoop_cosPersonNums,et_publishCoop_cosDetailDesc;
+    private LinearLayout ll_publishCoop_Address,ll_publishCoop_time;
+    private TextView tv_publishCoop_cosCoopAddress,tv_publishCoop_cosTime;
+    private ImageView coop_select_img_page;
+    private MyGridView gridView_coop;
 
     private AppManager appManager;
-    private OptionsPickerView pvNoLinkOptions;
-
-    private EditText et_publish_cosTitle, et_publish_cosAuthor, et_publish_cosRole, et_publish_cosContain, et_publish_cosFrom, et_publish_cosPrice, et_publish_cosDetailDesc;
-    private LinearLayout ll_publishExchange_classify;
-    private MyGridView gridView_publish;
-    private ImageView select_img_page;
-    private TextView tv_publish_cosClassify;
 
     //单张图片返回码
     private static final int REQUEST_CAMERA_CODE = 11;
@@ -105,8 +106,6 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
     private static final int CROP_CAMERA_CODE = 441;
     private static final int CROP_PHOTO_CODE = 442;
     private static final int DOUBLE_CROP_CAMERA_CODE = 443;
-    private static final int DOUBLE_CROP_PHOTO_CODE = 444;
-    private static final int DOUBLE_CROP_PHOTO_CODE_END = 445;
 
     private ArrayList<String> imagePaths = null;
     private ArrayList<String> double_imagePaths = null;
@@ -120,14 +119,6 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
     private List<Classify> listClassify;
     private List<String> listClassifyString;
 
-    private PopViewListAdapter adapter;
-
-    //用于上传的封面图片地址
-    private ArrayList<String> imagePathsSelectdPage = null;
-
-    //用于上传的图片列表地址
-    private ArrayList<String> imagePathsSelectdList = null;
-
     private int coverId = -1;
     private String mutiImgId = "";
 
@@ -135,6 +126,14 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
 
     private Dialog dialog;
 
+    private String provice,city,district;
+    private TimePickerView timePickerView;
+    private OptionsPickerView addressOptionsPick;
+    private Date selectDate = new Date();
+    private ArrayList<JsonBean> options1Items = new ArrayList<>();
+    private ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
+    private ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
+    private int selectOptions1 = 0, selectOptions2 = 0, selectOptions3 = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,8 +146,8 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
         setDividerColor(R.color.dividLineColor);
         setRightTextColor(R.color.titleBarTextColor);
         setTitleTextColor(R.color.titleBarTextColor);
-        setTitle(this.getResources().getString(R.string.publishExchange));
-        setBaseContentView(R.layout.activity_publish_exchange);
+        setTitle(this.getResources().getString(R.string.publishCoop));
+        setBaseContentView(R.layout.activity_publish_coop);
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
         SoftHideKeyBoardUtil.assistActivity(this);
@@ -168,72 +167,31 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
         });
     }
 
-
     private void initView() {
-        et_publish_cosTitle = (EditText) findViewById(R.id.et_publish_cosTitle);
-        et_publish_cosAuthor = (EditText) findViewById(R.id.et_publish_cosAuthor);
-        et_publish_cosRole = (EditText) findViewById(R.id.et_publish_cosRole);
-        et_publish_cosContain = (EditText) findViewById(R.id.et_publish_cosContain);
-        et_publish_cosFrom = (EditText) findViewById(R.id.et_publish_cosFrom);
-        et_publish_cosPrice = (EditText) findViewById(R.id.et_publish_cosPrice);
-        et_publish_cosDetailDesc = (EditText) findViewById(R.id.et_publish_cosDetailDesc);
+        et_coop_cosTitle = (EditText) findViewById(R.id.et_coop_cosTitle);
+        et_publishCoop_cosAddressDetail = (EditText) findViewById(R.id.et_publishCoop_cosAddressDetail);
+        et_publish_cosRequest = (EditText) findViewById(R.id.et_publish_cosRequest);
+        et_publishCoop_cosPersonNums= (EditText) findViewById(R.id.et_publishCoop_cosPersonNums);
+        et_publishCoop_cosDetailDesc = (EditText) findViewById(R.id.et_publishCoop_cosDetailDesc);
+        ll_publishCoop_Address = (LinearLayout) findViewById(R.id.ll_publishCoop_Address);
+        ll_publishCoop_time = (LinearLayout) findViewById(R.id.ll_publishCoop_time);
+        tv_publishCoop_cosCoopAddress = (TextView) findViewById(R.id.tv_publishCoop_cosCoop);
+        tv_publishCoop_cosTime = (TextView) findViewById(R.id.tv_publishCoop_cosTime);
+        coop_select_img_page = (ImageView) findViewById(R.id.coop_select_img_page);
+        gridView_coop = (MyGridView) findViewById(R.id.gridView_coop);
 
-        ll_publishExchange_classify = (LinearLayout) findViewById(R.id.ll_publishExchange_classify);
+        ll_publishCoop_Address.setOnClickListener(this);
+        ll_publishCoop_time.setOnClickListener(this);
+        coop_select_img_page.setOnClickListener(this);
+        gridView_coop.setOnItemClickListener(this);
 
-        gridView_publish = (MyGridView) findViewById(R.id.gridView_publish);
-
-        select_img_page = (ImageView) findViewById(R.id.select_img_page);
-
-        tv_publish_cosClassify = (TextView) findViewById(R.id.tv_publish_cosClassify);
-
-        select_img_page.setOnClickListener(this);
-        gridView_publish.setOnItemClickListener(this);
-        ll_publishExchange_classify.setOnClickListener(this);
-
-        listClassify = new ArrayList<Classify>();
-        listClassifyString = new ArrayList<>();
-
-        HttpRequest.getExchangeClass(new StringCallback() {
-            @Override
-            public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(PublishExchangeActivity.this,"请求分类接口失败！");
-            }
-
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    Boolean success = jsonObject.getBoolean("success");
-                    String errorMsg = jsonObject.getString("errorMsg");
-                    if(success) {
-                        JSONArray arr = jsonObject.getJSONArray("list");
-                        for (int i = 0; i < arr.length(); i++) {
-                            Classify classify = new Classify();
-                            String id = arr.getJSONObject(i).getString("id");
-                            String className = arr.getJSONObject(i).getString("className");
-                            String classUsName = arr.getJSONObject(i).getString("classUsName");
-                            classify.setClassifyId(id);
-                            classify.setClassName(className);
-                            classify.setClassUsName(classUsName);
-                            listClassify.add(classify);
-                            listClassifyString.add(className);
-                        }
-                    }else{
-                        AppToastMgr.shortToast(PublishExchangeActivity.this, " 请求分类接口失败！原因：" + errorMsg);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        AppACache appACache = AppACache.get(PublishExchangeActivity.this);
+        AppACache appACache = AppACache.get(PublishCoopActivity.this);
         JSONObject userObj = appACache.getAsJSONObject("userJsonData");
         if(userObj != null){
             try {
                 userId = userObj.getString("id");
                 if(AppStringUtils.isEmpty(userId)){
-                    AppToastMgr.shortToast(PublishExchangeActivity.this, "用户未登录");
+                    AppToastMgr.shortToast(PublishCoopActivity.this, "用户未登录");
                     return;
                 }
             } catch (JSONException e) {
@@ -243,12 +201,69 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
 
         ArrayList<String> listItem = new ArrayList<String>();
         loadAdpater(listItem);
+        initJsonData();
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.select_img_page:
+        InputMethodManager imm =  (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm != null) {
+            imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(),
+                    0);
+        }
+        switch (view.getId()){
+            case R.id.ll_publishCoop_Address:
+                if(options1Items != null && options1Items.size() > 0
+                        && options2Items != null && options2Items.size() > 0
+                        && options3Items != null && options3Items.size() > 0) {
+                    addressOptionsPick = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
+                        @Override
+                        public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                            //返回的分别是三个级别的选中位置
+                            selectOptions1 = options1;
+                            selectOptions2 = options2;
+                            selectOptions3 = options3;
+                            String tx = options1Items.get(options1).getPickerViewText()
+                                    + options2Items.get(options1).get(options2)
+                                    + options3Items.get(options1).get(options2).get(options3);
+                            tv_publishCoop_cosCoopAddress.setText(tx);
+                            provice = options1Items.get(options1).getPickerViewText();
+                            city = options2Items.get(options1).get(options2);
+                            district = options1Items.get(options1).getPickerViewText();;
+                        }
+                    }).setContentTextSize(20)
+                            .setSelectOptions(selectOptions1, selectOptions2, selectOptions3)
+                            .setTitleText("选择地址")//标题文字
+                            .setCancelColor(getResources().getColor(R.color.titleBarTextColor))
+                            .setSubmitColor(getResources().getColor(R.color.titleBarTextColor))
+                            .build();
+                    addressOptionsPick.setPicker(options1Items, options2Items, options3Items);//添加数据源
+                    addressOptionsPick.show();
+                }else{
+                    AppToastMgr.shortToast(PublishCoopActivity.this,"未获取到地址信息");
+                }
+                break;
+            case R.id.ll_publishCoop_time:
+                timePickerView = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
+                    @Override
+                    public void onTimeSelect(Date date,View v) {//选中事件回调
+                        selectDate = date;
+                        tv_publishCoop_cosTime.setText(DateUtil.formatDate(date,DateUtil.formatStr7));
+                    }
+                }).setType(new boolean[]{true, true, true, true, true, false})
+                .setCancelText("取消")//取消按钮文字
+                .setSubmitText("确定")//确认按钮文字
+                .setTitleText("选择时间")//标题文字
+                .setOutSideCancelable(true)
+                .setTitleColor(getResources().getColor(R.color.black))//标题文字颜色
+                .setSubmitColor(getResources().getColor(R.color.titleBarTextColor))//确定按钮文字颜色
+                .setCancelColor(getResources().getColor(R.color.titleBarTextColor))//取消按钮文字颜色
+                .setBgColor(getResources().getColor(R.color.white))
+                .setDate(DateUtil.getCalendar(selectDate))
+                .build();
+                timePickerView.show();
+                break;
+            case R.id.coop_select_img_page:
                 List<String> names = new ArrayList<>();
                 names.add("拍照");
                 names.add("相册");
@@ -259,8 +274,8 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                             case 0: // 直接调起相机
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     //判断该应用是否有写SD卡权限，如果没有再去申请
-                                    if (ContextCompat.checkSelfPermission(PublishExchangeActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                                        ActivityCompat.requestPermissions(PublishExchangeActivity.this, new String[]{Manifest.permission.CAMERA}, RETURN_CAMERA_CODE);
+                                    if (ContextCompat.checkSelfPermission(PublishCoopActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(PublishCoopActivity.this, new String[]{Manifest.permission.CAMERA}, RETURN_CAMERA_CODE);
                                     } else {
                                         takePhotos(1);
                                     }
@@ -271,8 +286,8 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                             case 1:
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     //判断该应用是否有写SD卡权限，如果没有再去申请
-                                    if (ContextCompat.checkSelfPermission(PublishExchangeActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                        ActivityCompat.requestPermissions(PublishExchangeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RETURN_PHOTOS_CODE);
+                                    if (ContextCompat.checkSelfPermission(PublishCoopActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(PublishCoopActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RETURN_PHOTOS_CODE);
                                     } else {
                                         choosePhotos(1);
                                     }
@@ -286,38 +301,8 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     }
                 }, names);
                 break;
-            case R.id.ll_publishExchange_classify:
-//                final View popupView = LayoutInflater.from(this).inflate(R.layout.popwindow_noimg, null);
-//                ListView listView = (ListView)popupView.findViewById(R.id.popListView);
-//                listClassify = new ArrayList<String>();
-//                listClassify.add("11111");
-//                adapter = new PopViewListAdapter(PublishExchangeActivity.this,listClassify);
-//                listView.setAdapter(adapter);
-//                ViewUtils.showPopupWindow(PublishExchangeActivity.this,ll_publishExchange_classify,6,popupView);
-                int position = 0;
-                String selectItem = tv_publish_cosClassify.getText().toString();
-                if(AppStringUtils.isNotEmpty(selectItem) && listClassifyString != null && listClassifyString.size() > 0){
-                    position = listClassifyString.indexOf(selectItem);
-                }
-                //条件选择器
-                OptionsPickerView pvOptions = new  OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
-                    @Override
-                    public void onOptionsSelect(int options1, int option2, int options3 ,View v) {
-                        //返回的分别是三个级别的选中位置
-                        String className = listClassifyString.get(options1);
-                        tv_publish_cosClassify.setText(className);
-                    }
-                }).setContentTextSize(20).isDialog(true)
-                .setSelectOptions(position)
-                .setCancelColor(getResources().getColor(R.color.titleBarTextColor))
-                .setSubmitColor(getResources().getColor(R.color.titleBarTextColor))
-                .build();
-                pvOptions.setPicker(listClassifyString, null, null);
-                pvOptions.show();
-                break;
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == RETURN_CAMERA_CODE) {
@@ -357,22 +342,22 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
 
     private void choosePhotos(int type){
         if (type == 1) {
-            PhotoPickerIntent intent = new PhotoPickerIntent(PublishExchangeActivity.this);
+            PhotoPickerIntent intent = new PhotoPickerIntent(PublishCoopActivity.this);
             intent.setSelectModel(SelectModel.SINGLE);
             intent.setShowCarema(false); // 是否显示拍照， 默认false
             intent.setSelectedPaths(imagePaths); // 已选中的照片地址， 用于回显选中状态
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
             //intent.setImageConfig(config);
-            PublishExchangeActivity.this.startActivityForResult(intent, REQUEST_CAMERA_CODE);
+            PublishCoopActivity.this.startActivityForResult(intent, REQUEST_CAMERA_CODE);
         } else {
-            PhotoPickerIntent intent = new PhotoPickerIntent(PublishExchangeActivity.this);
+            PhotoPickerIntent intent = new PhotoPickerIntent(PublishCoopActivity.this);
             intent.setSelectModel(SelectModel.MULTI);
             intent.setShowCarema(false); // 是否显示拍照， 默认false
             intent.setMaxTotal(9); // 最多选择照片数量，默认为9
             intent.setSelectedPaths(double_imagePaths); // 已选中的照片地址， 用于回显选中状态
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
             //intent.setImageConfig(config);
-            PublishExchangeActivity.this.startActivityForResult(intent, DOUBLE_REQUEST_CAMERA_CODE);
+            PublishCoopActivity.this.startActivityForResult(intent, DOUBLE_REQUEST_CAMERA_CODE);
         }
     }
 
@@ -380,7 +365,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
         if (type == 1) {
             try {
                 if (captureManager == null) {
-                    captureManager = new ImageCaptureManager(PublishExchangeActivity.this);
+                    captureManager = new ImageCaptureManager(PublishCoopActivity.this);
                 }
                 Intent intentCapture = captureManager.dispatchTakePictureIntent();
                 imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", createImageFile());
@@ -393,13 +378,13 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                 intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(intentCapture, ImageCaptureManager.REQUEST_TAKE_PHOTO);
             } catch (IOException e) {
-                Toast.makeText(PublishExchangeActivity.this, com.foamtrace.photopicker.R.string.msg_no_camera, Toast.LENGTH_SHORT).show();
+                Toast.makeText(PublishCoopActivity.this, com.foamtrace.photopicker.R.string.msg_no_camera, Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         } else {
             try {
                 if (captureManager == null) {
-                    captureManager = new ImageCaptureManager(PublishExchangeActivity.this);
+                    captureManager = new ImageCaptureManager(PublishCoopActivity.this);
                 }
                 Intent intentCapture = captureManager.dispatchTakePictureIntent();
                 imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", createImageFile());
@@ -412,7 +397,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                 intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(intentCapture, DOUBLE_REQUEST_TAKE_PHOTO);
             } catch (IOException e) {
-                Toast.makeText(PublishExchangeActivity.this, com.foamtrace.photopicker.R.string.msg_no_camera, Toast.LENGTH_SHORT).show();
+                Toast.makeText(PublishCoopActivity.this, com.foamtrace.photopicker.R.string.msg_no_camera, Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
@@ -450,7 +435,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                 case REQUEST_PREVIEW_CODE:
                     pathsReturn = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT);
                     if (pathsReturn != null && pathsReturn.size() > 0) {
-                        Picasso.with(PublishExchangeActivity.this).load(new File(pathsReturn.get(0))).placeholder(R.mipmap.default_error).into(select_img_page);
+                        Picasso.with(PublishCoopActivity.this).load(new File(pathsReturn.get(0))).placeholder(R.mipmap.default_error).into(coop_select_img_page);
                     }
                     break;
                 // 调用相机拍照
@@ -481,13 +466,13 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     break;
                 case CROP_PHOTO_CODE:
                     imagePaths = new ArrayList<>();
-                    imagePaths.add(GetUriPath.getPath(PublishExchangeActivity.this,UCrop.getOutput(data)));
-                    Picasso.with(PublishExchangeActivity.this).load(UCrop.getOutput(data)).placeholder(R.mipmap.default_error).into(select_img_page);
+                    imagePaths.add(GetUriPath.getPath(PublishCoopActivity.this, UCrop.getOutput(data)));
+                    Picasso.with(PublishCoopActivity.this).load(UCrop.getOutput(data)).placeholder(R.mipmap.default_error).into(coop_select_img_page);
                     break;
                 case CROP_CAMERA_CODE:
                     imagePaths = new ArrayList<>();
-                    imagePaths.add(GetUriPath.getPath(PublishExchangeActivity.this,UCrop.getOutput(data)));
-                    Picasso.with(PublishExchangeActivity.this).load(UCrop.getOutput(data)).placeholder(R.mipmap.default_error).into(select_img_page);
+                    imagePaths.add(GetUriPath.getPath(PublishCoopActivity.this,UCrop.getOutput(data)));
+                    Picasso.with(PublishCoopActivity.this).load(UCrop.getOutput(data)).placeholder(R.mipmap.default_error).into(coop_select_img_page);
                     break;
                 case DOUBLE_CROP_CAMERA_CODE:
                     if (captureManager.getCurrentPhotoPath() != null) {
@@ -516,8 +501,8 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
         }
 
         if (imageGridAdapter == null) {
-            imageGridAdapter = new ImageGridAdapter(PublishExchangeActivity.this, double_imagePaths);
-            gridView_publish.setAdapter(imageGridAdapter);
+            imageGridAdapter = new ImageGridAdapter(PublishCoopActivity.this, double_imagePaths);
+            gridView_coop.setAdapter(imageGridAdapter);
         } else {
             imageGridAdapter.notifyDataSetChanged();
         }
@@ -544,8 +529,8 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                         case 0: // 直接调起相机
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 //判断该应用是否有写SD卡权限，如果没有再去申请
-                                if (ContextCompat.checkSelfPermission(PublishExchangeActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(PublishExchangeActivity.this, new String[]{Manifest.permission.CAMERA}, DOUBLE_RETURN_CAMERA_CODE);
+                                if (ContextCompat.checkSelfPermission(PublishCoopActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(PublishCoopActivity.this, new String[]{Manifest.permission.CAMERA}, DOUBLE_RETURN_CAMERA_CODE);
                                 } else {
                                     takePhotos(2);
                                 }
@@ -556,8 +541,8 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                         case 1:
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 //判断该应用是否有写SD卡权限，如果没有再去申请
-                                if (ContextCompat.checkSelfPermission(PublishExchangeActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(PublishExchangeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOUBLE_RETURN_PHOTOS_CODE);
+                                if (ContextCompat.checkSelfPermission(PublishCoopActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(PublishCoopActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOUBLE_RETURN_PHOTOS_CODE);
                                 } else {
                                     choosePhotos(2);
                                 }
@@ -574,7 +559,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
     }
 
     private void startCrop(Uri sourceUri, int requestCode) {
-        //Uri sourceUri = Uri.parse(GetUriPath.getPath(PublishExchangeActivity.this, uri));
+        //Uri sourceUri = Uri.parse(GetUriPath.getPath(PublishCoopActivity.this, uri));
         //裁剪后保存到文件中
         try {
             Uri destinationUri = Uri.fromFile(createImageFile());
@@ -584,101 +569,127 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
             options.setFreeStyleCropEnabled(false);
             options.setHideBottomControls(true);
             UCrop.of(sourceUri, destinationUri)
-                 .withOptions(options)
-                 .withAspectRatio(16, 16)
-                 .withMaxResultSize(300, 300)
-                 .start(this,requestCode);
+                    .withOptions(options)
+                    .withAspectRatio(16, 16)
+                    .withMaxResultSize(300, 300)
+                    .start(this,requestCode);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    class PopViewListAdapter extends BaseAdapter {
+    private void initJsonData() {//解析数据
 
-        private Context context;
-        private List<String> list;
+        /**
+         * 注意：assets 目录下的Json文件仅供参考，实际使用可自行替换文件
+         * 关键逻辑在于循环体
+         *
+         * */
+        String JsonData = new GetJsonDataUtil().getJson(this,"province.json");//获取assets目录下的json文件数据
 
-        public PopViewListAdapter(Context context,List<String> list) {
-            this.context = context;
-            this.list = list;
-        }
+        ArrayList<JsonBean> jsonBean = parseData(JsonData);//用Gson 转成实体
 
-        @Override
-        public int getCount() {
-            return list.size();
-        }
+        /**
+         * 添加省份数据
+         *
+         * 注意：如果是添加的JavaBean实体，则实体类需要实现 IPickerViewData 接口，
+         * PickerView会通过getPickerViewText方法获取字符串显示出来。
+         */
+        options1Items = jsonBean;
 
-        @Override
-        public Object getItem(int i) {
-            return list.get(i);
-        }
+        for (int i=0;i<jsonBean.size();i++){//遍历省份
+            ArrayList<String> CityList = new ArrayList<>();//该省的城市列表（第二级）
+            ArrayList<ArrayList<String>> Province_AreaList = new ArrayList<>();//该省的所有地区列表（第三极）
 
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
+            for (int c=0; c<jsonBean.get(i).getCityList().size(); c++){//遍历该省份的所有城市
+                String CityName = jsonBean.get(i).getCityList().get(c).getName();
+                CityList.add(CityName);//添加城市
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup viewGroup) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.pop_list_item, null);
+                ArrayList<String> City_AreaList = new ArrayList<>();//该城市的所有地区列表
+
+                //如果无地区数据，建议添加空字符串，防止数据为null 导致三个选项长度不匹配造成崩溃
+                if (jsonBean.get(i).getCityList().get(c).getArea() == null
+                        ||jsonBean.get(i).getCityList().get(c).getArea().size()==0) {
+                    City_AreaList.add("");
+                }else {
+
+                    for (int d=0; d < jsonBean.get(i).getCityList().get(c).getArea().size(); d++) {//该城市对应地区所有数据
+                        String AreaName = jsonBean.get(i).getCityList().get(c).getArea().get(d);
+
+                        City_AreaList.add(AreaName);//添加该城市所有地区数据
+                    }
+                }
+                Province_AreaList.add(City_AreaList);//添加该省所有地区数据
             }
-            TextView tv = (TextView)convertView.findViewById(R.id.popWindowText);
-            tv.setText(list.get(position));
-            return convertView;
+
+            /**
+             * 添加城市数据
+             */
+            options2Items.add(CityList);
+
+            /**
+             * 添加地区数据
+             */
+            options3Items.add(Province_AreaList);
         }
     }
 
+    public ArrayList<JsonBean> parseData(String result) {//Gson 解析
+        ArrayList<JsonBean> detail = new ArrayList<>();
+        try {
+            JSONArray data = new JSONArray(result);
+            Gson gson = new Gson();
+            for (int i = 0; i < data.length(); i++) {
+                JsonBean entity = gson.fromJson(data.optJSONObject(i).toString(), JsonBean.class);
+                detail.add(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return detail;
+    }
+
     private void upLoadCoverImag() {
-        String cosTitle = et_publish_cosTitle.getText().toString();
-        String cosAuthor = et_publish_cosAuthor.getText().toString();
-        String cosRole = et_publish_cosRole.getText().toString();
-        String cosContain = et_publish_cosContain.getText().toString();
-        String cosFrom = et_publish_cosFrom.getText().toString();
-        String cosPriceText = et_publish_cosPrice.getText().toString();
-        Double cosPrice = 0.0;
-        String cosDetailDesc = et_publish_cosDetailDesc.getText().toString();
-        String selectCosClassText = tv_publish_cosClassify.getText().toString();
-        String selectClassifyId = "";
-        if(AppStringUtils.isNotEmpty(selectCosClassText)){
-            int position = listClassifyString.indexOf(tv_publish_cosClassify.getText().toString());
-            selectClassifyId = listClassify.get(position).getClassifyId();
-        }
+
+        String cosTitle = et_coop_cosTitle.getText().toString();
+        String cosAddress = tv_publishCoop_cosCoopAddress.getText().toString();
+        String cosAddressDetail = et_publishCoop_cosAddressDetail.getText().toString();
+        String cosRequest = et_publish_cosRequest.getText().toString();
+        String cosTime = tv_publishCoop_cosTime.getText().toString();
+        String cosPersonNums = et_publishCoop_cosPersonNums.getText().toString();
+        String cosDetailDesc = et_publishCoop_cosDetailDesc.getText().toString();
+
         if(AppStringUtils.isEmpty(cosTitle)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入标题");
+            AppToastMgr.shortToast(PublishCoopActivity.this, "请输入合作主题名称");
             return;
         }
-        if(AppStringUtils.isEmpty(cosAuthor)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品原作");
+        if(AppStringUtils.isEmpty(cosAddress)){
+            AppToastMgr.shortToast(PublishCoopActivity.this, "请选择地址");
             return;
         }
-        if(AppStringUtils.isEmpty(cosRole)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品角色");
+        if(AppStringUtils.isEmpty(cosAddressDetail)){
+            AppToastMgr.shortToast(PublishCoopActivity.this, "请输入详细地址");
             return;
         }
-        if(AppStringUtils.isEmpty(cosContain)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品包含");
+        if(AppStringUtils.isEmpty(cosRequest)){
+            AppToastMgr.shortToast(PublishCoopActivity.this, "请输入需求");
             return;
         }
-        if(AppStringUtils.isEmpty(cosFrom)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品来源");
+        if(AppStringUtils.isEmpty(cosTime)){
+            AppToastMgr.shortToast(PublishCoopActivity.this, "请选择活动时间");
             return;
         }
-        if(AppStringUtils.isEmpty(cosPriceText)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品价格");
-            return;
-        }
-        if(AppStringUtils.isEmpty(selectCosClassText)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请选择物品类别");
+        if(AppStringUtils.isEmpty(cosPersonNums)){
+            AppToastMgr.shortToast(PublishCoopActivity.this, "请设置人数");
             return;
         }
         if(AppStringUtils.isEmpty(cosDetailDesc)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请填写描述信息");
+            AppToastMgr.shortToast(PublishCoopActivity.this, "请填写描述信息");
             return;
         }
-        cosPrice = Double.parseDouble(cosPriceText);
-        if(cosPrice <= 0){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "物品价格不能小于0");
+        int cosPersons = Integer.valueOf(cosPersonNums);
+        if(cosPersons <= 0){
+            AppToastMgr.shortToast(PublishCoopActivity.this, "人数不能小于0");
             return;
         }
         if(imagePaths != null && imagePaths.size() > 0) {
@@ -704,13 +715,13 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     RequestQueue mSingleQueue = Volley.newRequestQueue(this, new MultiPartStack());
                     mSingleQueue.add(multipartRequest);
                 }else{
-                    AppToastMgr.shortToast(PublishExchangeActivity.this, "请至少选择三张图片");
+                    AppToastMgr.shortToast(PublishCoopActivity.this, "请至少选择三张图片");
                 }
             }else{
-                AppToastMgr.shortToast(PublishExchangeActivity.this, "请选择图片");
+                AppToastMgr.shortToast(PublishCoopActivity.this, "请选择图片");
             }
         }else{
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请选择封面图片");
+            AppToastMgr.shortToast(PublishCoopActivity.this, "请选择封面图片");
         }
     }
 
@@ -729,7 +740,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     Log.i("单张图片",String.valueOf(coverId));
                     upLoadMutiImag();
                 }else{
-                    AppToastMgr.shortToast(PublishExchangeActivity.this, " 封面图片上传失败！原因：" + errorMsg);
+                    AppToastMgr.shortToast(PublishCoopActivity.this, " 封面图片上传失败！原因：" + errorMsg);
                     dialog.dismiss();
                 }
             } catch (JSONException e) {
@@ -743,7 +754,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            AppToastMgr.shortToast(PublishExchangeActivity.this, " 封面图片上传接口调用失败！");
+            AppToastMgr.shortToast(PublishCoopActivity.this, " 封面图片上传接口调用失败！");
             dialog.dismiss();
             if (error != null) {
                 if (error.networkResponse != null)
@@ -785,32 +796,29 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                 String errorMsg = jsonObject.getString("errorMsg");
                 if(success){
                     mutiImgId = jsonObject.getString("data");
-                    String cosTitle = et_publish_cosTitle.getText().toString();
-                    String cosAuthor = et_publish_cosAuthor.getText().toString();
-                    String cosRole = et_publish_cosRole.getText().toString();
-                    String cosContain = et_publish_cosContain.getText().toString();
-                    String cosFrom = et_publish_cosFrom.getText().toString();
-                    String cosPriceText = et_publish_cosPrice.getText().toString();
-                    String cosDetailDesc = et_publish_cosDetailDesc.getText().toString();
-                    String selectClassifyId = "";
-                    int position = listClassifyString.indexOf(tv_publish_cosClassify.getText().toString());
-                    selectClassifyId = listClassify.get(position).getClassifyId();
-                    PublishExchanges publishExchanges = new PublishExchanges();
-                    publishExchanges.setTitle(cosTitle);
-                    publishExchanges.setItemName(cosAuthor);
-                    publishExchanges.setItemCharacter(cosRole);
-                    publishExchanges.setConstitute(cosContain);
-                    publishExchanges.setSource(cosFrom);
-                    publishExchanges.setPrice(Double.parseDouble(cosPriceText));
-                    publishExchanges.setClassId(Integer.valueOf(selectClassifyId));
-                    publishExchanges.setDescribe(cosDetailDesc);
-                    publishExchanges.setCover(coverId);
-                    publishExchanges.setImgList(mutiImgId);
-                    publishExchanges.setUserId(Integer.valueOf(userId));
-                    PublishAllMessage(publishExchanges);
+                    String cosTitle = et_coop_cosTitle.getText().toString();
+                    String cosAddressDetail = et_publishCoop_cosAddressDetail.getText().toString();
+                    String cosRequest = et_publish_cosRequest.getText().toString();
+                    String cosPersonNums = et_publishCoop_cosPersonNums.getText().toString();
+                    String cosDetailDesc = et_publishCoop_cosDetailDesc.getText().toString();
+
+                    PublishCoop publishCoop = new PublishCoop();
+                    publishCoop.setTitle(cosTitle);
+                    publishCoop.setProv(provice);
+                    publishCoop.setCity(city);
+                    publishCoop.setDist(district);
+                    publishCoop.setAddress(cosAddressDetail);
+                    publishCoop.setWill(cosRequest);
+                    publishCoop.setEnrollEnd(selectDate);
+                    publishCoop.setLimitPerson(Integer.valueOf(cosPersonNums));
+                    publishCoop.setDescribe(cosDetailDesc);
+                    publishCoop.setCover(coverId);
+                    publishCoop.setImgList(mutiImgId);
+                    publishCoop.setUserId(Integer.valueOf(userId));
+                    PublishAllMessage(publishCoop);
                 }else{
                     dialog.dismiss();
-                    AppToastMgr.shortToast(PublishExchangeActivity.this, " 多张图片上传失败！原因：" + errorMsg);
+                    AppToastMgr.shortToast(PublishCoopActivity.this, " 多张图片上传失败！原因：" + errorMsg);
                 }
             } catch (JSONException e) {
                 dialog.dismiss();
@@ -824,7 +832,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            AppToastMgr.shortToast(PublishExchangeActivity.this, " 多张图片上传接口调用失败！");
+            AppToastMgr.shortToast(PublishCoopActivity.this, " 多张图片上传接口调用失败！");
             dialog.dismiss();
             if (error != null) {
                 if (error.networkResponse != null)
@@ -835,15 +843,15 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
     };
 
     /**
-     * 上传发布兑换信息
-     * @param publishExchanges
+     * 上传发布合作信息
+     * @param publishCoop
      */
-    private void PublishAllMessage(PublishExchanges publishExchanges) {
-        HttpRequest.publishExchanges(publishExchanges, new StringCallback() {
+    private void PublishAllMessage(PublishCoop publishCoop) {
+        HttpRequest.publishExchanges(publishCoop, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
                 dialog.dismiss();
-                AppToastMgr.shortToast(PublishExchangeActivity.this,"请求失败！");
+                AppToastMgr.shortToast(PublishCoopActivity.this,"请求失败！");
             }
 
             @Override
@@ -854,10 +862,10 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     String errorMsg = jsonObject.getString("errorMsg");
                     if(success) {
                         dialog.dismiss();
-                        AppToastMgr.shortToast(PublishExchangeActivity.this, " 发布成功");
+                        AppToastMgr.shortToast(PublishCoopActivity.this, " 发布成功");
                     }else{
                         dialog.dismiss();
-                        AppToastMgr.shortToast(PublishExchangeActivity.this, " 发布失败！原因：" + errorMsg);
+                        AppToastMgr.shortToast(PublishCoopActivity.this, " 发布失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     dialog.dismiss();

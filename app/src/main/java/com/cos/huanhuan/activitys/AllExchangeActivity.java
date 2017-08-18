@@ -368,8 +368,9 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
                 startActivity(intent);
                 break;
             case R.id.ll_popWindow_publishCoo:
-                AppToastMgr.shortToast(AllExchangeActivity.this,"发布合作");
                 ViewUtils.dismissPopup();
+                Intent intentCoop = new Intent(AllExchangeActivity.this,PublishCoopActivity.class);
+                startActivity(intentCoop);
                 break;
         }
     }

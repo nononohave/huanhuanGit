@@ -13,6 +13,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.fragments.CooperateFragment;
 import com.cos.huanhuan.fragments.IndexFragment;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.views.BottomBarItem;
@@ -60,11 +61,11 @@ public class IndexActivity extends FragmentActivity{
         homeFragment.setArguments(bundle1);
         mFragmentList.add(homeFragment);
 
-        TabFragment videoFragment = new TabFragment();
+        CooperateFragment cooperateFragment = new CooperateFragment();
         Bundle bundle2 = new Bundle();
         bundle2.putString(TabFragment.CONTENT,"合作");
-        videoFragment.setArguments(bundle2);
-        mFragmentList.add(videoFragment);
+        cooperateFragment.setArguments(bundle2);
+        mFragmentList.add(cooperateFragment);
 
         TabFragment microFragment = new TabFragment();
         Bundle bundle3 = new Bundle();

@@ -103,7 +103,6 @@ public class IndexFragment extends Fragment{
 
         titleBar = (TitleSearchBar) getActivity().findViewById(R.id.title_search_bar);
         contentView=(ViewGroup) getActivity().findViewById(R.id.base_search_contentview);
-
         recyclerview = (RecyclerView) getActivity().findViewById(R.id.index_grid_recycler);
         swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.grid_swipe_refresh);
 
@@ -123,15 +122,7 @@ public class IndexFragment extends Fragment{
         titleBar.setDividerColor(getResources().getColor(R.color.dividLineColor));
 
         tabLayout = titleBar.getTabLayout();
-
-
-
         tabLayout.addTab(tabLayout.newTab().setText("推荐"));
-//        tabLayout.addTab(tabLayout.newTab().setText("古风"));
-//        tabLayout.addTab(tabLayout.newTab().setText("游戏"));
-//        tabLayout.addTab(tabLayout.newTab().setText("动漫"));
-//        tabLayout.addTab(tabLayout.newTab().setText("综合"));
-        //tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabLayout.post(new Runnable() {
             @Override

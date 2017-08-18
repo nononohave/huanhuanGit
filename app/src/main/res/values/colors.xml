@@ -45,4 +45,6 @@
     <color name="popPublishColor">#99000000</color>
 
     <color name="publishTextColor">#FF666666</color>
+
+    <color name="transTitleColor">#00000000</color>
 </resources>

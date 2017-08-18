@@ -4,13 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    android:gravity="center_vertical|center" >
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="25dip"
-        android:layout_height="30dip"
-        android:indeterminateDrawable="@drawable/progress_bar"
-        />
-
+    android:gravity="center_vertical|center_horizontal"
+     >
+    <LinearLayout
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:background="@drawable/dialog_progress"
+        android:gravity="center"
+        >
+        <ProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="25dip"
+            android:layout_height="30dip"
+            android:indeterminateDrawable="@drawable/progress_bar"
+            />
+    </LinearLayout>
 </LinearLayout>
