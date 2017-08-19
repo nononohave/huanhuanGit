@@ -33,4 +33,5 @@
     <dimen name="password_text_size">17dp</dimen>
     <dimen name="forgetTextSize">15dp</dimen>
     <dimen name="popTextSize">16dp</dimen>
+    <dimen name="big_title">20sp</dimen>
 </resources>

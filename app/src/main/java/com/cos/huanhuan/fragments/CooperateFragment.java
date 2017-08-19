@@ -121,6 +121,7 @@ public class CooperateFragment extends Fragment {
             public void OnImageClick(View view, int position) {
                 AppToastMgr.shortToast(getActivity(),"选中"+position);
                 Intent intent = new Intent(getActivity(), CooperateDetailActivity.class);
+                intent.putExtra("coopId",listCardCoop.get(position).getCardId());//传入合作id
                 startActivity(intent);
             }
         });

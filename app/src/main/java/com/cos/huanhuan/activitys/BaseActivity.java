@@ -1,11 +1,13 @@
 package com.cos.huanhuan.activitys;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -14,8 +16,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.utils.AppACache;
+import com.cos.huanhuan.utils.AppStringUtils;
+import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
 import com.cos.huanhuan.views.TitleBar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by yofi on 2017\8\3 0003.
@@ -27,6 +35,7 @@ public class BaseActivity extends AppCompatActivity
     private ImageView mCollectView;
     private boolean mIsSelected;
     public ViewGroup contentView;
+    private String userId;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +63,27 @@ public class BaseActivity extends AppCompatActivity
         titleBar = (TitleBar) findViewById(R.id.title_bar);
         contentView=(ViewGroup) findViewById(R.id.base_contentview);
 
+        AppACache appACache = AppACache.get(BaseActivity.this);
+        JSONObject userObj = appACache.getAsJSONObject("userJsonData");
+        if(userObj != null){
+            try {
+                userId = userObj.getString("id");
+                if(AppStringUtils.isEmpty(userId)){
+                    AppToastMgr.shortToast(BaseActivity.this, "用户未登录");
+                    return;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else{
+            Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+
+    }
+
+    public String getUserId(){
+        return userId;
     }
 
     public void setBaseContentView(int res){

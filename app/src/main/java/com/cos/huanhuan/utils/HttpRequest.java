@@ -211,4 +211,11 @@ public class HttpRequest {
                 .addParams("pageSize", String.valueOf(coopList.getPageSize()))
                 .build()
                 .execute(callback);}
+
+    public static void getCoopDetail(String id, String userId, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Cooperations/" + id;
+        OkHttpUtils.get().url(url)
+                .addParams("userId", userId)
+                .build()
+                .execute(callback);}
 }
