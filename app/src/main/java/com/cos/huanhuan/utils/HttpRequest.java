@@ -2,11 +2,14 @@ package com.cos.huanhuan.utils;
 
 import android.util.Log;
 
+import com.cos.huanhuan.model.CommentDTO;
+import com.cos.huanhuan.model.CoopDetail;
 import com.cos.huanhuan.model.CoopList;
 import com.cos.huanhuan.model.ExchangeList;
 import com.cos.huanhuan.model.PublishCoop;
 import com.cos.huanhuan.model.PublishExchanges;
 import com.cos.huanhuan.model.RegisterModel;
+import com.cos.huanhuan.model.UserInfo;
 import com.cos.huanhuan.model.UserLogin;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Call;
@@ -218,4 +221,47 @@ public class HttpRequest {
                 .addParams("userId", userId)
                 .build()
                 .execute(callback);}
+    public static void joinCoop(String id,String userId, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Cooperations/"  + id;
+        OkHttpClient client = new OkHttpClient();
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(Integer.valueOf(userId));
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(userInfo));
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+
+    public static void getCommentList(CommentDTO commentDTO, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "ExchangeReplies";
+        OkHttpUtils.get().url(url)
+                .addParams("exId", String.valueOf(commentDTO.getExId()))
+                .addParams("userId", String.valueOf(commentDTO.getUserId()))
+                .addParams("pageIndex", String.valueOf(commentDTO.getPageIndex()))
+                .addParams("pageSize", String.valueOf(commentDTO.getPageSize()))
+                .build()
+                .execute(callback);
+    }
+
+    public static void publishComment(int exId,int userId, String comment,int ParentId, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "ExchangeReplies/" + exId;
+        if(ParentId == -1){
+            OkHttpUtils.get().url(url)
+                    .addParams("userId", String.valueOf(userId))
+                    .addParams("Text", comment)
+                    .addParams("ParentId","")
+                    .build()
+                    .execute(callback);
+        }else{
+            OkHttpUtils.get().url(url)
+                    .addParams("userId", String.valueOf(userId))
+                    .addParams("Text", comment)
+                    .addParams("ParentId",String.valueOf(ParentId))
+                    .build()
+                    .execute(callback);
+         }
+    }
 }

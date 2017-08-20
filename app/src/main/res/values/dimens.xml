@@ -34,4 +34,5 @@
     <dimen name="forgetTextSize">15dp</dimen>
     <dimen name="popTextSize">16dp</dimen>
     <dimen name="big_title">20sp</dimen>
+    <dimen name="small_text">12sp</dimen>
 </resources>

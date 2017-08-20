@@ -1,14 +1,19 @@
 package com.cos.huanhuan.activitys;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,6 +27,7 @@ import com.cos.huanhuan.adapter.CoopDetailImageAdapter;
 import com.cos.huanhuan.model.CoopDetail;
 import com.cos.huanhuan.model.Image;
 import com.cos.huanhuan.model.JsonBean;
+import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
@@ -32,7 +38,10 @@ import com.cos.huanhuan.utils.MyListView;
 import com.cos.huanhuan.utils.ObservableScrollView;
 import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.CircleImageView;
+import com.cos.huanhuan.views.ImagPagerUtil;
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -45,23 +54,27 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CooperateDetailActivity extends BaseActivity implements ObservableScrollView.ScrollViewListener,View.OnClickListener {
+public class CooperateDetailActivity extends BaseActivity implements ObservableScrollView.ScrollViewListener,View.OnClickListener,AdapterView.OnItemClickListener {
 
     private ObservableScrollView scrollView;
     private ImageView imageView_head_blur,img_coop_share,img_coop_back;
-    private TextView nickName,personDesc,detailTitle,detailTime,detailRequest,detailAddress,tv_coop_detailDesc;
+    private TextView nickName,personDesc,detailTitle,detailTime,detailRequest,detailAddress,tv_coop_detailDesc,tv_coop_evalu,tv_coop_join;
     private CircleImageView headCircleImg;
     private MyListView listView;
     private RelativeLayout ll_titleBar_coop;
     private View divideLine;
+    private Button btn_coop_chat;
     private int imageHeight;
     private AppManager appManager;
     private String userId,coopId;
+    private Handler handler;
+    private List<String> listStrImg;
 
     //适配器
     private List<Image> imgList;
@@ -97,6 +110,9 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
         detailRequest = (TextView) findViewById(R.id.tv_coop_detailRequest);
         detailAddress = (TextView) findViewById(R.id.tv_coop_detailAddress);
         tv_coop_detailDesc = (TextView) findViewById(R.id.tv_coop_detailDesc);
+        tv_coop_evalu = (TextView) findViewById(R.id.tv_coop_evalu);
+        tv_coop_join = (TextView) findViewById(R.id.tv_coop_join);
+        btn_coop_chat = (Button) findViewById(R.id.btn_coop_chat);
         headCircleImg = (CircleImageView) findViewById(R.id.civ_coop_headImg);
 
         ll_titleBar_coop.setFocusable(true);
@@ -105,8 +121,13 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
         ll_titleBar_coop.bringToFront();
         img_coop_share.setOnClickListener(this);
         img_coop_back.setOnClickListener(this);
-        Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.convertViewToBitmap(imageView_head_blur), 15, true);
-        imageView_head_blur.setImageBitmap(scaledBitmap);
+        listView.setOnItemClickListener(this);
+        tv_coop_evalu.setOnClickListener(this);
+        tv_coop_join.setOnClickListener(this);
+        btn_coop_chat.setOnClickListener(this);
+
+        handler=new MyHandler();
+
         imgList = new ArrayList<Image>();
         coopDetailImageAdapter = new CoopDetailImageAdapter(CooperateDetailActivity.this,imgList);
         listView.setAdapter(coopDetailImageAdapter);
@@ -156,7 +177,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
         });
     }
 
-    private void setData(CoopDetail coopDetail) {
+    private void setData(final CoopDetail coopDetail) {
         //配置数据
         Picasso.with(CooperateDetailActivity.this).load(coopDetail.getPortrait()).placeholder(R.mipmap.public_placehold).into(imageView_head_blur);
         //设置头像
@@ -168,10 +189,59 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
         detailRequest.setText(coopDetail.getWill());
         detailAddress.setText(coopDetail.getAddress());
         tv_coop_detailDesc.setText(coopDetail.getDescribe());
+
+        if(userId.equals(coopDetail.getUserId())){
+            btn_coop_chat.setVisibility(View.GONE);
+        }
+
+        if(coopDetail.getHeed()){
+            tv_coop_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_red),null,null);
+        }else{
+            tv_coop_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_grey),null,null);
+        }
+
         imgList.addAll(coopDetail.getImgList());
         coopDetailImageAdapter.notifyDataSetChanged();
-        Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.convertViewToBitmap(imageView_head_blur), 15, true);
-        imageView_head_blur.setImageBitmap(scaledBitmap);
+        listStrImg = new ArrayList<>();
+
+        for (int i = 0; i < imgList.size(); i++) {
+            listStrImg.add(imgList.get(i).getImgPath());
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Message message=new Message();
+                Bundle data = new Bundle();
+                data.putString("imgUrl", coopDetail.getPortrait());
+                message.setData(data);
+                handler.sendMessage(message);//发送message信息
+                message.what=1;//标志是哪个线程传数据
+            }
+        }).start();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        ImagPagerUtil imagPagerUtil = new ImagPagerUtil(CooperateDetailActivity.this, listStrImg,position);
+        imagPagerUtil.setContentText("");
+        imagPagerUtil.show();
+    }
+
+    class MyHandler extends Handler
+    {
+        //接受message的信息
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            if(msg.what==1)
+            {
+                Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.createViewBitmap(imageView_head_blur), 16, true);
+                imageView_head_blur.setImageBitmap(scaledBitmap);
+            }
+
+        }
     }
 
     /**
@@ -221,6 +291,49 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
             case R.id.img_coop_back:
                 //返回按钮
                 appManager.finishActivity();
+                break;
+            case R.id.tv_coop_evalu:
+                Intent intentComment = new Intent(CooperateDetailActivity.this,CommentActivity.class);
+                intentComment.putExtra("coopId",coopId);
+                startActivity(intentComment);
+                break;
+            case R.id.tv_coop_join:
+                AppToastMgr.shortToast(CooperateDetailActivity.this,"11111");
+                HttpRequest.joinCoop(coopId, userId, new Callback() {
+                    @Override
+                    public void onFailure(Request request, IOException e) {
+                        AppToastMgr.shortToast(CooperateDetailActivity.this,"请求失败！");
+                    }
+
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+                        try {
+                            if (null != response.cacheResponse()) {
+                                String str = response.cacheResponse().toString();
+                            } else {
+                                try {
+                                    String str1 = response.body().string();
+                                    JSONObject jsonObject = new JSONObject(str1);
+                                    Boolean success = jsonObject.getBoolean("success");
+                                    if(success){
+                                        tv_coop_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_red),null,null);
+                                    }else{
+                                        String errorMsg = jsonObject.getString("errorMsg");
+                                        AppToastMgr.shortToast(CooperateDetailActivity.this,"修改失败！原因：" + errorMsg);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                String str = response.networkResponse().toString();
+                                Log.i("wangshu3", "network---" + str);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                break;
+            case R.id.btn_coop_chat:
                 break;
         }
     }

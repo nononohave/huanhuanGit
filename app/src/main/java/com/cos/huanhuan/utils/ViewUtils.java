@@ -7,6 +7,7 @@ import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -24,6 +25,14 @@ import android.widget.TextView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.AllExchangeActivity;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -434,5 +443,21 @@ public class ViewUtils {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT));
         return loadingDialog;
+    }
+
+    public static Bitmap getBitmapByUrl(String path) throws IOException{
+        Bitmap map = null;
+        try {
+            URL url = new URL(path);
+            URLConnection conn = url.openConnection();
+            conn.connect();
+            InputStream in;
+            in = conn.getInputStream();
+            map = BitmapFactory.decodeStream(in);
+            // TODO Auto-generated catch block
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 }

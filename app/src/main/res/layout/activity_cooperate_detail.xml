@@ -237,6 +237,7 @@
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
+        android:clickable="true"
         >
         <View
             android:layout_width="match_parent"
@@ -264,6 +265,7 @@
             android:paddingLeft="5dp"
             />
         <Button
+            android:id="@+id/btn_coop_chat"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:text="@string/chatting"

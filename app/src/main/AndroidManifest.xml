@@ -153,7 +153,8 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-        <activity android:name=".activitys.CooperateDetailActivity"></activity>
+        <activity android:name=".activitys.CooperateDetailActivity" />
+        <activity android:name=".activitys.CommentActivity"></activity>
     </application>
 
 </manifest>

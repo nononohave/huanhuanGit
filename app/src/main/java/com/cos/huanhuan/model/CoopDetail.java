@@ -20,9 +20,18 @@ public class CoopDetail {
     private int limitPerson;
     private String portrait;
     private String nickname;
+    private String userId;
     private String desc;
     private Boolean heed;
     private int commentNum;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public int getId() {
         return id;

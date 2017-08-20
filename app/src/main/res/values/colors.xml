@@ -50,4 +50,6 @@
     <color name="greyText">#C5C5C5</color>
     <color name="grey_black">#151515</color>
     <color name="grey_text_desc">#666666</color>
+
+    <color name="comment_text">#4083A9</color>
 </resources>

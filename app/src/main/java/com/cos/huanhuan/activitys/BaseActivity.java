@@ -63,6 +63,12 @@ public class BaseActivity extends AppCompatActivity
         titleBar = (TitleBar) findViewById(R.id.title_bar);
         contentView=(ViewGroup) findViewById(R.id.base_contentview);
 
+
+
+    }
+
+
+    public String getUserId(){
         AppACache appACache = AppACache.get(BaseActivity.this);
         JSONObject userObj = appACache.getAsJSONObject("userJsonData");
         if(userObj != null){
@@ -70,7 +76,7 @@ public class BaseActivity extends AppCompatActivity
                 userId = userObj.getString("id");
                 if(AppStringUtils.isEmpty(userId)){
                     AppToastMgr.shortToast(BaseActivity.this, "用户未登录");
-                    return;
+                    return "";
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -79,10 +85,6 @@ public class BaseActivity extends AppCompatActivity
             Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
             startActivity(intent);
         }
-
-    }
-
-    public String getUserId(){
         return userId;
     }
 
