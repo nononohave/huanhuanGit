@@ -223,6 +223,7 @@ public class HttpRequest {
                 .addParams("userId", userId)
                 .build()
                 .execute(callback);}
+
     public static void joinCoop(String id,String userId, Callback callback){
         String url = TEXT_HUANHUAN_HOST + "Cooperations/"  + id;
         OkHttpClient client = new OkHttpClient();
@@ -280,17 +281,95 @@ public class HttpRequest {
          }
     }
 
-    public static void goodComments(String id,String userId, Callback callback){
-        String url = TEXT_HUANHUAN_HOST + "CooperationReplies/"  + id + "?userId=" + userId;
+    public static void goodComments(String id,String userId, Callback callback, Boolean isExchange){
+        if(isExchange){
+            String url = TEXT_HUANHUAN_HOST + "ExchangeReplies/"  + id + "?userId=" + userId;
+            OkHttpClient client = new OkHttpClient();
+            //UserInfo userInfo = new UserInfo();
+            //userInfo.setUserId(Integer.valueOf(userId));
+            RequestBody body = RequestBody.create(JSON, new Gson().toJson(null));
+            Request request = new Request.Builder()
+                    .url(url)
+                    .put(body)
+                    .build();
+            Call call = client.newCall(request);
+            call.enqueue(callback);
+        }else{
+            String url = TEXT_HUANHUAN_HOST + "CooperationReplies/"  + id + "?userId=" + userId;
+            OkHttpClient client = new OkHttpClient();
+            //UserInfo userInfo = new UserInfo();
+            //userInfo.setUserId(Integer.valueOf(userId));
+            RequestBody body = RequestBody.create(JSON, new Gson().toJson(null));
+            Request request = new Request.Builder()
+                    .url(url)
+                    .put(body)
+                    .build();
+            Call call = client.newCall(request);
+            call.enqueue(callback);
+        }
+    }
+
+    public static void getExchangeDetail(String id, String userId, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Exchanges/" + id;
+        OkHttpUtils.get().url(url)
+                .addParams("userId", userId)
+                .build()
+                .execute(callback);}
+
+    public static void attentionExchange(String id,String userId, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Exchanges/"  + id;
         OkHttpClient client = new OkHttpClient();
-        //UserInfo userInfo = new UserInfo();
-        //userInfo.setUserId(Integer.valueOf(userId));
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(null));
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(Integer.valueOf(userId));
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(userInfo));
         Request request = new Request.Builder()
                 .url(url)
                 .put(body)
                 .build();
         Call call = client.newCall(request);
         call.enqueue(callback);
+    }
+
+    public static void getExchangeCommentList(CommentDTO commentDTO, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "ExchangeReplies";
+        OkHttpUtils.get().url(url)
+                .addParams("exId", String.valueOf(commentDTO.getExId()))
+                .addParams("userId", String.valueOf(commentDTO.getUserId()))
+                .addParams("pageIndex", String.valueOf(commentDTO.getPageIndex()))
+                .addParams("pageSize", String.valueOf(commentDTO.getPageSize()))
+                .build()
+                .execute(callback);
+    }
+
+    /**
+     * 兑换发表评论
+     * @param exId
+     * @param userId
+     * @param comment
+     * @param ParentId
+     * @param callback
+     */
+    public static void publishExchangeComment(int exId,int userId, String comment,int ParentId, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "ExchangeReplies/" + exId;
+        if(ParentId == -1){
+            CommentSimple commentSimple = new CommentSimple();
+            commentSimple.setUserId(userId);
+            commentSimple.setComment(comment);
+            OkHttpUtils.postString().url(url)
+                    .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                    .content(new Gson().toJson(commentSimple))
+                    .build()
+                    .execute(callback);
+        }else{
+            CommentMuti commentMuti = new CommentMuti();
+            commentMuti.setUserId(userId);
+            commentMuti.setComment(comment);
+            commentMuti.setParentId(ParentId);
+            OkHttpUtils.postString().url(url)
+                    .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                    .content(new Gson().toJson(commentMuti))
+                    .build()
+                    .execute(callback);
+        }
     }
 }

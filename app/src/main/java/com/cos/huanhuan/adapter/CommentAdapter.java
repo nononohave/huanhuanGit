@@ -46,10 +46,12 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private Context context;
     private int userId;
     private Handler handler;
-    public CommentAdapter(Context context, List<Comment> listComments,int userId) {
+    private Boolean isExchange;
+    public CommentAdapter(Context context, List<Comment> listComments,int userId,Boolean isExchange) {
         this.listComments = listComments;
         this.context = context;
         this.userId = userId;
+        this.isExchange = isExchange;
         handler=new MyHandler();
     }
 
@@ -128,7 +130,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             e.printStackTrace();
                         }
                     }
-                });
+                },isExchange);
             }
         });
 

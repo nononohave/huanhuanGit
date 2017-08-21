@@ -152,6 +152,14 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
         publishExchange.setOnClickListener(this);
         publishCoo.setOnClickListener(this);
 
+        cardGridAdapter.setOnImageClick(new CardGridAdapter.OnImageClick() {
+            @Override
+            public void OnImageClick(View view, int position) {
+                Intent intentExchange = new Intent(AllExchangeActivity.this, ExchangeDetailActivity.class);
+                intentExchange.putExtra("exchangeId",listCard.get(position).getCardId());
+                startActivity(intentExchange);
+            }
+        });
         //时间选择器
 //        TimePickerView pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
 //            @Override

@@ -3,20 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.cos.huanhuan.activitys.CooperateDetailActivity">
+    tools:context="com.cos.huanhuan.activitys.ExchangeDetailActivity">
     <RelativeLayout
-        android:id="@+id/ll_titleBar_coop"
+        android:id="@+id/ell_titleBar_xchange"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:clickable="true"
-    >
+        >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="15dp"
             >
             <ImageView
-                android:id="@+id/img_coop_back"
+                android:id="@+id/img_exchange_back"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:src="@mipmap/back_green"
@@ -25,17 +25,17 @@
                 android:scaleType="center"
                 />
             <TextView
-                android:id="@+id/tv_coop_titleBarTitle"
+                android:id="@+id/tv_exchange_titleBarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/coop_titleBar"
+                android:text="@string/exchange_titleBar"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_xlarge"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 />
             <ImageView
-                android:id="@+id/img_coop_share"
+                android:id="@+id/img_exchange_share"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:src="@mipmap/share"
@@ -45,7 +45,7 @@
                 />
         </RelativeLayout>
         <View
-            android:id="@+id/view_coop_divide"
+            android:id="@+id/view_exchange_divide"
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="@color/dividLineColor"
@@ -54,7 +54,7 @@
             ></View>
     </RelativeLayout>
     <com.cos.huanhuan.utils.ObservableScrollView
-        android:id="@+id/obscrollview_coopDetail"
+        android:id="@+id/obscrollview_exchangeDetail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none" >
@@ -62,13 +62,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-            
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 >
                 <ImageView
-                    android:id="@+id/img_coopDetail"
+                    android:id="@+id/img_exchangeDetail"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@mipmap/public_placehold"
@@ -88,7 +88,7 @@
                         android:layout_alignParentBottom="true"
                         >
                         <com.cos.huanhuan.views.CircleImageView
-                            android:id="@+id/civ_coop_headImg"
+                            android:id="@+id/civ_exchange_headImg"
                             android:layout_width="55dp"
                             android:layout_height="55dp"
                             android:src="@mipmap/public_placehold"
@@ -100,7 +100,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
-                            android:layout_toRightOf="@id/civ_coop_headImg"
+                            android:layout_toRightOf="@id/civ_exchange_headImg"
                             android:layout_marginLeft="10dp"
                             android:gravity="center_vertical"
                             >
@@ -119,19 +119,19 @@
                                 android:textColor="@color/white"
                                 />
                         </LinearLayout>
-                         <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:background="@drawable/btnbg_tran"
-                             android:text="已认证"
-                             android:paddingTop="5dp"
-                             android:paddingBottom="5dp"
-                             android:paddingLeft="10dp"
-                             android:paddingRight="10dp"
-                             android:textColor="@color/white"
-                             android:layout_alignParentRight="true"
-                             android:layout_centerVertical="true"
-                             />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/btnbg_tran"
+                            android:text="已认证"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:textColor="@color/white"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            />
                     </RelativeLayout>
                 </RelativeLayout>
             </FrameLayout>
@@ -144,85 +144,80 @@
                 android:paddingRight="15dp"
                 >
                 <TextView
-                    android:id="@+id/tv_coop_detailTitle"
+                    android:id="@+id/tv_exchange_detailTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/big_title"
                     android:textColor="@color/black"
                     />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="15dp"
-                        >
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/time"
-                            android:textColor="@color/greyText"
-                            android:textSize="@dimen/popTextSize"
-                            />
-                        <TextView
-                            android:id="@+id/tv_coop_detailTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2017-07-21"
-                            android:layout_marginLeft="10dp"
-                            android:textColor="@color/grey_black"
-                            android:textSize="@dimen/popTextSize"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/request"
-                            android:textColor="@color/greyText"
-                            android:layout_marginLeft="30dp"
-                            android:textSize="@dimen/popTextSize"
-                            />
-                        <TextView
-                            android:id="@+id/tv_coop_detailRequest"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=""
-                            android:layout_marginLeft="10dp"
-                            android:textColor="@color/titleBarTextColor"
-                            android:textSize="@dimen/popTextSize"
-                            />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp"
-                        >
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/position"
-                            android:textColor="@color/greyText"
-                            android:textSize="@dimen/popTextSize"
-                            />
-                        <TextView
-                            android:id="@+id/tv_coop_detailAddress"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:textColor="@color/grey_black"
-                            android:textSize="@dimen/popTextSize"
-                            />
-                     </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="15dp"
+                    >
                     <TextView
-                        android:id="@+id/tv_coop_detailDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:textColor="@color/grey_text_desc"
-                        android:textSize="@dimen/forgetTextSize"
+                        android:text="状态"
+                        android:textColor="@color/greyText"
+                        android:textSize="@dimen/popTextSize"
                         />
+                    <TextView
+                        android:id="@+id/tv_exchange_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="可兑换"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/grey_black"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="类别"
+                        android:textColor="@color/greyText"
+                        android:layout_marginLeft="30dp"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                    <TextView
+                        android:id="@+id/tv_exchange_classify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="动漫"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/titleBarTextColor"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="最终值"
+                        android:textColor="@color/greyText"
+                        android:layout_marginLeft="30dp"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                    <TextView
+                        android:id="@+id/tv_exchange_finalValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="125元"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/phone_text"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_exchange_detailDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/grey_text_desc"
+                    android:textSize="@dimen/forgetTextSize"
+                    />
             </LinearLayout>
             <com.cos.huanhuan.utils.MyListView
-                android:id="@+id/listView_coopDetail"
+                android:id="@+id/listView_exchangeDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -245,7 +240,7 @@
             android:background="@color/dividLineColor"
             ></View>
         <TextView
-            android:id="@+id/tv_coop_evalu"
+            android:id="@+id/tv_exchange_evalu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
@@ -255,21 +250,34 @@
             android:gravity="center"
             />
         <TextView
-            android:layout_toRightOf="@id/tv_coop_evalu"
-            android:id="@+id/tv_coop_join"
+            android:layout_toRightOf="@id/tv_exchange_evalu"
+            android:id="@+id/tv_exchange_join"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:text="@string/join"
+            android:text="想出"
             android:drawableTop="@mipmap/join_grey"
             android:layout_centerVertical="true"
             android:paddingLeft="5dp"
             />
         <Button
-            android:id="@+id/btn_coop_chat"
+            android:id="@+id/btn_exchange_borrow"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="@string/chatting"
+            android:text="立即租借"
+            android:background="@drawable/btnbg_borrow"
+            android:layout_centerVertical="true"
+            android:textColor="@color/titleBarTextColor"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_toLeftOf="@+id/btn_exchange_now"
+            />
+        <Button
+            android:id="@+id/btn_exchange_now"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="立即兑换"
             android:background="@drawable/btnbg_chat"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"

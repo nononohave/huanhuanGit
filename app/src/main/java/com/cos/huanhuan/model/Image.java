@@ -13,8 +13,8 @@ public class Image {
     private int height;
 
     public String getImgPath() {
-        //return HttpRequest.IMG_HUANHUAN_HOST + imgPath;
-        return "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1075900967,1482338035&fm=26&gp=0.jpg";
+        return HttpRequest.IMG_HUANHUAN_HOST + imgPath;
+        //return "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1075900967,1482338035&fm=26&gp=0.jpg";
     }
 
     public void setImgPath(String imgPath) {
@@ -22,8 +22,8 @@ public class Image {
     }
 
     public int getWidth() {
-        // return width;
-        return 450;
+         return width;
+        //return 450;
     }
 
     public void setWidth(int width) {
@@ -31,8 +31,8 @@ public class Image {
     }
 
     public int getHeight() {
-        //return height;
-        return 359;
+        return height;
+        //return 359;
     }
 
     public void setHeight(int height) {

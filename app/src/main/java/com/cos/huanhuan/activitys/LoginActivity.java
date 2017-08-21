@@ -23,6 +23,7 @@ import com.cos.huanhuan.MainActivity;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppNetworkMgr;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
@@ -79,7 +80,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
         mShareAPI = UMShareAPI.get(this);
 
-        initView();
 
         leftButtonClick(new View.OnClickListener(){
             @Override
@@ -94,6 +94,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 startActivity(intent);
             }
          });
+
+//        int netWorkState = AppNetworkMgr.getNetworkState(LoginActivity.this);
+//        if(netWorkState == 0){
+//            setNoNetWOrkLayout();
+//        }else{
+//            initView();
+//        }
+        initView();
+        //setNoData();
     }
 
     private void initView() {

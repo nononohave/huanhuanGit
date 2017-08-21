@@ -1,6 +1,7 @@
 package com.cos.huanhuan.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.activitys.ExchangeDetailActivity;
 import com.cos.huanhuan.activitys.LoginActivity;
 import com.cos.huanhuan.adapter.CardGridAdapter;
 import com.cos.huanhuan.model.CardExchange;
@@ -205,7 +207,9 @@ public class IndexFragment extends Fragment{
         cardGridAdapter.setOnImageClick(new CardGridAdapter.OnImageClick() {
             @Override
             public void OnImageClick(View view, int position) {
-                AppToastMgr.shortToast(getActivity(),"选中"+position);
+                Intent intentExchange = new Intent(getActivity(), ExchangeDetailActivity.class);
+                intentExchange.putExtra("exchangeId",listCard.get(position-1).getCardId());
+                startActivity(intentExchange);
             }
         });
         cardGridAdapter.setOnUserClick(new CardGridAdapter.OnUserClick() {

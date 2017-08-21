@@ -8,6 +8,7 @@ import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppACache;
+import com.cos.huanhuan.utils.AppNetworkMgr;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
@@ -62,11 +64,17 @@ public class BaseActivity extends AppCompatActivity
 
         titleBar = (TitleBar) findViewById(R.id.title_bar);
         contentView=(ViewGroup) findViewById(R.id.base_contentview);
-
-
-
     }
 
+    public void setNoNetWOrkLayout(){
+        View view = LayoutInflater.from(BaseActivity.this).inflate(R.layout.activity_no_network,null);
+        contentView.addView(view);
+    }
+
+    public void setNoData(){
+        View view = LayoutInflater.from(BaseActivity.this).inflate(R.layout.activity_no_data,null);
+        contentView.addView(view);
+    }
 
     public String getUserId(){
         AppACache appACache = AppACache.get(BaseActivity.this);

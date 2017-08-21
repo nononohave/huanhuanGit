@@ -88,5 +88,6 @@
     <string name="chatting">立即沟通</string>
     <string name="join">参加</string>
     <string name="coop_titleBar">合作详情</string>
+    <string name="exchange_titleBar">产品详情</string>
     <string name="commentText">评论</string>
 </resources>

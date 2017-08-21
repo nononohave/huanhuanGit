@@ -1,7 +1,6 @@
 package com.cos.huanhuan.activitys;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,27 +11,19 @@ import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
-import com.cos.huanhuan.adapter.CardGridAdapter;
 import com.cos.huanhuan.adapter.CommentAdapter;
-import com.cos.huanhuan.model.CardExchange;
 import com.cos.huanhuan.model.Comment;
 import com.cos.huanhuan.model.CommentDTO;
-import com.cos.huanhuan.model.CoopDetail;
-import com.cos.huanhuan.model.ExchangeList;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
 import com.cos.huanhuan.utils.SoftHideKeyBoardUtil;
-import com.cos.huanhuan.views.TitleBar;
 import com.squareup.okhttp.Request;
-import com.umeng.socialize.UMShareAPI;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONArray;
@@ -42,7 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentActivity extends BaseActivity implements View.OnClickListener{
+public class ExchangeCommentActivity extends BaseActivity implements View.OnClickListener {
 
     private RecyclerView recyclerview;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -57,7 +48,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private int pageIndex = 1;
     private int pageSize = 8;
     private int userId;
-    private int coopId;
+    private int exchangeId;
     private int parentId = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +62,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         setRightTextColor(R.color.titleBarTextColor);
         setTitleTextColor(R.color.titleBarTextColor);
         setTitle(this.getResources().getString(R.string.commentText));
-        setBaseContentView(R.layout.activity_comment);
+        setBaseContentView(R.layout.activity_exchange_comment);
         userId = Integer.valueOf(getUserId());
-        coopId = Integer.valueOf(getIntent().getExtras().getString("coopId"));
+        exchangeId = Integer.valueOf(getIntent().getExtras().getString("exchangeId"));
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
         SoftHideKeyBoardUtil.assistActivity(this);
@@ -87,16 +78,16 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
     private void initView() {
 
-        recyclerview = (RecyclerView) findViewById(R.id.grid_recycle_commentList);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_commentList);
-        et_comment = (EditText) findViewById(R.id.et_comment);
-        tv_send_comment = (TextView) findViewById(R.id.tv_send_comment);
+        recyclerview = (RecyclerView) findViewById(R.id.grid_recycle_commentList_exchange);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_commentList_exchange);
+        et_comment = (EditText) findViewById(R.id.et_comment_exchange);
+        tv_send_comment = (TextView) findViewById(R.id.tv_send_comment_exchange);
 
         mLayoutManager=new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false);//设置为一个2列的纵向网格布局
         recyclerview.setLayoutManager(mLayoutManager);
         swipeRefreshLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
         listComment = new ArrayList<Comment>();
-        commentAdapter = new CommentAdapter(this,listComment,userId,false);
+        commentAdapter = new CommentAdapter(this,listComment,userId,true);
         recyclerview.setAdapter(commentAdapter);
 
         tv_send_comment.setOnClickListener(this);
@@ -120,11 +111,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     commentDto.setPageIndex(pageIndex);
                     commentDto.setPageSize(pageSize);
                     commentDto.setUserId(userId);
-                    commentDto.setExId(coopId);
-                    HttpRequest.getCommentList(commentDto, new StringCallback() {
+                    commentDto.setExId(exchangeId);
+                    HttpRequest.getExchangeCommentList(commentDto, new StringCallback() {
                         @Override
                         public void onError(Request request, Exception e) {
-                            AppToastMgr.shortToast(CommentActivity.this,"请求失败！");
+                            AppToastMgr.shortToast(ExchangeCommentActivity.this,"请求失败！");
                         }
 
                         @Override
@@ -143,7 +134,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                     }
                                     commentAdapter.notifyDataSetChanged();
                                 }else{
-                                    AppToastMgr.shortToast(CommentActivity.this, " 请求失败！原因：" + errorMsg);
+                                    AppToastMgr.shortToast(ExchangeCommentActivity.this, " 请求失败！原因：" + errorMsg);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -183,11 +174,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         commentDto.setPageIndex(pageIndex);
         commentDto.setPageSize(pageSize);
         commentDto.setUserId(userId);
-        commentDto.setExId(coopId);
-        HttpRequest.getCommentList(commentDto, new StringCallback() {
+        commentDto.setExId(exchangeId);
+        HttpRequest.getExchangeCommentList(commentDto, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(CommentActivity.this,"请求失败！");
+                AppToastMgr.shortToast(ExchangeCommentActivity.this,"请求失败！");
             }
 
             @Override
@@ -208,7 +199,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                         commentAdapter.notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
                     }else{
-                        AppToastMgr.shortToast(CommentActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        AppToastMgr.shortToast(ExchangeCommentActivity.this, " 接口调用失败！原因：" + errorMsg);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 } catch (JSONException e) {
@@ -226,12 +217,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.tv_send_comment:
+            case R.id.tv_send_comment_exchange:
                 String commentMessage = et_comment.getText().toString();
-                HttpRequest.publishCoopComment(coopId, userId, commentMessage, parentId, new StringCallback() {
+                HttpRequest.publishExchangeComment(exchangeId, userId, commentMessage, parentId, new StringCallback() {
                     @Override
                     public void onError(Request request, Exception e) {
-                        AppToastMgr.shortToast(CommentActivity.this,"请求失败！");
+                        AppToastMgr.shortToast(ExchangeCommentActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -247,7 +238,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 parentId = -1;
                                 recyclerview.smoothScrollToPosition(0);
                             }else{
-                                AppToastMgr.shortToast(CommentActivity.this, " 评论失败！原因：" + errorMsg);
+                                AppToastMgr.shortToast(ExchangeCommentActivity.this, " 评论失败！原因：" + errorMsg);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
