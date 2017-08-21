@@ -3,6 +3,8 @@ package com.cos.huanhuan.utils;
 import android.util.Log;
 
 import com.cos.huanhuan.model.CommentDTO;
+import com.cos.huanhuan.model.CommentMuti;
+import com.cos.huanhuan.model.CommentSimple;
 import com.cos.huanhuan.model.CoopDetail;
 import com.cos.huanhuan.model.CoopList;
 import com.cos.huanhuan.model.ExchangeList;
@@ -236,9 +238,9 @@ public class HttpRequest {
     }
 
     public static void getCommentList(CommentDTO commentDTO, StringCallback callback){
-        String url = TEXT_HUANHUAN_HOST + "ExchangeReplies";
+        String url = TEXT_HUANHUAN_HOST + "CooperationReplies";
         OkHttpUtils.get().url(url)
-                .addParams("exId", String.valueOf(commentDTO.getExId()))
+                .addParams("coId", String.valueOf(commentDTO.getExId()))
                 .addParams("userId", String.valueOf(commentDTO.getUserId()))
                 .addParams("pageIndex", String.valueOf(commentDTO.getPageIndex()))
                 .addParams("pageSize", String.valueOf(commentDTO.getPageSize()))
@@ -246,22 +248,49 @@ public class HttpRequest {
                 .execute(callback);
     }
 
-    public static void publishComment(int exId,int userId, String comment,int ParentId, StringCallback callback){
-        String url = TEXT_HUANHUAN_HOST + "ExchangeReplies/" + exId;
+    /**
+     * 合作发表评论
+     * @param exId
+     * @param userId
+     * @param comment
+     * @param ParentId
+     * @param callback
+     */
+    public static void publishCoopComment(int exId,int userId, String comment,int ParentId, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "CooperationReplies/" + exId;
         if(ParentId == -1){
-            OkHttpUtils.get().url(url)
-                    .addParams("userId", String.valueOf(userId))
-                    .addParams("Text", comment)
-                    .addParams("ParentId","")
+            CommentSimple commentSimple = new CommentSimple();
+            commentSimple.setUserId(userId);
+            commentSimple.setComment(comment);
+            OkHttpUtils.postString().url(url)
+                    .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                    .content(new Gson().toJson(commentSimple))
                     .build()
                     .execute(callback);
         }else{
-            OkHttpUtils.get().url(url)
-                    .addParams("userId", String.valueOf(userId))
-                    .addParams("Text", comment)
-                    .addParams("ParentId",String.valueOf(ParentId))
+            CommentMuti commentMuti = new CommentMuti();
+            commentMuti.setUserId(userId);
+            commentMuti.setComment(comment);
+            commentMuti.setParentId(ParentId);
+            OkHttpUtils.postString().url(url)
+                    .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                    .content(new Gson().toJson(commentMuti))
                     .build()
                     .execute(callback);
          }
+    }
+
+    public static void goodComments(String id,String userId, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "CooperationReplies/"  + id + "?userId=" + userId;
+        OkHttpClient client = new OkHttpClient();
+        //UserInfo userInfo = new UserInfo();
+        //userInfo.setUserId(Integer.valueOf(userId));
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(null));
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
     }
 }

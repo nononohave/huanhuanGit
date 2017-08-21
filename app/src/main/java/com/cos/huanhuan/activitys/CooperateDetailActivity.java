@@ -75,7 +75,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
     private String userId,coopId;
     private Handler handler;
     private List<String> listStrImg;
-
+    private Boolean isLike = false;
     //适配器
     private List<Image> imgList;
     private CoopDetailImageAdapter coopDetailImageAdapter;
@@ -189,15 +189,17 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
         detailRequest.setText(coopDetail.getWill());
         detailAddress.setText(coopDetail.getAddress());
         tv_coop_detailDesc.setText(coopDetail.getDescribe());
-
+        tv_coop_evalu.setText(String.valueOf(coopDetail.getCommentNum()));
         if(userId.equals(coopDetail.getUserId())){
             btn_coop_chat.setVisibility(View.GONE);
         }
 
         if(coopDetail.getHeed()){
             tv_coop_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_red),null,null);
+            isLike = true;
         }else{
             tv_coop_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_grey),null,null);
+            isLike = false;
         }
 
         imgList.addAll(coopDetail.getImgList());
@@ -239,6 +241,14 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
             {
                 Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.createViewBitmap(imageView_head_blur), 16, true);
                 imageView_head_blur.setImageBitmap(scaledBitmap);
+            }else if(msg.what == 3){
+                if(isLike){
+                    tv_coop_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_grey),null,null);
+                    isLike = false;
+                }else{
+                    tv_coop_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_red),null,null);
+                    isLike = true;
+                }
             }
 
         }
@@ -298,7 +308,6 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                 startActivity(intentComment);
                 break;
             case R.id.tv_coop_join:
-                AppToastMgr.shortToast(CooperateDetailActivity.this,"11111");
                 HttpRequest.joinCoop(coopId, userId, new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
@@ -316,7 +325,9 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                                     JSONObject jsonObject = new JSONObject(str1);
                                     Boolean success = jsonObject.getBoolean("success");
                                     if(success){
-                                        tv_coop_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_red),null,null);
+                                        Message message=new Message();
+                                        handler.sendMessage(message);//发送message信息
+                                        message.what=3;//标志是哪个线程传数据
                                     }else{
                                         String errorMsg = jsonObject.getString("errorMsg");
                                         AppToastMgr.shortToast(CooperateDetailActivity.this,"修改失败！原因：" + errorMsg);

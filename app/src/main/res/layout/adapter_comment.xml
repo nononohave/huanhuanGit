@@ -74,21 +74,21 @@
                             android:layout_height="wrap_content"
                             android:src="@mipmap/good_grey"
                             />
+
                         <TextView
                             android:id="@+id/tv_adapter_goodNums"
-                            android:layout_width="wrap_content"
+                            android:layout_width="27dp"
                             android:layout_height="wrap_content"
-                            android:text="赞"
-                            android:layout_marginTop="2dp"
-                            android:textColor="@color/forgetPassText"
-                            android:textSize="@dimen/small_text"
                             android:layout_marginLeft="5dp"
-                            />
+                            android:layout_marginTop="2dp"
+                            android:text="999+"
+                            android:textColor="@color/forgetPassText"
+                            android:textSize="@dimen/small_text" />
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@mipmap/comment"
-                            android:layout_marginLeft="15dp"
+                            android:layout_marginLeft="3dp"
                             />
                         <TextView
                             android:id="@+id/tv_adapter_comment"

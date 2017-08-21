@@ -1,5 +1,6 @@
 package com.cos.huanhuan.activitys;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,7 +11,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
@@ -54,6 +58,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private int pageSize = 8;
     private int userId;
     private int coopId;
+    private int parentId = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,9 +96,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         recyclerview.setLayoutManager(mLayoutManager);
         swipeRefreshLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
         listComment = new ArrayList<Comment>();
-        commentAdapter = new CommentAdapter(this,listComment);
+        commentAdapter = new CommentAdapter(this,listComment,userId);
         recyclerview.setAdapter(commentAdapter);
 
+        recyclerview.setOnClickListener(this);
         tv_send_comment.setOnClickListener(this);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -158,6 +164,17 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             }
         });
 
+        commentAdapter.setOnReplayClick(new CommentAdapter.OnReplayClick() {
+            @Override
+            public void OnReplayClick(View view, int position) {
+                et_comment.requestFocus();
+                InputMethodManager imm = (InputMethodManager) et_comment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(0,InputMethodManager.SHOW_FORCED);
+                et_comment.setHint("回复@" + listComment.get(position).getNickname());
+                parentId = listComment.get(position).getId();
+            }
+        });
+
         initData();
     }
 
@@ -211,8 +228,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.tv_send_comment:
-                String commentMessage = tv_send_comment.getText().toString();
-                HttpRequest.publishComment(coopId, userId, commentMessage, -1, new StringCallback() {
+                String commentMessage = et_comment.getText().toString();
+                HttpRequest.publishCoopComment(coopId, userId, commentMessage, parentId, new StringCallback() {
                     @Override
                     public void onError(Request request, Exception e) {
                         AppToastMgr.shortToast(CommentActivity.this,"请求失败！");
@@ -226,6 +243,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             String errorMsg = jsonObject.getString("errorMsg");
                             if(success){
                                 initData();
+                                et_comment.setText("");
+                                et_comment.setHint("我也评论一下吧");
+                                parentId = -1;
+                                recyclerview.smoothScrollToPosition(0);
                             }else{
                                 AppToastMgr.shortToast(CommentActivity.this, " 评论失败！原因：" + errorMsg);
                             }
@@ -234,6 +255,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                         }
                     }
                 });
+                break;
+            case R.id.grid_recycle_commentList:
+                et_comment.setHint("我也评论一下吧");
+                parentId = -1;
                 break;
         }
     }
