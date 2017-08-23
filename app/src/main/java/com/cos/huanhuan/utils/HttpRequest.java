@@ -2,6 +2,7 @@ package com.cos.huanhuan.utils;
 
 import android.util.Log;
 
+import com.cos.huanhuan.model.AddressDTO;
 import com.cos.huanhuan.model.CommentDTO;
 import com.cos.huanhuan.model.CommentMuti;
 import com.cos.huanhuan.model.CommentSimple;
@@ -34,9 +35,9 @@ import java.io.IOException;
 
 public class HttpRequest {
 
-    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
+    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn:8081/api/v1/";
 
-    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn";
+    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn:8081";
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -372,4 +373,40 @@ public class HttpRequest {
                     .execute(callback);
         }
     }
+
+    /**
+     * 获取确认兑换的信息
+     * @param Id
+     * @param userId
+     * @param examine
+     * @param callback
+     */
+    public static void getConfirmDetail(String Id, String userId, String examine, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Exchanges/Confirm/" + Id;
+        OkHttpUtils.get().url(url)
+                .addParams("userId", userId)
+                .addParams("examine", examine)
+                .build()
+                .execute(callback);
+    }
+
+    /**
+     * 获取用户信息
+     * @param id
+     * @param callback
+     */
+    public static void getMembers(String id, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Members/" + id;
+        OkHttpUtils.get().url(url)
+                .build()
+                .execute(callback);
+    }
+
+    public static void addNewAddress(AddressDTO addressDTO, StringCallback stringCallback){
+        String url = TEXT_HUANHUAN_HOST + "Addresses";
+        OkHttpUtils.postString().url(url)
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .content(new Gson().toJson(addressDTO))
+                .build()
+                .execute(stringCallback);}
 }

@@ -90,4 +90,26 @@
     <string name="coop_titleBar">合作详情</string>
     <string name="exchange_titleBar">产品详情</string>
     <string name="commentText">评论</string>
+
+    <string name="confirmExchange">确认兑换</string>
+    <string name="createAddress">创建地址</string>
+    <string name="consignee">收货人:</string>
+    <string name="exchange_ways">兑换方式</string>
+    <string name="personValue_exchange">身家兑换</string>
+    <string name="expense">运费</string>
+    <string name="finalValue">最终值</string>
+    <string name="singn_borrow">单次租赁</string>
+    <string name="totalPrice">合计:</string>
+    <string name="consignee_text">收货人</string>
+    <string name="hint_consignee">请输入收货人姓名</string>
+    <string name="contact_phone">联系电话</string>
+    <string name="consignee_phone">请输入收货人手机号</string>
+    <string name="at_local">所在地区</string>
+    <string name="choose_address">选择省市区</string>
+    <string name="set_isDefault">设为默认</string>
+    <string name="add_new_address">新增地址</string>
+    <string name="save">保存</string>
+    <string name="manage">管理</string>
+    <string name="addressManage">地址管理</string>
+    <string name="chooseAddress">选择收货地址</string>
 </resources>

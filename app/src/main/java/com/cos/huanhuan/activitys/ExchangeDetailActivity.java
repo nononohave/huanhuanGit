@@ -22,6 +22,7 @@ import com.cos.huanhuan.adapter.CoopDetailImageAdapter;
 import com.cos.huanhuan.model.CoopDetail;
 import com.cos.huanhuan.model.ExchangeDetail;
 import com.cos.huanhuan.model.Image;
+import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
@@ -69,6 +70,8 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
     //适配器
     private List<Image> imgList;
     private CoopDetailImageAdapter coopDetailImageAdapter;
+
+    private UserValueData userValueData;//用于传入下一个页面的用户身家信息
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,6 +162,30 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                         JSONObject obj =jsonObject.getJSONObject("data");
                         ExchangeDetail exchangeDetail = JsonUtils.fromJson(obj.toString(), ExchangeDetail.class);
                         setData(exchangeDetail);
+                    }else{
+                        AppToastMgr.shortToast(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        HttpRequest.getMembers(userId, new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                AppToastMgr.shortToast(ExchangeDetailActivity.this,"请求失败！");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Boolean success = jsonObject.getBoolean("success");
+                    String errorMsg = jsonObject.getString("errorMsg");
+                    if(success){
+                        JSONObject obj =jsonObject.getJSONObject("data");
+                        userValueData = JsonUtils.fromJson(obj.toString(), UserValueData.class);
                     }else{
                         AppToastMgr.shortToast(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
                     }
@@ -340,6 +367,12 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
             case R.id.btn_exchange_borrow:
                 break;
             case R.id.btn_exchange_now:
+                Intent intentConfirmExchange = new Intent(ExchangeDetailActivity.this,ComfirmExchangeActivity.class);
+                intentConfirmExchange.putExtra("exchangeId",exchangeId);
+                if(userValueData != null){
+                    intentConfirmExchange.putExtra("userValueData",userValueData);
+                }
+                startActivity(intentConfirmExchange);
                 break;
         }
     }

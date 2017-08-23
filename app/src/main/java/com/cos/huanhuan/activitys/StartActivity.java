@@ -26,7 +26,7 @@ public class StartActivity extends AppCompatActivity {
     class splashhandler implements Runnable {
 
         public void run() {
-            Intent intent = new Intent(getApplication(),LoginActivity.class);
+            Intent intent = new Intent(getApplication(),IndexActivity.class);
             startActivity(intent);
             StartActivity.this.finish();
         }

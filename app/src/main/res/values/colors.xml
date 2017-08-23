@@ -52,4 +52,5 @@
     <color name="grey_text_desc">#666666</color>
 
     <color name="comment_text">#4083A9</color>
+    <color name="addAddressBack">#F5F5F5</color>
 </resources>

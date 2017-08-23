@@ -184,21 +184,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
         ll_publishCoop_time.setOnClickListener(this);
         coop_select_img_page.setOnClickListener(this);
         gridView_coop.setOnItemClickListener(this);
-
-        AppACache appACache = AppACache.get(PublishCoopActivity.this);
-        JSONObject userObj = appACache.getAsJSONObject("userJsonData");
-        if(userObj != null){
-            try {
-                userId = userObj.getString("id");
-                if(AppStringUtils.isEmpty(userId)){
-                    AppToastMgr.shortToast(PublishCoopActivity.this, "用户未登录");
-                    return;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
+        userId = getUserId();
         ArrayList<String> listItem = new ArrayList<String>();
         loadAdpater(listItem);
         initJsonData();

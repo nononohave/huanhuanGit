@@ -157,7 +157,10 @@
         <activity android:name=".activitys.CooperateDetailActivity" />
         <activity android:name=".activitys.CommentActivity" />
         <activity android:name=".activitys.ExchangeDetailActivity" />
-        <activity android:name=".activitys.ExchangeCommentActivity"></activity>
+        <activity android:name=".activitys.ExchangeCommentActivity" />
+        <activity android:name=".activitys.ComfirmExchangeActivity" />
+        <activity android:name=".activitys.AddNewAddressActivity" />
+        <activity android:name=".activitys.AddressManagerActivity"></activity>
     </application>
 
 </manifest>
