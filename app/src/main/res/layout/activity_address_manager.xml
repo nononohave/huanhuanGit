@@ -4,13 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cos.huanhuan.activitys.AddressManagerActivity">
+    tools:context="com.cos.huanhuan.activitys.AddressManagerActivity"
+    android:background="@color/addAddressBack"
+    >
     <ListView
         android:id="@+id/lv_address_manager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/addAddressBack"
         android:scrollbars="none"
+        android:divider="@null"
         >
     </ListView>
 </LinearLayout>

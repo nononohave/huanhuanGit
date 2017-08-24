@@ -15,15 +15,13 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.model.AddressDTO;
-import com.cos.huanhuan.model.ConfirmDetail;
+import com.cos.huanhuan.model.AddressVO;
 import com.cos.huanhuan.model.JsonBean;
-import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.GetJsonDataUtil;
 import com.cos.huanhuan.utils.HttpRequest;
-import com.cos.huanhuan.utils.JsonUtils;
 import com.cos.huanhuan.views.TitleBar;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
@@ -38,13 +36,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class AddNewAddressActivity extends BaseActivity implements View.OnClickListener{
-
+public class EditAddrssActivity extends BaseActivity implements View.OnClickListener{
     private AppManager appManager;
 
     private EditText et_consignee,et_phone,et_detail_address;
     private RelativeLayout choose_local;
-    private ImageButton choose_isDefault;
     private TextView address_city;
 
     private Boolean isDefault = false;
@@ -55,6 +51,7 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
     private ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
     private int selectOptions1 = 0, selectOptions2 = 0, selectOptions3 = 0;
     private String provice,city,district;
+    private AddressVO addressVO;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,11 +63,12 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
         setDividerColor(R.color.dividLineColor);
         setRightTextColor(R.color.titleBarTextColor);
         setTitleTextColor(R.color.titleBarTextColor);
-        setTitle(this.getResources().getString(R.string.add_new_address));
-        setBaseContentView(R.layout.activity_add_new_address);
+        setTitle(this.getResources().getString(R.string.editAddress));
+        setBaseContentView(R.layout.activity_edit_addrss);
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
         userId = getUserId();
+        addressVO = (AddressVO) getIntent().getSerializableExtra("data");
         leftButtonClick(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -92,13 +90,20 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
         et_phone = (EditText) findViewById(R.id.et_addAddress_phone);
         et_detail_address = (EditText) findViewById(R.id.et_address_detail);
         choose_local = (RelativeLayout) findViewById(R.id.rl_choose_local);
-        choose_isDefault = (ImageButton) findViewById(R.id.ib_choose_isDefault);
         address_city = (TextView) findViewById(R.id.tv_address_city);
 
         choose_local.setOnClickListener(this);
-        choose_isDefault.setOnClickListener(this);
-    }
 
+        if(addressVO != null){
+            et_consignee.setText(addressVO.getName());
+            et_phone.setText(addressVO.getPhone());
+            et_detail_address.setText(addressVO.getAddress());
+            provice = addressVO.getProvince();
+            city = addressVO.getCity();
+            district = addressVO.getCounty();
+            address_city.setText(provice + city + district);
+        }
+    }
     @Override
     public void onClick(View view) {
         InputMethodManager imm =  (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -135,16 +140,7 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
                     addressOptionsPick.setPicker(options1Items, options2Items, options3Items);//添加数据源
                     addressOptionsPick.show();
                 }else{
-                    AppToastMgr.shortToast(AddNewAddressActivity.this,"未获取到地址信息");
-                }
-                break;
-            case R.id.ib_choose_isDefault:
-                if(!isDefault){
-                    choose_isDefault.setImageResource(R.mipmap.img_on);
-                    isDefault = true;
-                }else{
-                    choose_isDefault.setImageResource(R.mipmap.img_off);
-                    isDefault = false;
+                    AppToastMgr.shortToast(EditAddrssActivity.this,"未获取到地址信息");
                 }
                 break;
         }
@@ -229,22 +225,23 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
         String address = et_detail_address.getText().toString();
 
         if(AppStringUtils.isEmpty(consignee)){
-            AppToastMgr.shortToast(AddNewAddressActivity.this,"请输入收件人姓名");
+            AppToastMgr.shortToast(EditAddrssActivity.this,"请输入收件人姓名");
             return;
         }
         if(AppStringUtils.isEmpty(phone)){
-            AppToastMgr.shortToast(AddNewAddressActivity.this,"请输入收件人手机号");
+            AppToastMgr.shortToast(EditAddrssActivity.this,"请输入收件人手机号");
             return;
         }
         if(AppStringUtils.isEmpty(provice) && AppStringUtils.isEmpty(city) && AppStringUtils.isEmpty(district)){
-            AppToastMgr.shortToast(AddNewAddressActivity.this,"请选择省市区");
+            AppToastMgr.shortToast(EditAddrssActivity.this,"请选择省市区");
             return;
         }
         if(AppStringUtils.isEmpty(address)){
-            AppToastMgr.shortToast(AddNewAddressActivity.this,"请输入详细地址");
+            AppToastMgr.shortToast(EditAddrssActivity.this,"请输入详细地址");
             return;
         }
-        AddressDTO addressDTO = new AddressDTO();
+        AddressVO addressDTO = new AddressVO();
+        addressDTO.setId(addressVO.getId());
         addressDTO.setUserId(Integer.valueOf(userId));
         addressDTO.setProvince(provice);
         addressDTO.setCity(city);
@@ -253,55 +250,31 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
         addressDTO.setZipCode("000000");
         addressDTO.setName(consignee);
         addressDTO.setPhone(phone);
-        HttpRequest.addNewAddress(addressDTO, new StringCallback() {
+        HttpRequest.editAddress(addressDTO, new Callback() {
             @Override
-            public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(AddNewAddressActivity.this,"请求失败！");
+            public void onFailure(Request request, IOException e) {
+                AppToastMgr.shortToast(EditAddrssActivity.this,"请求失败！");
             }
 
             @Override
-            public void onResponse(String response) {
+            public void onResponse(Response response) throws IOException {
                 try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    Boolean success = jsonObject.getBoolean("success");
-                    String errorMsg = jsonObject.getString("errorMsg");
-                    if(success) {
-                        int addressId = jsonObject.getInt("data");
-                        if(isDefault){
-                            HttpRequest.setDefaultAddress(String.valueOf(addressId), new Callback() {
-                                @Override
-                                public void onFailure(Request request, IOException e) {
-                                    AppToastMgr.shortToast(AddNewAddressActivity.this,"请求失败！");
-                                }
-
-                                @Override
-                                public void onResponse(Response response) throws IOException {
-                                    try {
-                                        if (null != response.cacheResponse()) {
-                                        } else {
-                                            try {
-                                                String str1 = response.body().string();
-                                                JSONObject jsonObject = new JSONObject(str1);
-                                                Boolean success = jsonObject.getBoolean("success");
-                                                if(success){
-                                                    AppToastMgr.shortToast(AddNewAddressActivity.this, " 新增地址成功！" );
-                                                    appManager.finishActivity();
-                                                }else{
-                                                    String errorMsg = jsonObject.getString("errorMsg");
-                                                    AppToastMgr.shortToast(AddNewAddressActivity.this,"修改失败！原因：" + errorMsg);
-                                                }
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
+                    if (null != response.cacheResponse()) {
+                    } else {
+                        try {
+                            String str1 = response.body().string();
+                            JSONObject jsonObject = new JSONObject(str1);
+                            Boolean success = jsonObject.getBoolean("success");
+                            if (success) {
+                                AppToastMgr.shortToast(EditAddrssActivity.this, "修改成功" );
+                                appManager.finishActivity(EditAddrssActivity.this);
+                            } else {
+                                String errorMsg = jsonObject.getString("errorMsg");
+                                AppToastMgr.shortToast(EditAddrssActivity.this, "修改失败！原因：" + errorMsg);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    }else{
-                        AppToastMgr.shortToast(AddNewAddressActivity.this, " 请求失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -135,6 +135,8 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.rl_address_comfirmExchange:
+                Intent intentChooseAddress = new Intent(ComfirmExchangeActivity.this, AddressManagerActivity.class);
+                startActivity(intentChooseAddress);
                 break;
             case R.id.rl_exchange_ways:
                 List<String> names = new ArrayList<>();
@@ -169,9 +171,15 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
     }
     public void setData(ConfirmDetail data) {
         if(data.getAddressId() == 0){
+            btn_create_address.setEnabled(true);
+            rl_address_item.setOnClickListener(null);
+            rl_address_item.setEnabled(false);
+            rl_address_item.setClickable(false);
             rl_address_item.setVisibility(View.GONE);
             btn_create_address.setVisibility(View.VISIBLE);
         }else{
+            btn_create_address.setEnabled(false);
+            rl_address_item.setEnabled(true);
             rl_address_item.setVisibility(View.VISIBLE);
             btn_create_address.setVisibility(View.GONE);
             tv_address_person.setText(data.getConsignee());

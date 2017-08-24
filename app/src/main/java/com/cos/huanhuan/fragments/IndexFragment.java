@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.ExchangeDetailActivity;
 import com.cos.huanhuan.activitys.LoginActivity;
+import com.cos.huanhuan.activitys.SearchActivity;
 import com.cos.huanhuan.adapter.CardGridAdapter;
 import com.cos.huanhuan.model.CardExchange;
 import com.cos.huanhuan.model.Classify;
@@ -166,32 +167,38 @@ public class IndexFragment extends Fragment{
                 AppToastMgr.shortToast(getActivity(),"发布" + text);
             }
         });
-
-        titleBar.etTextWatcherListener(new TextWatcher() {
+        titleBar.getEtSearch().setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                ExchangeList exChange = new ExchangeList();
-                String searchText = titleBar.getEtText();
-                if(listClassify != null && listClassify.size() > 0 && selectedTab != 0){
-                    exChange.setCid(listClassify.get(selectedTab-1).getClassifyId());
-                }else{
-                    exChange.setCid("");
-                }
-                exChange.setEid("");
-                exChange.setSea(searchText);
-                getData(exChange);
+            public void onClick(View view) {
+                Intent intentSearch = new Intent(getActivity(), SearchActivity.class);
+                startActivity(intentSearch);
             }
         });
+//        titleBar.etTextWatcherListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                ExchangeList exChange = new ExchangeList();
+//                String searchText = titleBar.getEtText();
+//                if(listClassify != null && listClassify.size() > 0 && selectedTab != 0){
+//                    exChange.setCid(listClassify.get(selectedTab-1).getClassifyId());
+//                }else{
+//                    exChange.setCid("");
+//                }
+//                exChange.setEid("");
+//                exChange.setSea(searchText);
+//                getData(exChange);
+//            }
+//        });
 
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);

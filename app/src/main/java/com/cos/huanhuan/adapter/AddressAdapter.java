@@ -60,41 +60,52 @@ public class AddressAdapter extends BaseAdapter {
                 viewHolder.tv_address_delete= (TextView) convertView.findViewById(R.id.tv_address_delete);
                 viewHolder.adapter_edit= (RelativeLayout) convertView.findViewById(R.id.rl_adapter_edit);
                 viewHolder.adapter_setDefault= (ImageButton) convertView.findViewById(R.id.ib_adapter_address);
+                viewHolder.adapter_address_line = (View) convertView.findViewById(R.id.adapter_address_line);
                 convertView.setTag(viewHolder);//绑定ViewHolder对象
             }else{
                 viewHolder = (ViewHolder) convertView.getTag();//取出ViewHolder对象
             }
             viewHolder.address_person.setText(listAddress.get(position).getName());
             viewHolder.address_phone.setText(listAddress.get(position).getPhone());
-            String address = listAddress.get(position).getProvince() + listAddress.get(position).getCity() + listAddress.get(position).getCounty();
+            String address = listAddress.get(position).getProvince() + listAddress.get(position).getCity() + listAddress.get(position).getCounty() + listAddress.get(position).getAddress();
             if(listAddress.get(position).getDefault()){
-                String commentDetail = "收货地址" + address + "<font color='#FF6FA2'>【默认地址】</font>";
+                String commentDetail = "收货地址：" + address + "<font color='#FF6FA2'>【默认地址】</font>";
                 viewHolder.address_detail.setText(Html.fromHtml(commentDetail));
+                viewHolder.adapter_setDefault.setImageResource(R.mipmap.circle_ok);
+                viewHolder.adapter_setDefault_text.setText("默认地址");
+                viewHolder.adapter_setDefault_text.setTextColor(context.getResources().getColor(R.color.titleBarTextColor));
             }else{
-                viewHolder.address_detail.setText("收货地址" + address);
+                viewHolder.address_detail.setText("收货地址：" + address);
+                viewHolder.adapter_setDefault.setImageResource(R.mipmap.circle);
+                viewHolder.adapter_setDefault_text.setText("设为默认");
+                viewHolder.adapter_setDefault_text.setTextColor(context.getResources().getColor(R.color.grey_text_desc));
             }
             if(listAddress.get(position).getManage()){
                 viewHolder.adapter_edit.setVisibility(View.VISIBLE);
+                viewHolder.adapter_address_line.setVisibility(View.VISIBLE);
             }else{
                 viewHolder.adapter_edit.setVisibility(View.GONE);
+                viewHolder.adapter_address_line.setVisibility(View.GONE);
             }
-            final ViewHolder finalViewHolder = viewHolder;
+            final ImageButton imageButton = viewHolder.adapter_setDefault;
             viewHolder.adapter_setDefault.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    imageButtonClickListener.imageButtonClick(finalViewHolder.adapter_setDefault,position);
+                    imageButtonClickListener.imageButtonClick(imageButton,position);
                 }
             });
+            final TextView address_edit = viewHolder.address_edit;
             viewHolder.address_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    editClickListener.editClick(finalViewHolder.address_edit,position);
+                    editClickListener.editClick(address_edit,position);
                 }
             });
+            final TextView address_delete = viewHolder.tv_address_delete;
             viewHolder.tv_address_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    deleteClickListener.deleteClick(finalViewHolder.tv_address_delete,position);
+                    deleteClickListener.deleteClick(address_delete,position);
                 }
             });
             return convertView;
@@ -109,6 +120,7 @@ public class AddressAdapter extends BaseAdapter {
             public TextView adapter_setDefault_text;
             public RelativeLayout adapter_edit;
             public ImageButton adapter_setDefault;
+            public View adapter_address_line;
         }
 
         public interface ImageButtonClick{
@@ -120,11 +132,16 @@ public class AddressAdapter extends BaseAdapter {
         public interface DeleteClick{
             void deleteClick(View view, int position);
         }
-
+        public interface RlClickVisiable{
+            void rlClickVisiable(View view, int position);
+        }
         private ImageButtonClick imageButtonClickListener;
         private EditClick editClickListener;
         private DeleteClick deleteClickListener;
-
+        private RlClickVisiable rlClickVisiableListener;
+        public void setRlClickVisiableClick(RlClickVisiable listener){
+            this.rlClickVisiableListener = listener;
+        }
         public void setImageButtonClick(ImageButtonClick listener){
             this.imageButtonClickListener = listener;
         }

@@ -3,6 +3,7 @@ package com.cos.huanhuan.utils;
 import android.util.Log;
 
 import com.cos.huanhuan.model.AddressDTO;
+import com.cos.huanhuan.model.AddressVO;
 import com.cos.huanhuan.model.CommentDTO;
 import com.cos.huanhuan.model.CommentMuti;
 import com.cos.huanhuan.model.CommentSimple;
@@ -409,4 +410,66 @@ public class HttpRequest {
                 .content(new Gson().toJson(addressDTO))
                 .build()
                 .execute(stringCallback);}
+
+    /**
+     * 获取用户地址
+     * @param userId
+     * @param callback
+     */
+    public static void getMembersAddress(String userId, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Addresses";
+        OkHttpUtils.get().url(url)
+                .addParams("userId",userId)
+                .build()
+                .execute(callback);
+    }
+
+    public static void setDefaultAddress(String id, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Addresses/Default/" + id;
+        OkHttpClient client = new OkHttpClient();
+        RegisterModel registerModel = new RegisterModel();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(registerModel));
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+
+    public static void deleteAddress(String id, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Addresses/" + id;
+        OkHttpClient client = new OkHttpClient();
+        RegisterModel registerModel = new RegisterModel();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(registerModel));
+        Request request = new Request.Builder()
+                .url(url)
+                .delete(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+
+    public static void editAddress(AddressVO addressVO, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Addresses/" + addressVO.getId();
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(addressVO));
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+
+    /**
+     * 获取热门搜索
+     * @param callback
+     */
+    public static void getHotSearch(StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "HotSearches";
+        OkHttpUtils.get().url(url)
+                .build()
+                .execute(callback);
+    }
 }

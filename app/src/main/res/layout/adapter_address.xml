@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:layout_marginBottom="10dp"
+    android:paddingBottom="15dp"
+    android:background="@color/addAddressBack"
     >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="15dp"
+        android:background="@color/white"
+        >
         <TextView
             android:id="@+id/tv_adapter_address_person_text"
             android:layout_width="wrap_content"
@@ -39,12 +46,14 @@
             android:layout_below="@id/tv_adapter_address_person_text"
             android:layout_marginTop="15dp"
             android:orientation="horizontal"
+            android:paddingBottom="15dp"
             >
             <TextView
                 android:id="@+id/tv_address_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="收货地址：浙江省杭州市江干区闸弄口街道艮山支三路聚落5号"
+                android:textColor="@color/grey_text_desc"
                 android:textSize="@dimen/action_text_size"
                 />
         </LinearLayout>
@@ -63,7 +72,7 @@
             android:layout_below="@id/adapter_address_line"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:visibility="gone"
+            android:visibility="visible"
             >
             <ImageButton
                 android:id="@+id/ib_adapter_address"
@@ -80,6 +89,7 @@
                 android:text="设为默认"
                 android:layout_marginLeft="5dp"
                 android:layout_centerVertical="true"
+                android:textColor="@color/grey_text_desc"
                 />
             <TextView
                 android:id="@+id/tv_address_edit"
@@ -87,10 +97,11 @@
                 android:layout_height="wrap_content"
                 android:text="编辑"
                 android:drawableLeft="@mipmap/address_edit"
-                android:layout_toLeftOf="@id/tv_address_delete"
+                android:layout_toLeftOf="@+id/tv_address_delete"
                 android:layout_marginRight="15dp"
                 android:layout_centerVertical="true"
                 android:drawablePadding="5dp"
+                android:textColor="@color/grey_text_desc"
                 />
             <TextView
                 android:id="@+id/tv_address_delete"
@@ -101,6 +112,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:drawablePadding="5dp"
+                android:textColor="@color/grey_text_desc"
                 />
         </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

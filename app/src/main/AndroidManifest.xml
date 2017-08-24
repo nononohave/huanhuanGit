@@ -160,7 +160,10 @@
         <activity android:name=".activitys.ExchangeCommentActivity" />
         <activity android:name=".activitys.ComfirmExchangeActivity" />
         <activity android:name=".activitys.AddNewAddressActivity" />
-        <activity android:name=".activitys.AddressManagerActivity"></activity>
+        <activity android:name=".activitys.AddressManagerActivity" />
+        <activity android:name=".activitys.EditAddrssActivity" />
+        <activity android:name=".activitys.SearchActivity" />
+        <activity android:name=".activitys.SearchResultActivity"></activity>
     </application>
 
 </manifest>

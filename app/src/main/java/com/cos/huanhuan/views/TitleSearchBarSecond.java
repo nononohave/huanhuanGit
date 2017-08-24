@@ -20,16 +20,16 @@ import com.cos.huanhuan.utils.DensityUtils;
 
 import java.util.LinkedList;
 
-public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
+public class TitleSearchBarSecond extends ViewGroup implements View.OnClickListener {
     private static final int DEFAULT_MAIN_TEXT_SIZE = 17;
     private static final int DEFAULT_SUB_TEXT_SIZE = 12;
     private static final int DEFAULT_ACTION_TEXT_SIZE = 15;
-    private static final int DEFAULT_TITLE_BAR_HEIGHT = 104;
+    private static final int DEFAULT_TITLE_BAR_HEIGHT = 74;
 
     private static final String STATUS_BAR_HEIGHT_RES_NAME = "status_bar_height";
 
     private EditText et_search_title;
-    private TextView tv_title_publish;
+    private TextView tv_title_publish,tv_title_cancel;
     private TabLayout top_titleBar;
     //private TextView mLeftText;
 //    private LinearLayout mRightLayout;
@@ -51,17 +51,17 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
     private int mActionTextColor;
     private int mHeight;
 
-    public TitleSearchBar(Context context) {
+    public TitleSearchBarSecond(Context context) {
         super(context);
         init(context);
     }
 
-    public TitleSearchBar(Context context, AttributeSet attrs) {
+    public TitleSearchBarSecond(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public TitleSearchBar(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TitleSearchBarSecond(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
@@ -77,9 +77,10 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
     }
 
     private void initView(Context context) {
-        View view = View.inflate(context, R.layout.search_titlebar, null);
+        View view = View.inflate(context, R.layout.search_titlebar_second, null);
         et_search_title = (EditText) view.findViewById(R.id.et_search_title);
         tv_title_publish = (TextView) view.findViewById(R.id.tv_title_publish);
+        tv_title_cancel = (TextView) view.findViewById(R.id.tv_title_cancel);
         top_titleBar = (TabLayout) view.findViewById(R.id.top_titleBar);
 
         mLeftLayout = new LinearLayout(context);
@@ -125,9 +126,16 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
         tv_title_publish.setOnClickListener(l);
     }
 
+    public void setLeftButtonClick(OnClickListener l){tv_title_cancel.setOnClickListener(l);}
+
     public String getEtText(){
         return et_search_title.getText().toString();
     }
+
+    public void setEtText(String resText){
+        et_search_title.setText(resText);
+    }
+
     public EditText getEtSearch(){
         return et_search_title;
     }
@@ -135,6 +143,14 @@ public class TitleSearchBar extends ViewGroup implements View.OnClickListener {
     public void setRightTextAndColor(CharSequence resText,int resTextColor){
         tv_title_publish.setText(resText);
         tv_title_publish.setTextColor(resTextColor);
+    }
+
+    public void setRightVisiable(int i){
+        if(i == 0){
+            tv_title_publish.setVisibility(GONE);
+        }else{
+            tv_title_publish.setVisibility(VISIBLE);
+        }
     }
 
     public void etTextWatcherListener(TextWatcher textWatcher){

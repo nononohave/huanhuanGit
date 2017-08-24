@@ -53,4 +53,5 @@
 
     <color name="comment_text">#4083A9</color>
     <color name="addAddressBack">#F5F5F5</color>
+    <color name="searchitem">#ecebeb</color>
 </resources>

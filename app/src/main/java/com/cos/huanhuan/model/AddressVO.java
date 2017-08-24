@@ -1,10 +1,12 @@
 package com.cos.huanhuan.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2017/8/23.
  */
 
-public class AddressVO {
+public class AddressVO implements Serializable{
 
     private int id;//地址id
     private int userId;//用户id

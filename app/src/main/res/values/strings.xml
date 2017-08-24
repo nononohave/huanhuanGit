@@ -112,4 +112,6 @@
     <string name="manage">管理</string>
     <string name="addressManage">地址管理</string>
     <string name="chooseAddress">选择收货地址</string>
+    <string name="editAddress">编辑地址</string>
+    <string name="comfrim">确定</string>
 </resources>

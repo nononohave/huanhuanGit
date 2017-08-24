@@ -14,6 +14,15 @@ public class AddressDTO {
     private String ZipCode;//邮政编码
     private String Name;//姓名
     private String Phone;//手机号码
+    private Boolean isDefault;//是否默认
+
+    public Boolean getDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(Boolean aDefault) {
+        isDefault = aDefault;
+    }
 
     public int getUserId() {
         return userId;
