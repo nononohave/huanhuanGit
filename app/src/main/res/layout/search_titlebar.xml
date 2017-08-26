@@ -24,6 +24,7 @@
                 android:hint="海贼王，日漫"
                 android:textSize="@dimen/text_size_small"
                 android:drawableLeft="@mipmap/home_search"
+                android:singleLine="true"
                 android:editable="false"
                 android:focusable="false"
                 />

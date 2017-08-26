@@ -114,4 +114,5 @@
     <string name="chooseAddress">选择收货地址</string>
     <string name="editAddress">编辑地址</string>
     <string name="comfrim">确定</string>
+    <string name="personal">我的</string>
 </resources>

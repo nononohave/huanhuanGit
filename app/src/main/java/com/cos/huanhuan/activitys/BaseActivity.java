@@ -17,11 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppNetworkMgr;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
+import com.cos.huanhuan.utils.SharedPreferencesHelper;
 import com.cos.huanhuan.views.TitleBar;
 
 import org.json.JSONException;
@@ -38,6 +40,7 @@ public class BaseActivity extends AppCompatActivity
     private boolean mIsSelected;
     public ViewGroup contentView;
     private String userId;
+    private SharedPreferencesHelper sharedPreferencesHelper;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +64,7 @@ public class BaseActivity extends AppCompatActivity
             isImmersive = true;
         }
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-
+        sharedPreferencesHelper = new SharedPreferencesHelper(BaseActivity.this);
         titleBar = (TitleBar) findViewById(R.id.title_bar);
         contentView=(ViewGroup) findViewById(R.id.base_contentview);
     }
@@ -77,17 +80,12 @@ public class BaseActivity extends AppCompatActivity
     }
 
     public String getUserId(){
-        AppACache appACache = AppACache.get(BaseActivity.this);
-        JSONObject userObj = appACache.getAsJSONObject("userJsonData");
-        if(userObj != null){
-            try {
-                userId = userObj.getString("id");
-                if(AppStringUtils.isEmpty(userId)){
-                    AppToastMgr.shortToast(BaseActivity.this, "用户未登录");
-                    return "";
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+        UserValueData userValueData = sharedPreferencesHelper.getObject("userData");
+        if(userValueData != null){
+            userId = String.valueOf(userValueData.getId());
+            if(AppStringUtils.isEmpty(userId)){
+                AppToastMgr.shortToast(BaseActivity.this, "用户未登录");
+                return "";
             }
         }else{
             Intent intent = new Intent(BaseActivity.this, LoginActivity.class);

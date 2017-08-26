@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.cos.huanhuan.MainActivity;
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppNetworkMgr;
@@ -28,6 +29,8 @@ import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
 import com.cos.huanhuan.utils.HttpRequest;
+import com.cos.huanhuan.utils.JsonUtils;
+import com.cos.huanhuan.utils.SharedPreferencesHelper;
 import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.TitleBar;
 import com.squareup.okhttp.Request;
@@ -62,6 +65,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private UMShareAPI mShareAPI;
 
+    private SharedPreferencesHelper sharedPreferencesHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +83,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
 
+        //存储类
+        sharedPreferencesHelper = new SharedPreferencesHelper(LoginActivity.this);
         mShareAPI = UMShareAPI.get(this);
 
 
@@ -131,25 +138,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         iv_wxLogin.setOnClickListener(this);
         iv_wbLogin.setOnClickListener(this);
         iv_qqLogin.setOnClickListener(this);
-
-        String cachePhone = AppACache.get(this).getAsString("phone");
-        String loginPhone = AppACache.get(this).getAsString("loginPhone");
-        String loginPass = AppACache.get(this).getAsString("loginPass");
-        if(AppStringUtils.isNotEmpty(cachePhone)) {
-            et_phone.setText(cachePhone);
-            et_password.requestFocus();
-            isPhoneEdit = true;
-        }
-
-        if(AppStringUtils.isNotEmpty(loginPhone)){
-            et_phone.setText(loginPhone);
-            isPhoneEdit = true;
-        }
-
-        if(AppStringUtils.isNotEmpty(loginPass)){
-            et_password.setText(loginPass);
-            isPassEdit = true;
-        }
 
         //手机号文本框监听事件
         et_phone.addTextChangedListener(new TextWatcher() {
@@ -252,13 +240,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                         String errorMsg = jsonObject.getString("errorMsg");
                                         if(success){
                                             JSONObject obj = jsonObject.getJSONObject("data");
-                                            AppACache appACache = AppACache.get(LoginActivity.this);
-                                            appACache.put("userJsonData",obj);//将用户的数据json串存入到缓存中
-                                            AppToastMgr.shortToast(LoginActivity.this, " 登录");
                                             Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
                                             startActivity(intent);
-                                            appACache.put("loginPhone",phone);
-                                            appACache.put("loginPass",password);
+                                            UserValueData userValueData = JsonUtils.fromJson(obj.toString(),UserValueData.class);
+                                            sharedPreferencesHelper.saveObject("userData",userValueData);
                                         }else{
                                             AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
                                         }

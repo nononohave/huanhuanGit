@@ -1,5 +1,7 @@
 package com.cos.huanhuan.model;
 
+import com.cos.huanhuan.utils.HttpRequest;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,60 @@ public class UserValueData implements Serializable{
     private Double shenJia;//身家
     private int surplus;//剩余兑换次数
     private Boolean isVip;//是否是会员
+    private String gender;//性别
+    private String describe;//个性签名
+    private String phoneMob;//手机号
+    private String imAlipay;//支付宝账号
+    private Double deposit;//押金
+    private String RealName;//真实姓名
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
+    }
+
+    public String getPhoneMob() {
+        return phoneMob;
+    }
+
+    public void setPhoneMob(String phoneMob) {
+        this.phoneMob = phoneMob;
+    }
+
+    public String getImAlipay() {
+        return imAlipay;
+    }
+
+    public void setImAlipay(String imAlipay) {
+        this.imAlipay = imAlipay;
+    }
+
+    public Double getDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(Double deposit) {
+        this.deposit = deposit;
+    }
+
+    public String getRealName() {
+        return RealName;
+    }
+
+    public void setRealName(String realName) {
+        RealName = realName;
+    }
 
     public int getId() {
         return id;
@@ -23,7 +79,7 @@ public class UserValueData implements Serializable{
     }
 
     public String getPortrait() {
-        return portrait;
+        return HttpRequest.IMG_HUANHUAN_HOST + portrait;
     }
 
     public void setPortrait(String portrait) {

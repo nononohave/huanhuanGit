@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.fragments.CooperateFragment;
 import com.cos.huanhuan.fragments.IndexFragment;
+import com.cos.huanhuan.fragments.PersonFragment;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.views.BottomBarItem;
 import com.cos.huanhuan.views.BottomBarLayout;
@@ -73,7 +74,7 @@ public class IndexActivity extends FragmentActivity{
         microFragment.setArguments(bundle3);
         mFragmentList.add(microFragment);
 
-        TabFragment meFragment = new TabFragment();
+        PersonFragment meFragment = new PersonFragment();
         Bundle bundle4 = new Bundle();
         bundle4.putString(TabFragment.CONTENT,"我的");
         meFragment.setArguments(bundle4);

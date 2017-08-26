@@ -35,6 +35,7 @@
                 android:paddingRight="5dp"
                 android:hint="海贼王，日漫"
                 android:textSize="@dimen/text_size_small"
+                android:singleLine="true"
                 android:drawableLeft="@mipmap/home_search"
                 />
             <TextView
