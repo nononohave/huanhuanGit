@@ -87,7 +87,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         sharedPreferencesHelper = new SharedPreferencesHelper(LoginActivity.this);
         mShareAPI = UMShareAPI.get(this);
 
-
         leftButtonClick(new View.OnClickListener(){
             @Override
             public void onClick(View view) {

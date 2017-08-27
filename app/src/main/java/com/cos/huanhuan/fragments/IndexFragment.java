@@ -125,14 +125,8 @@ public class IndexFragment extends Fragment{
         titleBar.setDividerColor(getResources().getColor(R.color.dividLineColor));
 
         tabLayout = titleBar.getTabLayout();
-        tabLayout.addTab(tabLayout.newTab().setText("推荐"));
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                PublicView.setIndicator(tabLayout,0,0);
-            }
-        });
+        tabLayout.addTab(tabLayout.newTab().setText("推荐"));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -365,6 +359,13 @@ public class IndexFragment extends Fragment{
         for (Classify claffify:listClassify ) {
             tabLayout.addTab(tabLayout.newTab().setText(claffify.getClassName()));
         }
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                 PublicView.setIndicator(tabLayout,0,0);
+                //PublicView.setIndicatorNew(getActivity(),tabLayout);
+            }
+        });
     }
 
     private void getData(ExchangeList exChange) {

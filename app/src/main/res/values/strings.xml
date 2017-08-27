@@ -115,4 +115,15 @@
     <string name="editAddress">编辑地址</string>
     <string name="comfrim">确定</string>
     <string name="personal">我的</string>
+    <string name="login_register">登录/注册</string>
+    <string name="person_value">我的身价</string>
+    <string name="person_vip">我的会员</string>
+    <string name="person_money">我的押金</string>
+    <string name="person_publish">我的发布</string>
+    <string name="person_exchange">我的兑换</string>
+    <string name="personal_data">个人资料</string>
+    <string name="edit_nickName">修改昵称</string>
+    <string name="edit_personDesc">个性签名</string>
+    <string name="setting">设置</string>
+    <string name="add">添加</string>
 </resources>

@@ -1,29 +1,23 @@
 package com.cos.huanhuan.activitys;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.adapter.AddressAdapter;
 import com.cos.huanhuan.model.AddressVO;
-import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
-import com.cos.huanhuan.utils.FastBlur;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
-import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.TitleBar;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -39,17 +33,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 选择地址
+ * 地址管理
  */
-public class AddressManagerActivity extends BaseActivity implements AdapterView.OnItemClickListener{
+public class ManageAddressActivity extends BaseActivity{
 
     private AppManager appManager;
     private String userId;
     private ListView listView;
     private AddressAdapter addressAdapter;
     private List<AddressVO> listAddress;
-    private MyHandler handler;
-    public static int SELECTED_ADDRESS = 334;
+    private ManageAddressActivity.MyHandler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,38 +59,38 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
         userId = getUserId();
-        handler = new MyHandler();
+        handler = new ManageAddressActivity.MyHandler();
         leftButtonClick(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 appManager.finishActivity();
             }
         });
-        setRightButton(new TitleBar.TextAction(this.getResources().getString(R.string.manage)) {
-            @Override
-            public void performAction(View view) {
-                //编辑栏展示隐藏
-                if(listAddress != null && listAddress.size() > 0){
-                    if(listAddress.get(0).getManage()){
-                        for (int i = 0; i < listAddress.size(); i++) {
-                            listAddress.get(i).setManage(false);
-                        }
-                    }else{
-                        for (int i = 0; i < listAddress.size(); i++) {
-                            listAddress.get(i).setManage(true);
-                        }
-                    }
-                }
-                addressAdapter.notifyDataSetChanged();
-            }
-        });
-//        setRightButton(new TitleBar.TextAction(this.getResources().getString(R.string.add_new_address)) {
+//        setRightButton(new TitleBar.TextAction(this.getResources().getString(R.string.manage)) {
 //            @Override
 //            public void performAction(View view) {
-//                Intent intentAdd = new Intent(AddressManagerActivity.this,AddNewAddressActivity.class);
-//                startActivity(intentAdd);
+//                //编辑栏展示隐藏
+//                if(listAddress != null && listAddress.size() > 0){
+//                    if(listAddress.get(0).getManage()){
+//                        for (int i = 0; i < listAddress.size(); i++) {
+//                            listAddress.get(i).setManage(false);
+//                        }
+//                    }else{
+//                        for (int i = 0; i < listAddress.size(); i++) {
+//                            listAddress.get(i).setManage(true);
+//                        }
+//                    }
+//                }
+//                addressAdapter.notifyDataSetChanged();
 //            }
 //        });
+        setRightButton(new TitleBar.TextAction(this.getResources().getString(R.string.add)) {
+            @Override
+            public void performAction(View view) {
+                Intent intentAdd = new Intent(ManageAddressActivity.this,AddNewAddressActivity.class);
+                startActivity(intentAdd);
+            }
+        });
         initView();
         initData();
     }
@@ -110,10 +103,9 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
 
     private void initView() {
         listView = (ListView) findViewById(R.id.lv_address_manager);
-        listView.setOnItemClickListener(this);
 
         listAddress = new ArrayList<AddressVO>();
-        addressAdapter = new AddressAdapter(AddressManagerActivity.this,listAddress);
+        addressAdapter = new AddressAdapter(ManageAddressActivity.this,listAddress);
         listView.setAdapter(addressAdapter);
         //默认地址选择
         addressAdapter.setImageButtonClick(new AddressAdapter.ImageButtonClick() {
@@ -123,7 +115,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
                 HttpRequest.setDefaultAddress(String.valueOf(listAddress.get(position).getId()), new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(AddressManagerActivity.this,"请求失败！");
+                        AppToastMgr.shortToast(ManageAddressActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -144,7 +136,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
                                         message.what=1;//标志是哪个线程传数据
                                     }else{
                                         String errorMsg = jsonObject.getString("errorMsg");
-                                        AppToastMgr.shortToast(AddressManagerActivity.this,"修改失败！原因：" + errorMsg);
+                                        AppToastMgr.shortToast(ManageAddressActivity.this,"修改失败！原因：" + errorMsg);
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -162,7 +154,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
         addressAdapter.setEditClick(new AddressAdapter.EditClick() {
             @Override
             public void editClick(View view, int position) {
-                Intent editIntent = new Intent(AddressManagerActivity.this, EditAddrssActivity.class);
+                Intent editIntent = new Intent(ManageAddressActivity.this, EditAddrssActivity.class);
                 editIntent.putExtra("addressId",listAddress.get(position).getId());
                 editIntent.putExtra("data",listAddress.get(position));
                 startActivity(editIntent);
@@ -174,43 +166,43 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
             @Override
             public void deleteClick(View view, final int position) {
                 //if(!listAddress.get(position).getDefault()){
-                    HttpRequest.deleteAddress(String.valueOf(listAddress.get(position).getId()), new Callback() {
-                        @Override
-                        public void onFailure(Request request, IOException e) {
-                            AppToastMgr.shortToast(AddressManagerActivity.this, "请求失败！");
-                        }
+                HttpRequest.deleteAddress(String.valueOf(listAddress.get(position).getId()), new Callback() {
+                    @Override
+                    public void onFailure(Request request, IOException e) {
+                        AppToastMgr.shortToast(ManageAddressActivity.this, "请求失败！");
+                    }
 
-                        @Override
-                        public void onResponse(Response response) throws IOException {
-                            try {
-                                if (null != response.cacheResponse()) {
-                                } else {
-                                    try {
-                                        String str1 = response.body().string();
-                                        JSONObject jsonObject = new JSONObject(str1);
-                                        Boolean success = jsonObject.getBoolean("success");
-                                        if (success) {
-                                            Message message = new Message();
-                                            Bundle bundle = new Bundle();
-                                            bundle.putString("position", String.valueOf(position));
-                                            message.setData(bundle);
-                                            handler.sendMessage(message);//发送message信息
-                                            message.what = 2;//标志是哪个线程传数据
-                                        } else {
-                                            String errorMsg = jsonObject.getString("errorMsg");
-                                            AppToastMgr.shortToast(AddressManagerActivity.this, "修改失败！原因：" + errorMsg);
-                                        }
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+                        try {
+                            if (null != response.cacheResponse()) {
+                            } else {
+                                try {
+                                    String str1 = response.body().string();
+                                    JSONObject jsonObject = new JSONObject(str1);
+                                    Boolean success = jsonObject.getBoolean("success");
+                                    if (success) {
+                                        Message message = new Message();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("position", String.valueOf(position));
+                                        message.setData(bundle);
+                                        handler.sendMessage(message);//发送message信息
+                                        message.what = 2;//标志是哪个线程传数据
+                                    } else {
+                                        String errorMsg = jsonObject.getString("errorMsg");
+                                        AppToastMgr.shortToast(ManageAddressActivity.this, "修改失败！原因：" + errorMsg);
                                     }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
+                    }
+                });
 //                }else{
-//                    AppToastMgr.shortToast(AddressManagerActivity.this, "不能删除默认地址，请重新选择或者修改默认地址");
+//                    AppToastMgr.shortToast(ManageAddressActivity.this, "不能删除默认地址，请重新选择或者修改默认地址");
 //                }
             }
         });
@@ -221,7 +213,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
         HttpRequest.getMembersAddress(userId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(AddressManagerActivity.this,"请求失败！");
+                AppToastMgr.shortToast(ManageAddressActivity.this,"请求失败！");
             }
 
             @Override
@@ -240,7 +232,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
                         }
                         addressAdapter.notifyDataSetChanged();
                     }else{
-                        AppToastMgr.shortToast(AddressManagerActivity.this, " 登录失败！原因：" + errorMsg);
+                        AppToastMgr.shortToast(ManageAddressActivity.this, " 登录失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -249,13 +241,6 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
         });
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        Intent returnIntent =new Intent();
-        returnIntent.putExtra("selectItem", listAddress.get(position));
-        setResult(SELECTED_ADDRESS,returnIntent);
-        appManager.finishActivity();
-    }
 
     class MyHandler extends Handler
     {

@@ -10,11 +10,13 @@ import com.cos.huanhuan.model.CommentSimple;
 import com.cos.huanhuan.model.CoopDetail;
 import com.cos.huanhuan.model.CoopList;
 import com.cos.huanhuan.model.ExchangeList;
+import com.cos.huanhuan.model.PersonData;
 import com.cos.huanhuan.model.PublishCoop;
 import com.cos.huanhuan.model.PublishExchanges;
 import com.cos.huanhuan.model.RegisterModel;
 import com.cos.huanhuan.model.UserInfo;
 import com.cos.huanhuan.model.UserLogin;
+import com.cos.huanhuan.model.UserValueData;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -471,5 +473,17 @@ public class HttpRequest {
         OkHttpUtils.get().url(url)
                 .build()
                 .execute(callback);
+    }
+
+    public static void changePersonData(PersonData personData, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Members/" + personData.getId();
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(personData));
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
     }
 }

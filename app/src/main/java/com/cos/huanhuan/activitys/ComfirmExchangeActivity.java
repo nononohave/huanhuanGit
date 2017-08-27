@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.MainActivity;
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.model.AddressVO;
 import com.cos.huanhuan.model.Comment;
 import com.cos.huanhuan.model.ConfirmDetail;
 import com.cos.huanhuan.model.UserValueData;
@@ -50,6 +51,8 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
     private UserValueData userValueData;
     private String userId;
     private String examine;
+    public static int CHOOSE_ADDRESS = 333;
+    private ConfirmDetail confirmDetailItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +117,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                     if(success) {
                         JSONObject obj =jsonObject.getJSONObject("data");
                         ConfirmDetail confirmDetail = JsonUtils.fromJson(obj.toString(),ConfirmDetail.class);
+                        confirmDetailItem = confirmDetail;
                         setData(confirmDetail);
                     }else{
                         AppToastMgr.shortToast(ComfirmExchangeActivity.this, " 请求失败！原因：" + errorMsg);
@@ -126,17 +130,11 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        initData();
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.rl_address_comfirmExchange:
                 Intent intentChooseAddress = new Intent(ComfirmExchangeActivity.this, AddressManagerActivity.class);
-                startActivity(intentChooseAddress);
+                startActivityForResult(intentChooseAddress,CHOOSE_ADDRESS);
                 break;
             case R.id.rl_exchange_ways:
                 List<String> names = new ArrayList<>();
@@ -162,6 +160,22 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                 break;
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CHOOSE_ADDRESS && resultCode == AddressManagerActivity.SELECTED_ADDRESS) {
+            AddressVO selectAddress = (AddressVO) data.getSerializableExtra("selectItem");
+            if(confirmDetailItem != null){
+                confirmDetailItem.setAddressId(selectAddress.getId());
+                confirmDetailItem.setConsignee(selectAddress.getName());
+                confirmDetailItem.setPhoneMob(selectAddress.getPhone());
+                confirmDetailItem.setAddress(selectAddress.getProvince() + selectAddress.getCity() + selectAddress.getCounty() + selectAddress.getAddress());
+                setData(confirmDetailItem);
+            }
+        }
+    }
+
     private SelectDialog showDialog(SelectDialog.SelectDialogListener listener, List<String> names) {
         SelectDialog dialog = new SelectDialog(this, R.style.transparentFrameWindowStyle, listener, names);
         if (!this.isFinishing()) {

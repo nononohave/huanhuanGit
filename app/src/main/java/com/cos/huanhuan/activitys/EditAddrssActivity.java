@@ -96,6 +96,7 @@ public class EditAddrssActivity extends BaseActivity implements View.OnClickList
 
         if(addressVO != null){
             et_consignee.setText(addressVO.getName());
+            et_consignee.setSelection(addressVO.getName().length());
             et_phone.setText(addressVO.getPhone());
             et_detail_address.setText(addressVO.getAddress());
             provice = addressVO.getProvince();

@@ -1,5 +1,6 @@
 package com.cos.huanhuan.fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import android.widget.TextView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.BaseActivity;
 import com.cos.huanhuan.activitys.ExchangeDetailActivity;
+import com.cos.huanhuan.activitys.LoginActivity;
+import com.cos.huanhuan.activitys.PersonalDataActivity;
+import com.cos.huanhuan.activitys.SettingActivity;
 import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
@@ -28,6 +32,7 @@ import com.cos.huanhuan.utils.SharedPreferencesHelper;
 import com.cos.huanhuan.views.CircleImageView;
 import com.cos.huanhuan.views.TitleBar;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.internal.framed.Settings;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
@@ -77,7 +82,8 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
         titleBar.addAction(new TitleBar.ImageAction(R.mipmap.person_setting) {
             @Override
             public void performAction(View view) {
-                AppToastMgr.shortToast(getActivity(),"设置");
+                Intent intentSetting = new Intent(getActivity(),SettingActivity.class);
+                startActivity(intentSetting);
             }
         });
         sharedPreferencesHelper = new SharedPreferencesHelper(getActivity());
@@ -133,7 +139,11 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
                                 person_nickName.setText("暂无昵称");
                             }
                             if(AppStringUtils.isNotEmpty(userValueDataItem.getDescribe())) {
-                                person_Desc.setText(userValueDataItem.getDescribe());
+                                if(userValueDataItem.getDescribe().length() >= 14){
+                                    person_Desc.setText(userValueDataItem.getDescribe().substring(0,13) + "...");
+                                }else{
+                                    person_Desc.setText(userValueDataItem.getDescribe());
+                                }
                             }else{
                                 person_Desc.setText("暂无个性签名");
                             }
@@ -157,6 +167,12 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
+
     public static boolean hasKitKat() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
@@ -169,8 +185,12 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.rl_person_login:
+                Intent intentPersonalData = new Intent(getActivity(), PersonalDataActivity.class);
+                startActivity(intentPersonalData);
                 break;
             case R.id.rl_person_noLogin:
+                Intent intentLogin = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intentLogin);
                 break;
             case R.id.rl_person_value:
                 break;
