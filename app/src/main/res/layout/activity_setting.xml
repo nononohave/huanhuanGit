@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="收货地址"
+            android:text="@string/delivery_address"
             android:textColor="@color/phone_text"
             android:textSize="@dimen/phone_text_size" />
 
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="账户安全"
+            android:text="@string/account_security"
             android:textColor="@color/phone_text"
             android:textSize="@dimen/phone_text_size" />
 
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="关于我们"
+            android:text="@string/aboutUs"
             android:textColor="@color/phone_text"
             android:textSize="@dimen/phone_text_size" />
 
@@ -101,14 +101,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="清除缓存"
+            android:text="@string/clear_cache"
             android:textColor="@color/phone_text"
             android:textSize="@dimen/phone_text_size" />
         <TextView
             android:id="@+id/tv_setting_cacheSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="123K"
             android:layout_toLeftOf="@+id/iv_setting_clearCache"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
@@ -138,7 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="退出账号"
+            android:text="@string/login_out"
             android:textColor="@color/titleBarTextColor"
             android:textSize="@dimen/phone_text_size"
             android:gravity="center_horizontal"

@@ -79,8 +79,13 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 startActivity(intentAddress);
                 break;
             case R.id.rl_setting_save:
+                Intent intentSecurity = new Intent(SettingActivity.this,AccountSecurityActivity.class);
+                startActivity(intentSecurity);
                 break;
             case R.id.rl_setting_aboutUs:
+                Intent intentAboutUS = new Intent(SettingActivity.this,UserAgreeActivity.class);
+                intentAboutUS.putExtra("isUserAgree",2);
+                startActivity(intentAboutUS);
                 break;
             case R.id.rl_settint_clearCache:
                 DataCleanManager.clearAllCache(SettingActivity.this);

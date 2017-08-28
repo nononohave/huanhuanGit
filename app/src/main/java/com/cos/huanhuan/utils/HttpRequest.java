@@ -107,8 +107,8 @@ public class HttpRequest {
     }
 
 
-    public static void getUserAgreeMent(StringCallback stringCallback){
-        String url = TEXT_HUANHUAN_HOST + "Members/UserAgreement";
+    public static void getUserAgreeMent(int id,StringCallback stringCallback){
+        String url = TEXT_HUANHUAN_HOST + "Members/UserAgreement/" + id;
         OkHttpUtils.get().url(url)
                 .build()
                 .execute(stringCallback);

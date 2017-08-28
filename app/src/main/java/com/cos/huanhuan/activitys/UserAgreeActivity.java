@@ -21,6 +21,7 @@ public class UserAgreeActivity extends BaseActivity {
 
     private AppManager appManager;
     private WebView wv_userAgree;
+    private int isUserAgree;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +33,16 @@ public class UserAgreeActivity extends BaseActivity {
         setDividerColor(R.color.dividLineColor);
         setRightTextColor(R.color.titleBarTextColor);
         setTitleTextColor(R.color.titleBarTextColor);
-        setTitle(this.getResources().getString(R.string.userAgreement));
+        isUserAgree = getIntent().getExtras().getInt("isUserAgree");
+        if(isUserAgree == 1){
+            setTitle(this.getResources().getString(R.string.userAgreement));
+        }else if(isUserAgree == 2){
+            isUserAgree = 1;
+            setTitle(this.getResources().getString(R.string.aboutUs));
+        }else{
+            isUserAgree = 2;
+            setTitle(this.getResources().getString(R.string.userAgreement));
+        }
         setBaseContentView(R.layout.activity_user_agree);
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
@@ -51,7 +61,7 @@ public class UserAgreeActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                HttpRequest.getUserAgreeMent(new StringCallback() {
+                HttpRequest.getUserAgreeMent(isUserAgree,new StringCallback() {
                     @Override
                     public void onError(Request request, Exception e) {
                         AppToastMgr.shortToast(UserAgreeActivity.this,"请求失败！");

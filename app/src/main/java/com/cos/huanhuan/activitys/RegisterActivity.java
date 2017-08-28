@@ -178,6 +178,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.tv_serviceAgree:
                 Intent intentUserAgree = new Intent(RegisterActivity.this,UserAgreeActivity.class);
+                intentUserAgree.putExtra("isUserAgree",1);
                 startActivity(intentUserAgree);
                 break;
             case R.id.btn_register_next:

@@ -96,7 +96,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         setRightButton(new TitleBar.TextAction(this.getResources().getString(R.string.register)) {
             @Override
             public void performAction(View view) {
-                Intent intent = new Intent(LoginActivity.this, PublishCoopActivity.class);
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
          });

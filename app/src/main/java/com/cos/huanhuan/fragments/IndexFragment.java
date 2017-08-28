@@ -2,6 +2,7 @@ package com.cos.huanhuan.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.util.LruCache;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -75,6 +77,10 @@ public class IndexFragment extends Fragment{
     private List<CardExchange> listCard;
     private List<Classify> listClassify;
     private int selectedTab = 0;
+    /**
+     * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
+     */
+    private LruCache<String, Bitmap> mMemoryCache;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_index, container, false);
@@ -104,6 +110,16 @@ public class IndexFragment extends Fragment{
 
         getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
+        int maxMemory = (int) Runtime.getRuntime().maxMemory();
+        int cacheSize = maxMemory / 8;
+        // 设置图片缓存大小为程序最大可用内存的1/8
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                return bitmap.getByteCount();
+            }
+        };
+
         titleBar = (TitleSearchBar) getActivity().findViewById(R.id.title_search_bar);
         contentView=(ViewGroup) getActivity().findViewById(R.id.base_search_contentview);
         recyclerview = (RecyclerView) getActivity().findViewById(R.id.index_grid_recycler);
@@ -126,7 +142,6 @@ public class IndexFragment extends Fragment{
 
         tabLayout = titleBar.getTabLayout();
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        tabLayout.addTab(tabLayout.newTab().setText("推荐"));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -356,6 +371,7 @@ public class IndexFragment extends Fragment{
     }
 
     private void addTabClass(List<Classify> listClassify) {
+        tabLayout.addTab(tabLayout.newTab().setText("推荐"));
         for (Classify claffify:listClassify ) {
             tabLayout.addTab(tabLayout.newTab().setText(claffify.getClassName()));
         }

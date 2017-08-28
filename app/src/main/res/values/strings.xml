@@ -126,4 +126,11 @@
     <string name="edit_personDesc">个性签名</string>
     <string name="setting">设置</string>
     <string name="add">添加</string>
+    <string name="aboutUs">关于我们</string>
+    <string name="delivery_address">收货地址</string>
+    <string name="account_security">账户安全</string>
+    <string name="clear_cache">清除缓存</string>
+    <string name="login_out">退出账号</string>
+    <string name="exchange_alipay">更换支付宝</string>
+    <string name="exchange_phone">更换手机号</string>
 </resources>

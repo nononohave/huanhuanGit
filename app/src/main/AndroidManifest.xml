@@ -168,7 +168,9 @@
         <activity android:name=".activitys.EditNickNameActivity" />
         <activity android:name=".activitys.EditPersonDataActivity" />
         <activity android:name=".activitys.SettingActivity" />
-        <activity android:name=".activitys.ManageAddressActivity"></activity>
+        <activity android:name=".activitys.ManageAddressActivity" />
+        <activity android:name=".activitys.AccountSecurityActivity" />
+        <activity android:name=".activitys.ExchangePhoneOrAlipayActivity"></activity>
     </application>
 
 </manifest>
