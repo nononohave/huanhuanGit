@@ -55,7 +55,11 @@ public class AccountSecurityActivity extends BaseActivity implements View.OnClic
         initView();
         initData();
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+    }
     private void initView() {
         rl_phone = (RelativeLayout) findViewById(R.id.rl_account_security_phone);
         rl_alipay = (RelativeLayout) findViewById(R.id.rl_account_security_alipay);

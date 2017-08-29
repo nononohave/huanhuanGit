@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    tools:context="com.cos.huanhuan.activitys.BindAlipayActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        >
+        <EditText
+            android:id="@+id/et_bind_alipay"
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="支付宝账号"
+            android:inputType="phone"
+            android:paddingLeft="15px"
+            android:textSize="@dimen/phone_text_size"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_alipay_clearPhone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|right">
+
+            <ImageView
+                android:id="@+id/iv_alipay_clearPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/close_dark"
+                android:visibility="visible" />
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/dividLineColor"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        >
+        <EditText
+            android:id="@+id/et_bind_name"
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="请输入真实姓名"
+            android:paddingLeft="15px"
+            android:textSize="@dimen/phone_text_size"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_name_clearPhone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|right">
+
+            <ImageView
+                android:id="@+id/iv_name_clearPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/close_dark"
+                android:visibility="visible" />
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/dividLineColor"/>
+    <Button
+        android:id="@+id/btn_bind_alipay_finish"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/shape_corner_dark"
+        android:layout_marginTop="50dp"
+        android:text="@string/registerFinish"
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        />
+</LinearLayout>

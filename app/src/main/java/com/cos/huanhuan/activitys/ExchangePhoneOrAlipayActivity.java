@@ -1,5 +1,7 @@
 package com.cos.huanhuan.activitys;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,16 +13,18 @@ import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppStringUtils;
 
-public class ExchangePhoneOrAlipayActivity extends BaseActivity {
+public class ExchangePhoneOrAlipayActivity extends BaseActivity implements View.OnClickListener{
 
     private AppManager appManager;
     private int type;
     private TextView tv_phone_alipay_text,tv_phone_exchange,tv_exchange_tips;
     private Button btn_exchange_phone_alipay;
     private String phoneNumber,aliPayNumber;
+    public static Activity exchangeInstance = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        exchangeInstance = this;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             setImmersive(true);
         }
@@ -29,6 +33,15 @@ public class ExchangePhoneOrAlipayActivity extends BaseActivity {
         setDividerColor(R.color.dividLineColor);
         setRightTextColor(R.color.titleBarTextColor);
         setTitleTextColor(R.color.titleBarTextColor);
+        setBaseContentView(R.layout.activity_exchange_phone_or_alipay);
+        appManager = AppManager.getAppManager();
+        appManager.addActivity(this);
+        leftButtonClick(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                appManager.finishActivity();
+            }
+        });
         type = getIntent().getExtras().getInt("type");
         if(type == 1){
             //更换手机号
@@ -40,15 +53,6 @@ public class ExchangePhoneOrAlipayActivity extends BaseActivity {
             setTitle(this.getResources().getString(R.string.exchange_alipay));
             aliPayNumber = getIntent().getExtras().getString("alipayNum");
         }
-        setBaseContentView(R.layout.activity_exchange_phone_or_alipay);
-        appManager = AppManager.getAppManager();
-        appManager.addActivity(this);
-        leftButtonClick(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                appManager.finishActivity();
-            }
-        });
         initView();
     }
 
@@ -77,6 +81,21 @@ public class ExchangePhoneOrAlipayActivity extends BaseActivity {
                 tv_phone_alipay_text.setText("未绑定支付宝");
             }
             tv_exchange_tips.setText("支付宝用于提现等操作");
+        }
+        btn_exchange_phone_alipay.setOnClickListener(this);
+    }
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_exchange_phone_alipay:
+                if(type == 1){
+                    Intent intentPhone = new Intent(ExchangePhoneOrAlipayActivity.this,BindPhoneActivity.class);
+                    startActivity(intentPhone);
+                }else{
+                    Intent intentAliPay = new Intent(ExchangePhoneOrAlipayActivity.this,BindAlipayActivity.class);
+                    startActivity(intentAliPay);
+                }
+                break;
         }
     }
 }

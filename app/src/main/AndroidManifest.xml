@@ -170,7 +170,10 @@
         <activity android:name=".activitys.SettingActivity" />
         <activity android:name=".activitys.ManageAddressActivity" />
         <activity android:name=".activitys.AccountSecurityActivity" />
-        <activity android:name=".activitys.ExchangePhoneOrAlipayActivity"></activity>
+        <activity android:name=".activitys.ExchangePhoneOrAlipayActivity" />
+        <activity android:name=".activitys.BindAlipayActivity" />
+        <activity android:name=".activitys.BindPhoneActivity" />
+        <activity android:name=".activitys.PersonValueActivity"></activity>
     </application>
 
 </manifest>

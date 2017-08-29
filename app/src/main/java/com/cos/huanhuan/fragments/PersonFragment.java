@@ -20,6 +20,7 @@ import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.BaseActivity;
 import com.cos.huanhuan.activitys.ExchangeDetailActivity;
 import com.cos.huanhuan.activitys.LoginActivity;
+import com.cos.huanhuan.activitys.PersonValueActivity;
 import com.cos.huanhuan.activitys.PersonalDataActivity;
 import com.cos.huanhuan.activitys.SettingActivity;
 import com.cos.huanhuan.model.UserValueData;
@@ -193,6 +194,8 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
                 startActivity(intentLogin);
                 break;
             case R.id.rl_person_value:
+                Intent intentPersonValue = new Intent(getActivity(), PersonValueActivity.class);
+                startActivity(intentPersonValue);
                 break;
             case R.id.rl_person_vip:
                 break;

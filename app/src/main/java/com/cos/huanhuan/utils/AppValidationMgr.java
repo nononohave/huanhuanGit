@@ -73,7 +73,7 @@ public class AppValidationMgr {
 	private final static Pattern username_pattern = Pattern.compile("^[A-Za-z0-9_]{1}[A-Za-z0-9_.-]{3,31}"); 
 	
 	//真实姓名表达式
-	private final static Pattern realnem_pattern = Pattern.compile("[\u4E00-\u9FA5]{2,5}(?:·[\u4E00-\u9FA5]{2,5})*"); 
+	private final static Pattern realnem_pattern = Pattern.compile("[\u4E00-\u9FA5]{2,15}(?:·[\u4E00-\u9FA5]{2,15})*");
 	
 	//匹配HTML标签,通过下面的表达式可以匹配出HTML中的标签属性。
 	private final static Pattern html_patter = Pattern.compile("<\\\\/?\\\\w+((\\\\s+\\\\w+(\\\\s*=\\\\s*(?:\".*?\"|'.*?'|[\\\\^'\">\\\\s]+))?)+\\\\s*|\\\\s*)\\\\/?>");

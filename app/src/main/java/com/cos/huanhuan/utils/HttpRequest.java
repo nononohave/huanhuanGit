@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.cos.huanhuan.model.AddressDTO;
 import com.cos.huanhuan.model.AddressVO;
+import com.cos.huanhuan.model.BindAlipay;
+import com.cos.huanhuan.model.BindPhone;
 import com.cos.huanhuan.model.CommentDTO;
 import com.cos.huanhuan.model.CommentMuti;
 import com.cos.huanhuan.model.CommentSimple;
@@ -479,6 +481,39 @@ public class HttpRequest {
         String url = TEXT_HUANHUAN_HOST + "Members/" + personData.getId();
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(personData));
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+
+    /**
+     * 修改绑定手机号
+     * @param bindPhone
+     * @param callback
+     */
+    public static void changeBindPhone(BindPhone bindPhone, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Members/Phone/" + bindPhone.getId();
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(bindPhone));
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+    /**
+     * 修改绑定支付宝
+     * @param bindAlipay
+     * @param callback
+     */
+    public static void changeBindAlipay(BindAlipay bindAlipay, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Members/Alipay/" + bindAlipay.getId();
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(bindAlipay));
         Request request = new Request.Builder()
                 .url(url)
                 .put(body)
