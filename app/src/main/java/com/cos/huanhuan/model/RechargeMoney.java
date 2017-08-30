@@ -7,7 +7,7 @@ package com.cos.huanhuan.model;
 public class RechargeMoney {
 
     private Boolean isClick;
-    private Double money;
+    private int money;
 
     public Boolean getClick() {
         return isClick;
@@ -17,11 +17,11 @@ public class RechargeMoney {
         isClick = click;
     }
 
-    public Double getMoney() {
+    public int getMoney() {
         return money;
     }
 
-    public void setMoney(Double money) {
+    public void setMoney(int money) {
         this.money = money;
     }
 }

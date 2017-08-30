@@ -15,6 +15,7 @@ import com.cos.huanhuan.model.ExchangeList;
 import com.cos.huanhuan.model.PersonData;
 import com.cos.huanhuan.model.PublishCoop;
 import com.cos.huanhuan.model.PublishExchanges;
+import com.cos.huanhuan.model.Recharge;
 import com.cos.huanhuan.model.RegisterModel;
 import com.cos.huanhuan.model.UserInfo;
 import com.cos.huanhuan.model.UserLogin;
@@ -39,6 +40,8 @@ import java.io.IOException;
  */
 
 public class HttpRequest {
+
+    //public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
 
     public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn:8081/api/v1/";
 
@@ -520,5 +523,20 @@ public class HttpRequest {
                 .build();
         Call call = client.newCall(request);
         call.enqueue(callback);
+    }
+
+    /**
+     * 充值
+     * @param recharge
+     * @param stringCallback
+     * @throws JSONException
+     */
+    public static void rechargePersonValue(Recharge recharge, StringCallback stringCallback){
+        String url = TEXT_HUANHUAN_HOST + "Members/ShenJiaRecharge";
+        OkHttpUtils.postString().url(url)
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .content(new Gson().toJson(recharge))
+                .build()
+                .execute(stringCallback);
     }
 }

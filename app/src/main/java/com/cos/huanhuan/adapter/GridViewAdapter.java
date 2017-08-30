@@ -31,7 +31,7 @@ public class GridViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return listRecharge.size();
+        return listRecharge.size() + 1;
     }
 
     @Override
@@ -57,12 +57,18 @@ public class GridViewAdapter extends BaseAdapter {
         }else{
             viewHolder = (ViewHolder) convertView.getTag();//取出ViewHolder对象
         }
-        if(listRecharge.get(position).getClick()){
-            viewHolder.ll_adapter_recharge.setBackground(context.getResources().getDrawable(R.drawable.btn_money_selected));
+        if(position < getCount() - 1) {
+            if (listRecharge.get(position).getClick()) {
+                viewHolder.ll_adapter_recharge.setBackground(context.getResources().getDrawable(R.drawable.btn_money_selected));
+                viewHolder.tv_adapter_recharge.setTextColor(context.getResources().getColor(R.color.titleBarTextColor));
+            } else {
+                viewHolder.ll_adapter_recharge.setBackground(context.getResources().getDrawable(R.drawable.btn_money));
+                viewHolder.tv_adapter_recharge.setTextColor(context.getResources().getColor(R.color.publishTextColor));
+            }
+            viewHolder.tv_adapter_recharge.setText(String.valueOf(listRecharge.get(position).getMoney()) + "元");
         }else{
-            viewHolder.ll_adapter_recharge.setBackground(context.getResources().getDrawable(R.drawable.btn_money));
+            viewHolder.tv_adapter_recharge.setText("其他");
         }
-        viewHolder.tv_adapter_recharge.setText(String.valueOf(listRecharge.get(position).getMoney()));
         return convertView;
     }
     class ViewHolder{

@@ -137,4 +137,8 @@
     <string name="bind_phone">绑定手机号</string>
     <string name="get_verify_code">获取验证码</string>
     <string name="recharge">立即充值</string>
+    <string name="moneyRecharge">金额充值</string>
+    <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
+    <string name="app_tip">提示</string>
+    <string name="pay_result_tip">这个界面用于显示第三方app通过微信支付的结果</string>
 </resources>

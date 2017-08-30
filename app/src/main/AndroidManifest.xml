@@ -122,6 +122,10 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
+        <activity
             android:name=".activitys.BaseActivity"
             android:screenOrientation="fullSensor"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
@@ -173,7 +177,8 @@
         <activity android:name=".activitys.ExchangePhoneOrAlipayActivity" />
         <activity android:name=".activitys.BindAlipayActivity" />
         <activity android:name=".activitys.BindPhoneActivity" />
-        <activity android:name=".activitys.PersonValueActivity"></activity>
+        <activity android:name=".activitys.PersonValueActivity" />
+        <activity android:name=".activitys.OtherMoneyActivity"></activity>
     </application>
 
 </manifest>
