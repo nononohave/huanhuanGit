@@ -141,4 +141,7 @@
     <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
     <string name="app_tip">提示</string>
     <string name="pay_result_tip">这个界面用于显示第三方app通过微信支付的结果</string>
+    <string name="return_deposit">申请退还</string>
+    <string name="person_deposit">我的押金</string>
+    <string name="tracking_no">物流单号</string>
 </resources>

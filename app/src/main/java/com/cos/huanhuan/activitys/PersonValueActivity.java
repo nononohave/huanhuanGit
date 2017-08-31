@@ -132,6 +132,8 @@ public class PersonValueActivity extends BaseActivity implements View.OnClickLis
                 PayDetailFragment payDetailFragment=new PayDetailFragment();
                 Bundle args = new Bundle();
                 args.putString("userId", userId);
+                args.putInt("type",1);
+                args.putDouble("rechargeMoney",0.01);
                 payDetailFragment.setArguments(args);
                 payDetailFragment.show(getSupportFragmentManager(),"payDetailFragment");
                 break;

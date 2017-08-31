@@ -1,14 +1,8 @@
 package com.cos.huanhuan.wxapi;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-
-import com.cos.huanhuan.R;
-import com.cos.huanhuan.activitys.PersonValueActivity;
-import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.Constants;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;

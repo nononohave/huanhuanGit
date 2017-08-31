@@ -226,21 +226,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                 }
             }
         });
-
-        AppACache appACache = AppACache.get(PublishExchangeActivity.this);
-        JSONObject userObj = appACache.getAsJSONObject("userJsonData");
-        if(userObj != null){
-            try {
-                userId = userObj.getString("id");
-                if(AppStringUtils.isEmpty(userId)){
-                    AppToastMgr.shortToast(PublishExchangeActivity.this, "用户未登录");
-                    return;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
+        userId = getUserId();
         ArrayList<String> listItem = new ArrayList<String>();
         loadAdpater(listItem);
     }

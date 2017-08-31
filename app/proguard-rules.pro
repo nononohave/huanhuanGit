@@ -88,3 +88,12 @@
 -keep class com.linkedin.** { *; }
 -keep class com.android.dingtalk.share.ddsharemodule.** { *; }
 -keepattributes Signature
+
+#不混淆三方架包中的类
+#-keep class com.alipay.**
+#-keep class org.apache.http.**
+#-keep class okio.**
+#-dontwarn com.alipay.**
+#-dontwarn org.apache.http.**
+#-dontwarn okio.**
+

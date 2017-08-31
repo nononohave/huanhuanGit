@@ -21,6 +21,15 @@ public class UserValueData implements Serializable{
     private String imAlipay;//支付宝账号
     private Double deposit;//押金
     private String RealName;//真实姓名
+    private String endTime;//会员结束时间
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
 
     public String getGender() {
         return gender;

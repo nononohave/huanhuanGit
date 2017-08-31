@@ -539,4 +539,136 @@ public class HttpRequest {
                 .build()
                 .execute(stringCallback);
     }
+    /**
+     * 退换押金接口
+     * @param userInfo
+     * @param stringCallback
+     * @throws JSONException
+     */
+    public static void returnDeposit(UserInfo userInfo, StringCallback stringCallback){
+        String url = TEXT_HUANHUAN_HOST + "Members/Transfer/" + userInfo.getUserId();
+        OkHttpUtils.postString().url(url)
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .content(new Gson().toJson(userInfo))
+                .build()
+                .execute(stringCallback);
+    }
+
+    /**
+     * 获取用户发布的兑换
+     * @param userId
+     * @param pageIndex
+     * @param pageSize
+     * @param callback
+     */
+    public static void getPersonExchange(String userId,String pageIndex, String pageSize, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Members/Exchange/" + userId;
+        OkHttpUtils.get().url(url)
+                .addParams("pageIndex", pageIndex)
+                .addParams("pageSize", pageSize)
+                .build()
+                .execute(callback);}
+
+    /**
+     * 获取用户发布的合作
+     * @param userId
+     * @param pageIndex
+     * @param pageSize
+     * @param callback
+     */
+    public static void getPersonCoop(String userId,String pageIndex, String pageSize, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Members/Cooperation/" + userId;
+        OkHttpUtils.get().url(url)
+                .addParams("pageIndex", pageIndex)
+                .addParams("pageSize", pageSize)
+                .build()
+                .execute(callback);}
+
+    /**
+     * 删除兑换
+     * @param id
+     * @param callback
+     */
+    public static void deleteExchange(String id, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Exchanges/" + id;
+        OkHttpClient client = new OkHttpClient();
+        RegisterModel registerModel = new RegisterModel();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(registerModel));
+        Request request = new Request.Builder()
+                .url(url)
+                .delete(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+
+    /**
+     * 删除合作
+     * @param id
+     * @param callback
+     */
+    public static void deleteCoop(String id, Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Cooperations/" + id;
+        OkHttpClient client = new OkHttpClient();
+        RegisterModel registerModel = new RegisterModel();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(registerModel));
+        Request request = new Request.Builder()
+                .url(url)
+                .delete(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+    /**
+     * 同意或拒绝兑换
+     * @param id
+     * @param callback
+     */
+    public static void refuseOrAgreeCoop(String id, String type,Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Exchanges/Censor/" + id + "?type=" + type;
+        OkHttpClient client = new OkHttpClient();
+        RegisterModel registerModel = new RegisterModel();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(registerModel));
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+    /**
+     * 修改物流单号
+     * @param id
+     * @param callback
+     */
+    public static void commitTrackingNo(String id, String code,Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "Exchanges/LogisticCode/" + id + "?code=" + code;
+        OkHttpClient client = new OkHttpClient();
+        RegisterModel registerModel = new RegisterModel();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(registerModel));
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+
+    /**
+     * 获取我的兑换
+     * @param userId
+     * @param pageIndex
+     * @param pageSize
+     * @param callback
+     */
+    public static void getMyExchanges(String userId,String pageIndex, String pageSize, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "ExchangePersons";
+        OkHttpUtils.get().url(url)
+                .addParams("userId", userId)
+                .addParams("pageIndex", pageIndex)
+                .addParams("pageSize", pageSize)
+                .build()
+                .execute(callback);}
+
+
 }

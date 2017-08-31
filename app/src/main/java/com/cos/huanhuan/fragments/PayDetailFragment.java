@@ -69,10 +69,14 @@ public class PayDetailFragment extends DialogFragment {
     private IWXAPI api;
     private Context mContext;
     private Dialog dialogLoading;
+    private int type;//判断从哪个页面传过来的支付选中页面，通过type调用不同的接口
+    private double rechargeMoney;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userId = getArguments().getString("userId");
+        type = getArguments().getInt("type");
+        rechargeMoney = getArguments().getDouble("rechargeMoney");
         api = WXAPIFactory.createWXAPI(getActivity(), "wx34470b0a77faa852");
     }
 
@@ -155,8 +159,12 @@ public class PayDetailFragment extends DialogFragment {
                 case R.id.btn_confirm_pay://确认付款
                     final Recharge recharge = new Recharge();
                     recharge.setUserId(Integer.valueOf(userId));
-                    recharge.setMoney(0.01);
-                    recharge.setType("身家充值");
+                    recharge.setMoney(rechargeMoney);
+                    if(type == 1) {
+                        recharge.setType("身家充值");
+                    }else if(type == 2){
+                        recharge.setType("会员充值");
+                    }
                     final String payType = tv_payWays.getText().toString().trim();
                     if(payType.equals("支付宝")){
                         recharge.setPayType("Ali");

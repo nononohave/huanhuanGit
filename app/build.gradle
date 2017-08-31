@@ -25,14 +25,14 @@ android {
     buildTypes {
         release {
             // 是否进行混淆
-            minifyEnabled true
+            minifyEnabled false
             // 混淆文件的位置
             signingConfig signingConfigs.debug
             proguardFiles 'proguard-rules.pro'
         }
 
         debug {
-            minifyEnabled true
+            minifyEnabled false
             signingConfig signingConfigs.debug
             proguardFiles 'proguard-rules.pro'
         }

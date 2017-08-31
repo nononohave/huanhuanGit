@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.fragments.PayDetailFragment;
 import com.cos.huanhuan.utils.AppManager;
 
 public class OtherMoneyActivity extends BaseActivity implements View.OnClickListener{
@@ -15,6 +16,7 @@ public class OtherMoneyActivity extends BaseActivity implements View.OnClickList
     private AppManager appManager;
     private EditText et_recharge_money;
     private Button btn_recharge_now;
+    private String userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,7 @@ public class OtherMoneyActivity extends BaseActivity implements View.OnClickList
         setBaseContentView(R.layout.activity_other_money);
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
+        userId = getUserId();
         leftButtonClick(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -49,6 +52,13 @@ public class OtherMoneyActivity extends BaseActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_recharge_now:
+                PayDetailFragment payDetailFragment=new PayDetailFragment();
+                Bundle args = new Bundle();
+                args.putString("userId", userId);
+                args.putInt("type",1);
+                args.putDouble("rechargeMoney",0.01);
+                payDetailFragment.setArguments(args);
+                payDetailFragment.show(getSupportFragmentManager(),"payDetailFragment");
                 break;
         }
     }
