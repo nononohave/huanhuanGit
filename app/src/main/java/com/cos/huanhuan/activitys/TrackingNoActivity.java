@@ -81,7 +81,7 @@ public class TrackingNoActivity extends BaseActivity implements View.OnClickList
                                 JSONObject jsonObject = new JSONObject(str1);
                                 Boolean success = jsonObject.getBoolean("success");
                                 if(success){
-                                    Intent returnIntent = new Intent();
+                                    Intent returnIntent =new Intent();
                                     setResult(222,returnIntent);
                                     appManager.finishActivity();
                                 }else{

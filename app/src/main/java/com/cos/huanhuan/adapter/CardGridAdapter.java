@@ -20,6 +20,7 @@ import com.cos.huanhuan.fragments.IndexFragment;
 import com.cos.huanhuan.model.CardExchange;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.PicassoUtils;
+import com.cos.huanhuan.views.CircleImageView;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
@@ -96,6 +97,8 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
             });
         }else{
             final int pos = getRealPosition(holder);
+
+            PicassoUtils.getinstance().LoadImage(mContext,cardList.get(pos).getPortrait(),((MyViewHolder) holder).iv_headImg,R.mipmap.public_placehold,R.mipmap.public_placehold,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,0);
             PicassoUtils.getinstance().LoadImage(mContext,cardList.get(pos).getCardImgUrl(),((MyViewHolder) holder).card_img_adapter,R.mipmap.public_placehold,R.mipmap.public_placehold,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,0);
             ((MyViewHolder) holder).card_title_adapter.setText(cardList.get(pos).getCardTitle());
             ((MyViewHolder) holder).card_user_adapter.setText(cardList.get(pos).getCreateName());
@@ -133,9 +136,11 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
     //自定义ViewHolder，用于加载图片
     class MyViewHolder extends RecyclerView.ViewHolder {
         private ImageView card_img_adapter;
+        private CircleImageView iv_headImg;
         private TextView card_title_adapter,card_user_adapter;
         public MyViewHolder(View view) {
             super(view);
+            iv_headImg = (CircleImageView) view.findViewById(R.id.iv_headImg);
             card_img_adapter = (ImageView) view.findViewById(R.id.card_img_adapter);
             card_title_adapter = (TextView) view.findViewById(R.id.card_title_adapter);
             card_user_adapter = (TextView) view.findViewById(R.id.card_user_adapter);

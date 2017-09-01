@@ -12,8 +12,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.adapter.PersonCoopAdapter;
@@ -40,9 +43,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonPublishActivity extends BaseActivity {
+public class PersonPublishActivity extends BaseActivity implements View.OnClickListener{
 
     private AppManager appManager;
+    private FrameLayout ll_person_publish;
     private ImageView publish_back;
     private TabLayout publish_tabLayout;
     private List<PersonPublish> listPublish;
@@ -69,17 +73,12 @@ public class PersonPublishActivity extends BaseActivity {
         appManager.addActivity(this);
         handler=new MyHandler();
         userId = getUserId();
-        leftButtonClick(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                appManager.finishActivity();
-            }
-        });
         initView();
         initData(0);
     }
 
     private void initView() {
+        ll_person_publish = (FrameLayout) findViewById(R.id.ll_person_publish);
         publish_back = (ImageView) findViewById(R.id.img_person_publish_back);
         publish_tabLayout = (TabLayout) findViewById(R.id.tl_person_publish_tabLayout);
         recyclerview = (RecyclerView) findViewById(R.id.grid_recycle_personPublish);
@@ -96,16 +95,13 @@ public class PersonPublishActivity extends BaseActivity {
                 PublicView.setIndicator(publish_tabLayout,20,20);
             }
         });
+        publish_back.setOnClickListener(this);
         listPublish = new ArrayList<>();
         adapterExchange = new PersonExchangeAdapter(PersonPublishActivity.this,listPublish);
         recyclerview.setAdapter(adapterExchange);
 
         listCoop = new ArrayList<>();
         adapterCoop = new PersonCoopAdapter(PersonPublishActivity.this,listCoop);
-
-        int leftRight = DensityUtils.dip2px(PersonPublishActivity.this,5);
-        int topBottom = DensityUtils.dip2px(PersonPublishActivity.this,0);
-        recyclerview.addItemDecoration(new SpacesItemDecoration(leftRight, topBottom));
 
         publish_tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -183,7 +179,7 @@ public class PersonPublishActivity extends BaseActivity {
                 }else{
                     if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapterCoop.getItemCount()) {
                         pageIndexCoop = pageIndexCoop + 1;
-                        HttpRequest.getPersonExchange(userId, String.valueOf(pageIndexCoop), String.valueOf(pageSize), new StringCallback() {
+                        HttpRequest.getPersonCoop(userId, String.valueOf(pageIndexCoop), String.valueOf(pageSize), new StringCallback() {
                             @Override
                             public void onError(Request request, Exception e) {
                                 AppToastMgr.shortToast(PersonPublishActivity.this, "请求失败！");
@@ -382,12 +378,16 @@ public class PersonPublishActivity extends BaseActivity {
                         listPublish.removeAll(listPublish);
                         if (success) {
                             JSONObject obj = jsonObject.getJSONObject("data");
-                            JSONArray arr = obj.getJSONArray("data");
-                            for (int i = 0; i < arr.length(); i++) {
-                                PersonPublish personPublish = JsonUtils.fromJson(arr.get(i).toString(), PersonPublish.class);
-                                listPublish.add(personPublish);
+                            if(obj.getInt("totalRecord") != 0){
+                                JSONArray arr = obj.getJSONArray("data");
+                                for (int i = 0; i < arr.length(); i++) {
+                                    PersonPublish personPublish = JsonUtils.fromJson(arr.get(i).toString(), PersonPublish.class);
+                                    listPublish.add(personPublish);
+                                }
+                                adapterExchange.notifyDataSetChanged();
+                            }else{
+                                setNoDataThis();
                             }
-                            adapterExchange.notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
                         } else {
                             AppToastMgr.shortToast(PersonPublishActivity.this, " 请求失败！原因：" + errorMsg);
@@ -415,12 +415,16 @@ public class PersonPublishActivity extends BaseActivity {
                         listCoop.removeAll(listCoop);
                         if (success) {
                             JSONObject obj = jsonObject.getJSONObject("data");
-                            JSONArray arr = obj.getJSONArray("data");
-                            for (int i = 0; i < arr.length(); i++) {
-                                PersonCoop personCoop = JsonUtils.fromJson(arr.get(i).toString(), PersonCoop.class);
-                                listCoop.add(personCoop);
+                            if(obj.getInt("totalRecord") != 0){
+                                JSONArray arr = obj.getJSONArray("data");
+                                for (int i = 0; i < arr.length(); i++) {
+                                    PersonCoop personCoop = JsonUtils.fromJson(arr.get(i).toString(), PersonCoop.class);
+                                    listCoop.add(personCoop);
+                                }
+                                adapterCoop.notifyDataSetChanged();
+                            }else{
+                                setNoDataThis();
                             }
-                            adapterCoop.notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
                         } else {
                             AppToastMgr.shortToast(PersonPublishActivity.this, " 请求失败！原因：" + errorMsg);
@@ -442,6 +446,15 @@ public class PersonPublishActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.img_person_publish_back:
+                appManager.finishActivity();
+                break;
+        }
+    }
+
     class MyHandler extends Handler
     {
         //接受message的信息
@@ -459,5 +472,9 @@ public class PersonPublishActivity extends BaseActivity {
                 }
             }
         }
+    }
+    public void setNoDataThis(){
+        View view = LayoutInflater.from(PersonPublishActivity.this).inflate(R.layout.activity_no_data,null);
+        ll_person_publish.addView(view);
     }
 }

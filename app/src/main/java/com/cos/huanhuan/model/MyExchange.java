@@ -1,5 +1,7 @@
 package com.cos.huanhuan.model;
 
+import com.cos.huanhuan.utils.HttpRequest;
+
 /**
  * Created by Administrator on 2017/8/31.
  */
@@ -14,6 +16,15 @@ public class MyExchange {
     private String title;//标题
     private String nickname;//昵称
     private String addTime;//时间
+    private String portrait;//头像
+
+    public String getPortrait() {
+        return HttpRequest.IMG_HUANHUAN_HOST +portrait;
+    }
+
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
+    }
 
     public int getId() {
         return id;

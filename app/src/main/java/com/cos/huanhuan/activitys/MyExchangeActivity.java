@@ -54,7 +54,7 @@ public class MyExchangeActivity extends BaseActivity {
         setDividerColor(R.color.dividLineColor);
         setRightTextColor(R.color.titleBarTextColor);
         setTitleTextColor(R.color.titleBarTextColor);
-        setTitle(this.getResources().getString(R.string.person_deposit));
+        setTitle(this.getResources().getString(R.string.my_exchange));
         setBaseContentView(R.layout.activity_my_exchange);
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
@@ -75,9 +75,6 @@ public class MyExchangeActivity extends BaseActivity {
         mLayoutManager=new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false);//设置为一个2列的纵向网格布局
         recyclerview.setLayoutManager(mLayoutManager);
         swipeRefreshLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
-        int leftRight = DensityUtils.dip2px(MyExchangeActivity.this,5);
-        int topBottom = DensityUtils.dip2px(MyExchangeActivity.this,0);
-        recyclerview.addItemDecoration(new SpacesItemDecoration(leftRight, topBottom));
 
         listMyExchange = new ArrayList<>();
         adapterMyExchange = new MyExchangeAdapter(MyExchangeActivity.this,listMyExchange);
@@ -143,6 +140,7 @@ public class MyExchangeActivity extends BaseActivity {
             public void viewTrackingClick(View view, int position) {
                 Intent intentTracking = new Intent(MyExchangeActivity.this,ViewTrackingActivity.class);
                 intentTracking.putExtra("trackingId",listMyExchange.get(position).getLogisticCode());
+                intentTracking.putExtra("imgUrl",listMyExchange.get(position).getCover());
                 startActivity(intentTracking);
             }
         });
@@ -164,12 +162,16 @@ public class MyExchangeActivity extends BaseActivity {
                     listMyExchange.removeAll(listMyExchange);
                     if (success) {
                         JSONObject obj = jsonObject.getJSONObject("data");
-                        JSONArray arr = obj.getJSONArray("data");
-                        for (int i = 0; i < arr.length(); i++) {
-                            MyExchange myExchange = JsonUtils.fromJson(arr.get(i).toString(), MyExchange.class);
-                            listMyExchange.add(myExchange);
+                        if(obj.getInt("totalRecord") != 0){
+                            JSONArray arr = obj.getJSONArray("data");
+                            for (int i = 0; i < arr.length(); i++) {
+                                MyExchange myExchange = JsonUtils.fromJson(arr.get(i).toString(), MyExchange.class);
+                                listMyExchange.add(myExchange);
+                            }
+                            adapterMyExchange.notifyDataSetChanged();
+                        }else{
+                            setNoData();
                         }
-                        adapterMyExchange.notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
                     } else {
                         AppToastMgr.shortToast(MyExchangeActivity.this, " 请求失败！原因：" + errorMsg);

@@ -20,6 +20,7 @@ import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.BaseActivity;
 import com.cos.huanhuan.activitys.ExchangeDetailActivity;
 import com.cos.huanhuan.activitys.LoginActivity;
+import com.cos.huanhuan.activitys.MyExchangeActivity;
 import com.cos.huanhuan.activitys.PersonDepositActivity;
 import com.cos.huanhuan.activitys.PersonPublishActivity;
 import com.cos.huanhuan.activitys.PersonVIPActivity;
@@ -213,6 +214,8 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
                 startActivity(intentPublish);
                 break;
             case R.id.rl_person_exchange:
+                Intent intentMyExchange = new Intent(getActivity(),MyExchangeActivity.class);
+                startActivity(intentMyExchange);
                 break;
         }
     }

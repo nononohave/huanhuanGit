@@ -13,6 +13,7 @@ import com.cos.huanhuan.R;
 import com.cos.huanhuan.model.PersonPublish;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.PicassoUtils;
+import com.cos.huanhuan.views.CircleImageView;
 
 import java.util.List;
 
@@ -42,9 +43,11 @@ public class PersonExchangeAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         {
             //加载数据
+
+            PicassoUtils.getinstance().LoadImage(context, listExchange.get(position).getPortrait(), ((PersonExchangeAdapter.ViewHolder) holder).iv_myPublish_headImg, R.mipmap.public_placehold, R.mipmap.public_placehold, PicassoUtils.PICASSO_BITMAP_SHOW_NORMAL_TYPE, 0);
             PicassoUtils.getinstance().LoadImage(context, listExchange.get(position).getCover(), ((PersonExchangeAdapter.ViewHolder) holder).adapter_exchange_cover, R.mipmap.public_placehold, R.mipmap.public_placehold, PicassoUtils.PICASSO_BITMAP_SHOW_NORMAL_TYPE, 0);
             ((PersonExchangeAdapter.ViewHolder) holder).adapter_exchange_title.setText(listExchange.get(position).getTitle());
-            String author = "<font color='#666666'>By </font><font color='#4083A9'>" + listExchange.get(position).getNickname() + "</font>";
+            String author = "<font color='#4083A9'>" + listExchange.get(position).getNickname() + "</font>";
             ((PersonExchangeAdapter.ViewHolder) holder).adapter_exchange_author.setText(Html.fromHtml(author));
             ((PersonExchangeAdapter.ViewHolder) holder).adapter_exchange_status.setText(listExchange.get(position).getExamine());
             ((PersonExchangeAdapter.ViewHolder) holder).adapter_exchange_time.setText(String.valueOf(listExchange.get(position).getAddTime()));
@@ -117,11 +120,13 @@ public class PersonExchangeAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     class ViewHolder extends RecyclerView.ViewHolder
     {
+       public CircleImageView iv_myPublish_headImg;
        public ImageView adapter_exchange_cover;
        public TextView adapter_exchange_title,adapter_exchange_author,adapter_exchange_status,adapter_exchange_time,refuse_exchange,agree_exchange,sendGoods_exchange,exchange_delete;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            iv_myPublish_headImg = (CircleImageView) itemView.findViewById(R.id.iv_myPublish_headImg);
             adapter_exchange_cover = (ImageView) itemView.findViewById(R.id.iv_adapter_exchange_cover);
             adapter_exchange_title = (TextView) itemView.findViewById(R.id.tv_adapter_exchange_title);
             adapter_exchange_author = (TextView) itemView.findViewById(R.id.tv_adapter_exchange_author);

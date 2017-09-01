@@ -14,6 +14,7 @@ import com.cos.huanhuan.model.MyExchange;
 import com.cos.huanhuan.model.PersonPublish;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.PicassoUtils;
+import com.cos.huanhuan.views.CircleImageView;
 
 import java.util.List;
 
@@ -43,6 +44,8 @@ public class MyExchangeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         {
             //加载数据
+
+            PicassoUtils.getinstance().LoadImage(context, listMyExchange.get(position).getPortrait(), ((MyExchangeAdapter.ViewHolder) holder).iv_myExchange_headImg, R.mipmap.public_placehold, R.mipmap.public_placehold, PicassoUtils.PICASSO_BITMAP_SHOW_NORMAL_TYPE, 0);
             PicassoUtils.getinstance().LoadImage(context, listMyExchange.get(position).getCover(), ((MyExchangeAdapter.ViewHolder) holder).iv_adapter_my_exchange_cover, R.mipmap.public_placehold, R.mipmap.public_placehold, PicassoUtils.PICASSO_BITMAP_SHOW_NORMAL_TYPE, 0);
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_exchangeNo.setText("兑换编号：" + listMyExchange.get(position).getSerialNum());
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_exchangeStatus.setText(listMyExchange.get(position).getState());
@@ -67,11 +70,13 @@ public class MyExchangeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     class ViewHolder extends RecyclerView.ViewHolder
     {
+        public CircleImageView iv_myExchange_headImg;
        public ImageView iv_adapter_my_exchange_cover;
        public TextView tv_adapter_exchangeNo,tv_adapter_exchangeStatus,tv_adapter_my_exchange_title,tv_adapter_my_exchange_author,tv_adapter_my_exchange_value,tv_adapter_my_exchange_time,tv_adapter_view_exchange;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            iv_myExchange_headImg = (CircleImageView) itemView.findViewById(R.id.iv_myExchange_headImg);
             iv_adapter_my_exchange_cover = (ImageView) itemView.findViewById(R.id.iv_adapter_my_exchange_cover);
             tv_adapter_exchangeNo = (TextView) itemView.findViewById(R.id.tv_adapter_exchangeNo);
             tv_adapter_exchangeStatus = (TextView) itemView.findViewById(R.id.tv_adapter_exchangeStatus);

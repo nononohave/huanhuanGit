@@ -55,4 +55,5 @@
     <color name="addAddressBack">#F5F5F5</color>
     <color name="searchitem">#ecebeb</color>
     <color name="navpage">#FFE1E8EB</color>
+    <color name="trackText">#25AE5F</color>
 </resources>

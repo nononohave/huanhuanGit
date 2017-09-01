@@ -1,5 +1,7 @@
 package com.cos.huanhuan.model;
 
+import com.cos.huanhuan.utils.HttpRequest;
+
 /**
  * 首页展示的卡片model
  * Created by Administrator on 2017/8/14.
@@ -15,6 +17,15 @@ public class CardCoop {
     private String address;//地点
     private int personNum;//参与人数
     private int userId;//用户ID
+    private String portrait;//用户头像
+
+    public String getPortrait() {
+        return HttpRequest.IMG_HUANHUAN_HOST + portrait;
+    }
+
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
+    }
 
     public int getUserId() {
         return userId;

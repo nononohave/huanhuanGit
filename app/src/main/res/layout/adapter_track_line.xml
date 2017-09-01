@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="30dp">
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:background="#CBCBCB" />
+
+        <ImageView
+            android:id="@+id/iv_adapter_track"
+            android:layout_width="18dp"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:src="@drawable/time_cycle"
+            android:scaleType="center"
+            />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="5.5"
+            android:background="#CBCBCB" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center_vertical"
+        >
+    <TextView
+        android:id="@+id/tv_adapter_trackingDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="快件已签收，感谢您使用中通快递"
+        android:textColor="#25AE5F"
+        android:textSize="@dimen/forgetTextSize"
+        />
+    <TextView
+        android:id="@+id/tv_adapter_trackingTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2017-08-08 13:14:10 "
+        android:textColor="#25AE5F"
+        android:textSize="@dimen/forgetTextSize"
+        android:layout_marginTop="5dp"
+        />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/dividLineColor"
+        ></View>
+</LinearLayout>

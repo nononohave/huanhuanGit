@@ -17,6 +17,7 @@ import com.cos.huanhuan.model.PublishCoop;
 import com.cos.huanhuan.model.PublishExchanges;
 import com.cos.huanhuan.model.Recharge;
 import com.cos.huanhuan.model.RegisterModel;
+import com.cos.huanhuan.model.TrackingCode;
 import com.cos.huanhuan.model.UserInfo;
 import com.cos.huanhuan.model.UserLogin;
 import com.cos.huanhuan.model.UserValueData;
@@ -41,10 +42,9 @@ import java.io.IOException;
 
 public class HttpRequest {
 
-    //public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
-
+//    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
+//    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn";
     public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn:8081/api/v1/";
-
     public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn:8081";
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -644,8 +644,8 @@ public class HttpRequest {
     public static void commitTrackingNo(String id, String code,Callback callback){
         String url = TEXT_HUANHUAN_HOST + "Exchanges/LogisticCode/" + id + "?code=" + code;
         OkHttpClient client = new OkHttpClient();
-        RegisterModel registerModel = new RegisterModel();
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(registerModel));
+        TrackingCode trackingCode = new TrackingCode();
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(trackingCode));
         Request request = new Request.Builder()
                 .url(url)
                 .put(body)
@@ -670,5 +670,14 @@ public class HttpRequest {
                 .build()
                 .execute(callback);}
 
-
+    /**
+     * 获取物流单号
+     * @param code
+     * @param callback
+     */
+    public static void getLogistics(String code, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Logistics/" + code;
+        OkHttpUtils.get().url(url)
+                .build()
+                .execute(callback);}
 }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.model.CardCoop;
 import com.cos.huanhuan.utils.PicassoUtils;
+import com.cos.huanhuan.views.CircleImageView;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class CoopCardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         {
+            PicassoUtils.getinstance().LoadImage(mContext, cardList.get(position).getPortrait(), ((MyViewHolder) holder).iv_coop_headImg, R.mipmap.public_placehold, R.mipmap.public_placehold, PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE, 0);
             PicassoUtils.getinstance().LoadImage(mContext, cardList.get(position).getCardImgUrl(), ((MyViewHolder) holder).card_img_coop, R.mipmap.public_placehold, R.mipmap.public_placehold, PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE, 0);
             ((MyViewHolder) holder).card_title_coop.setText(cardList.get(position).getCardTitle());
             ((MyViewHolder) holder).card_user_coop.setText(cardList.get(position).getCreateName());
@@ -74,11 +76,13 @@ public class CoopCardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
 
     //自定义ViewHolder，用于加载图片
     class MyViewHolder extends RecyclerView.ViewHolder {
+        private CircleImageView iv_coop_headImg;
         private ImageView card_img_coop;
         private TextView card_title_coop, card_user_coop,tv_card_address_coop,tv_card_persons_coop;
 
         public MyViewHolder(View view) {
             super(view);
+            iv_coop_headImg = (CircleImageView) view.findViewById(R.id.iv_coop_headImg);
             card_img_coop = (ImageView) view.findViewById(R.id.card_img_coop_adapter);
             card_title_coop = (TextView) view.findViewById(R.id.card_title_coop_adapter);
             card_user_coop= (TextView) view.findViewById(R.id.card_user_coop_adapter);

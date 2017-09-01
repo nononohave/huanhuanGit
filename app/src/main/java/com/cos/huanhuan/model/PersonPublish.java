@@ -19,6 +19,15 @@ public class PersonPublish {
     private Boolean isAgree = false;//是否同意显示
     private Boolean isSendGoods = false;//是否发货显示
     private Boolean isDelete = false;//是否删除显示
+    private String portrait;//用户头像
+
+    public String getPortrait() {
+        return HttpRequest.IMG_HUANHUAN_HOST + portrait;
+    }
+
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
+    }
 
     public Boolean getRefuse() {
         return isRefuse;

@@ -27,7 +27,7 @@
                 />
             <LinearLayout
                 android:id="@+id/ll_adapter_personDesc"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/iv_adapter_exchange_cover"
                 android:layout_marginLeft="10dp"
@@ -36,19 +36,34 @@
 
                 <TextView
                     android:id="@+id/tv_adapter_exchange_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="桃花妖异次元觉醒次元桃花妖异次元觉醒次元桃花妖异次元觉醒次元"
                     android:textSize="@dimen/phone_text_size" />
-
-                <TextView
-                    android:id="@+id/tv_adapter_exchange_author"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/ll_author_myPublish_adapter"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="By 飞行的猪"
-                    android:textSize="@dimen/text_size_small"
-                    />
+                    android:orientation="horizontal"
+                    >
+                    <com.cos.huanhuan.views.CircleImageView
+                        android:id="@+id/iv_myPublish_headImg"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@mipmap/public_placehold" />
+
+                    <TextView
+                        android:id="@+id/tv_adapter_exchange_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="飛行的豬"
+                        android:textColor="#ff82AEC7"
+                        android:layout_marginLeft="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="@dimen/text_size_small"
+                        />
+                </LinearLayout>
                 <TextView
                     android:id="@+id/tv_adapter_exchange_status"
                     android:layout_width="wrap_content"

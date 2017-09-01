@@ -339,11 +339,13 @@ public class IndexFragment extends Fragment{
                                         String official = arr.getJSONObject(i).getString("official");
                                         String nickname = arr.getJSONObject(i).getString("nickname");
                                         String cover = arr.getJSONObject(i).getString("cover");
+                                        String portrait = arr.getJSONObject(i).getString("portrait");
                                         cardExchange.setCardId(id);
                                         cardExchange.setCardTitle(title);
                                         cardExchange.setOfficial(official);
                                         cardExchange.setCreateName(nickname);
                                         cardExchange.setCardImgUrl(HttpRequest.IMG_HUANHUAN_HOST + cover);
+                                        cardExchange.setPortrait(portrait);
                                         listCard.add(cardExchange);
                                     }
                                     cardGridAdapter.notifyDataSetChanged();
@@ -411,11 +413,13 @@ public class IndexFragment extends Fragment{
                             String official = arr.getJSONObject(i).getString("official");
                             String nickname = arr.getJSONObject(i).getString("nickname");
                             String cover = arr.getJSONObject(i).getString("cover");
+                            String portrait = arr.getJSONObject(i).getString("portrait");
                             cardExchange.setCardId(id);
                             cardExchange.setCardTitle(title);
                             cardExchange.setOfficial(official);
                             cardExchange.setCreateName(nickname);
                             cardExchange.setCardImgUrl(HttpRequest.IMG_HUANHUAN_HOST + cover);
+                            cardExchange.setPortrait(portrait);
                             listCard.add(cardExchange);
                         }
                         cardGridAdapter.notifyDataSetChanged();

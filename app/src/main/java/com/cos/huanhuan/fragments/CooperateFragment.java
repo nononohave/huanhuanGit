@@ -194,6 +194,8 @@ public class CooperateFragment extends Fragment {
                             int userId = arr.getJSONObject(i).getInt("userId");
                             String city = arr.getJSONObject(i).getString("city");
                             int personNum = arr.getJSONObject(i).getInt("personNum");
+                            String portrait = arr.getJSONObject(i).getString("portrait");
+                            cardCoop.setPortrait(portrait);
                             cardCoop.setCardId(id);
                             cardCoop.setCardTitle(title);
                             cardCoop.setCreateName(nickname);
@@ -245,6 +247,8 @@ public class CooperateFragment extends Fragment {
                             int userId = arr.getJSONObject(i).getInt("userId");
                             String city = arr.getJSONObject(i).getString("city");
                             int personNum = arr.getJSONObject(i).getInt("personNum");
+                            String portrait = arr.getJSONObject(i).getString("portrait");
+                            cardCoop.setPortrait(portrait);
                             cardCoop.setCardId(id);
                             cardCoop.setCardTitle(title);
                             cardCoop.setCreateName(nickname);

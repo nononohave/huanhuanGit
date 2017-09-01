@@ -39,6 +39,12 @@
         android:layout_height="1px"
         android:background="@color/dividLineColor"
         />
+    <FrameLayout
+        android:id="@+id/ll_person_publish"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_personPublish"
         android:layout_width="match_parent"
@@ -52,4 +58,5 @@
             android:layout_height="match_parent"
             />
     </android.support.v4.widget.SwipeRefreshLayout>
+    </FrameLayout>
 </LinearLayout>

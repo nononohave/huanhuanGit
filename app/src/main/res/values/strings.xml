@@ -144,4 +144,6 @@
     <string name="return_deposit">申请退还</string>
     <string name="person_deposit">我的押金</string>
     <string name="tracking_no">物流单号</string>
+    <string name="tracking_msg">物流信息</string>
+    <string name="my_exchange">我的兑换</string>
 </resources>
