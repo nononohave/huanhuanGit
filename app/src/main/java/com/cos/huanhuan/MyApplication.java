@@ -1,7 +1,9 @@
 package com.cos.huanhuan;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 
 import com.umeng.socialize.Config;
@@ -9,6 +11,8 @@ import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareConfig;
 import com.umeng.socialize.common.QueuedWork;
+
+import io.rong.imkit.RongIM;
 
 /**
  * @author wangfei
@@ -23,6 +27,9 @@ public class MyApplication extends Application {
         Config.DEBUG = true;
         QueuedWork.isUseThreadPool = false;
         UMShareAPI.get(this);
+        if (getApplicationInfo().packageName.equals(getCurProcessName(getApplicationContext()))) {
+            RongIM.init(this);
+        }
     }
 
     //各个平台的配置，建议放在全局Application或者程序入口
@@ -31,5 +38,15 @@ public class MyApplication extends Application {
         //豆瓣RENREN平台目前只能在服务器端配置
         PlatformConfig.setSinaWeibo("1693410036", "ceca1abae1dd223adcf0f439a2c9d6f5","http://sns.whalecloud.com/sina2/callback");
         PlatformConfig.setQQZone("100424468", "c7394704798a158208a74ab60104f0ba");
+    }
+    public static String getCurProcessName(Context context) {
+        int pid = android.os.Process.myPid();
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
+            if (appProcess.pid == pid) {
+                return appProcess.processName;
+            }
+        }
+        return null;
     }
 }

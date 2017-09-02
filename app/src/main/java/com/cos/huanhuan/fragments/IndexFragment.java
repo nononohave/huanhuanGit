@@ -24,11 +24,16 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.activitys.AllExchangeActivity;
 import com.cos.huanhuan.activitys.ExchangeDetailActivity;
 import com.cos.huanhuan.activitys.LoginActivity;
+import com.cos.huanhuan.activitys.PublishCoopActivity;
+import com.cos.huanhuan.activitys.PublishExchangeActivity;
 import com.cos.huanhuan.activitys.SearchActivity;
 import com.cos.huanhuan.adapter.CardGridAdapter;
 import com.cos.huanhuan.model.CardExchange;
@@ -37,11 +42,13 @@ import com.cos.huanhuan.model.ExchangeList;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
+import com.cos.huanhuan.utils.FastBlur;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.PicassoUtils;
 import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.PublicView;
 import com.cos.huanhuan.views.SpacesItemDecoration;
+import com.cos.huanhuan.views.TitleBar;
 import com.cos.huanhuan.views.TitleSearchBar;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
@@ -60,7 +67,7 @@ import java.util.List;
  * Created by Administrator on 2017/8/11.
  */
 
-public class IndexFragment extends Fragment{
+public class IndexFragment extends Fragment implements View.OnClickListener{
 
     private TitleSearchBar titleBar;
     private ImageView mCollectView;
@@ -169,13 +176,26 @@ public class IndexFragment extends Fragment{
                 //AppToastMgr.shortToast(getActivity(),"复选中的"+tab.getText() + tab.getPosition());
             }
         });
+
+        final View popPulishView = LayoutInflater.from(getActivity()).inflate(R.layout.popwindow_publish, null);
+        final ImageView backBlurImg = (ImageView)popPulishView.findViewById(R.id.back_blur_pop);
+        final RelativeLayout rl = (RelativeLayout) popPulishView.findViewById(R.id.back_rl_blur);
+        ImageView imageClose = (ImageView) popPulishView.findViewById(R.id.close_publish_popWindow);
+        LinearLayout publishExchange = (LinearLayout) popPulishView.findViewById(R.id.ll_popWindow_publishExchange);
+        LinearLayout publishCoo = (LinearLayout) popPulishView.findViewById(R.id.ll_popWindow_publishCoo);
         titleBar.setRightButtonClick(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text = titleBar.getEtText();
-                AppToastMgr.shortToast(getActivity(),"发布" + text);
+                ViewUtils.showPopupWindow(getActivity(),titleBar,5,popPulishView);
+                Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.takeScreenShot(getActivity()), 15, true);
+                backBlurImg.setVisibility(View.VISIBLE);
+                rl.bringToFront();
+                backBlurImg.setImageBitmap(scaledBitmap);
             }
         });
+        imageClose.setOnClickListener(this);
+        publishExchange.setOnClickListener(this);
+        publishCoo.setOnClickListener(this);
         titleBar.getEtSearch().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -231,7 +251,7 @@ public class IndexFragment extends Fragment{
         cardGridAdapter.setOnUserClick(new CardGridAdapter.OnUserClick() {
             @Override
             public void OnUserClick(View view, int position) {
-                AppToastMgr.shortToast(getActivity(),"选中"+position);
+
             }
         });
         initData();
@@ -443,7 +463,7 @@ public class IndexFragment extends Fragment{
                 AppToastMgr.shortToast(getActivity(), "您还没有登录");
                 //TODO 跳转到登录界面
             } else {
-                AppToastMgr.shortToast(getActivity(), "选中 " + pos);
+//                AppToastMgr.shortToast(getActivity(), "选中 " + pos);
                 TabLayout.Tab tab = tabLayout.getTabAt(pos);
                 if (tab != null) {
                     tab.select();
@@ -468,4 +488,22 @@ public class IndexFragment extends Fragment{
         cardGridAdapter.setHeaderView(header);
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.close_publish_popWindow:
+                ViewUtils.dismissPopup();
+                break;
+            case R.id.ll_popWindow_publishExchange:
+                ViewUtils.dismissPopup();
+                Intent intent = new Intent(getActivity(), PublishExchangeActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.ll_popWindow_publishCoo:
+                ViewUtils.dismissPopup();
+                Intent intentCoop = new Intent(getActivity(), PublishCoopActivity.class);
+                startActivity(intentCoop);
+                break;
+        }
+    }
 }

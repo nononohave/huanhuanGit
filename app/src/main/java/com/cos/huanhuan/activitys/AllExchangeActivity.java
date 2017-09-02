@@ -124,7 +124,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
         setCenLayoutClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ViewUtils.showPopupWindow(AllExchangeActivity.this,tv,4,popupView);
+                ViewUtils.showPopupWindow(AllExchangeActivity.this,getTitleBar(),4,popupView);
             }
         });
         listView.setOnItemClickListener(this);

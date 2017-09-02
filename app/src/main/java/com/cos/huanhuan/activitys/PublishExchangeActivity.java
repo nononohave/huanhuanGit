@@ -369,7 +369,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     captureManager = new ImageCaptureManager(PublishExchangeActivity.this);
                 }
                 Intent intentCapture = captureManager.dispatchTakePictureIntent();
-                imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", createImageFile());
+                imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", createImageFile());
                 List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intentCapture, PackageManager.MATCH_DEFAULT_ONLY);
                 for (ResolveInfo resolveInfo : resInfoList) {
                     String packageName = resolveInfo.activityInfo.packageName;
@@ -388,7 +388,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     captureManager = new ImageCaptureManager(PublishExchangeActivity.this);
                 }
                 Intent intentCapture = captureManager.dispatchTakePictureIntent();
-                imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", createImageFile());
+                imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", createImageFile());
                 List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intentCapture, PackageManager.MATCH_DEFAULT_ONLY);
                 for (ResolveInfo resolveInfo : resInfoList) {
                     String packageName = resolveInfo.activityInfo.packageName;
@@ -430,7 +430,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                 // 选择照片
                 case REQUEST_CAMERA_CODE:
                     pathsReturn = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT);
-                    startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", new File(pathsReturn.get(0))),CROP_PHOTO_CODE);
+                    startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", new File(pathsReturn.get(0))),CROP_PHOTO_CODE);
                     break;
                 // 预览
                 case REQUEST_PREVIEW_CODE:
@@ -462,7 +462,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                 // 调用相机拍照
                 case DOUBLE_REQUEST_TAKE_PHOTO:
                     if (captureManager.getCurrentPhotoPath() != null) {
-                        startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", new File(captureManager.getCurrentPhotoPath())),DOUBLE_CROP_CAMERA_CODE);
+                        startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", new File(captureManager.getCurrentPhotoPath())),DOUBLE_CROP_CAMERA_CODE);
                     }
                     break;
                 case CROP_PHOTO_CODE:

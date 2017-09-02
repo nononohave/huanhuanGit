@@ -12,7 +12,16 @@ public class Tracking {
     private String logisticCode;//物流单号
     private String state;//物流状态
     private String resultModel;//物流客服
+    private String logisticPhone;//物流客服
     private List<TrackLine> accept;
+
+    public String getLogisticPhone() {
+        return logisticPhone;
+    }
+
+    public void setLogisticPhone(String logisticPhone) {
+        this.logisticPhone = logisticPhone;
+    }
 
     public String getShipperCode() {
         return shipperCode;

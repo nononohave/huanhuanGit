@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:src="@mipmap/publick_sanjiao"
+        android:layout_marginBottom="-2dp"
+        android:layout_marginLeft="60dp"
+        />
+    <ListView
+        android:id="@+id/popListView"
+        android:layout_width="320dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/popwindow_corner"
+        android:divider="@color/greyDivideLine"
+        android:dividerHeight="1dp"
+        android:layout_gravity="center_horizontal"
+        ></ListView>
+</LinearLayout>

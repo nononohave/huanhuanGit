@@ -54,7 +54,15 @@ public class PersonCoopAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((PersonCoopAdapter.ViewHolder) holder).tv_adapter_coop__address.setText(listCoop.get(position).getCity());
             String joinText = "<font color='#FF6FA2'>" + listCoop.get(position).getPersonNum() + "</font>" + "人参加";
             ((PersonCoopAdapter.ViewHolder) holder).tv_adapter_coop_joinNums.setText(Html.fromHtml(joinText));
+
             ((PersonCoopAdapter.ViewHolder) holder).tv_adapter_coop_time.setText(listCoop.get(position).getAddTime());
+            final RelativeLayout itemClick = ((PersonCoopAdapter.ViewHolder) holder).rl_adapter_item;
+            ((PersonCoopAdapter.ViewHolder) holder).rl_adapter_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listItemClickListener.listItemClick(itemClick,position);
+                }
+            });
 
         }
     }
@@ -65,11 +73,13 @@ public class PersonCoopAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     class ViewHolder extends RecyclerView.ViewHolder
     {
+        public RelativeLayout rl_adapter_item;
         public ImageView iv_adapter_coop_cover;
         public TextView tv_adapter_coop_title,tv_adapter_coop_author,tv_adapter_coop__address,tv_adapter_coop_time,tv_adapter_coop_joinNums;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            rl_adapter_item = (RelativeLayout) itemView.findViewById(R.id.rl_adapter_item) ;
             iv_adapter_coop_cover = (ImageView) itemView.findViewById(R.id.iv_adapter_coop_cover);
             tv_adapter_coop_title = (TextView) itemView.findViewById(R.id.tv_adapter_coop_title);
             tv_adapter_coop_author = (TextView) itemView.findViewById(R.id.tv_adapter_coop_author);
@@ -78,4 +88,9 @@ public class PersonCoopAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tv_adapter_coop_joinNums = (TextView) itemView.findViewById(R.id.tv_adapter_coop_joinNums);
         }
     }
+    public interface ListItemClick{
+        void listItemClick(View view,int position);
+    }
+    private ListItemClick listItemClickListener;
+    public void setListItemClick(ListItemClick listener){this.listItemClickListener = listener;}
 }

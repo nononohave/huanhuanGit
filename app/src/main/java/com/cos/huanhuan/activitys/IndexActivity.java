@@ -1,5 +1,6 @@
 package com.cos.huanhuan.activitys;
 
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.fragments.CooperateFragment;
 import com.cos.huanhuan.fragments.IndexFragment;
+import com.cos.huanhuan.fragments.MessageFragment;
 import com.cos.huanhuan.fragments.PersonFragment;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.views.BottomBarItem;
@@ -23,6 +25,8 @@ import com.cos.huanhuan.views.TabFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.rong.imlib.model.Conversation;
 
 public class IndexActivity extends FragmentActivity{
     private ViewPager mVpContent;
@@ -57,27 +61,15 @@ public class IndexActivity extends FragmentActivity{
     private void initData() {
 
         IndexFragment homeFragment = new IndexFragment();
-        Bundle bundle1 = new Bundle();
-        bundle1.putString(TabFragment.CONTENT,"首页");
-        homeFragment.setArguments(bundle1);
         mFragmentList.add(homeFragment);
 
         CooperateFragment cooperateFragment = new CooperateFragment();
-        Bundle bundle2 = new Bundle();
-        bundle2.putString(TabFragment.CONTENT,"合作");
-        cooperateFragment.setArguments(bundle2);
         mFragmentList.add(cooperateFragment);
 
-        TabFragment microFragment = new TabFragment();
-        Bundle bundle3 = new Bundle();
-        bundle3.putString(TabFragment.CONTENT,"消息");
-        microFragment.setArguments(bundle3);
-        mFragmentList.add(microFragment);
+        MessageFragment messageFragment = new MessageFragment();
+        mFragmentList.add(messageFragment);
 
         PersonFragment meFragment = new PersonFragment();
-        Bundle bundle4 = new Bundle();
-        bundle4.putString(TabFragment.CONTENT,"我的");
-        meFragment.setArguments(bundle4);
         mFragmentList.add(meFragment);
     }
 

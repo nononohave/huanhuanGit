@@ -146,4 +146,5 @@
     <string name="tracking_no">物流单号</string>
     <string name="tracking_msg">物流信息</string>
     <string name="my_exchange">我的兑换</string>
+    <string name="message">消息</string>
 </resources>

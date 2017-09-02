@@ -20,6 +20,15 @@ public class PublishCoop {
     private String City;
     private String Dist;
     private String Address;
+    private Integer ClassId;
+
+    public Integer getClassId() {
+        return ClassId;
+    }
+
+    public void setClassId(Integer classId) {
+        ClassId = classId;
+    }
 
     public int getUserId() {
         return UserId;

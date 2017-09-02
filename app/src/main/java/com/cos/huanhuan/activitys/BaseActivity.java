@@ -101,7 +101,9 @@ public class BaseActivity extends AppCompatActivity
     public void setCenLayoutClickListener(View.OnClickListener l){
         titleBar.setOnClickListener(l);
     }
-
+    public TitleBar getTitleBar(){
+        return titleBar;
+    }
     /**
      * 设置titlebar背景色
      * @param res

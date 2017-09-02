@@ -6,11 +6,82 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     >
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/ll_fragment_coop"
+        >
     <com.cos.huanhuan.views.TitleBar
         android:id="@+id/coop_title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        >
+        <LinearLayout
+            android:id="@+id/ll_request_classify"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            >
+            <TextView
+                android:id="@+id/tv_request_classify"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="需求分类"
+                android:textSize="@dimen/popTextSize"
+                android:gravity="center"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/back_dropdown"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical"
+                />
+        </LinearLayout>
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/dividLineColor"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            />
+        <LinearLayout
+            android:id="@+id/ll_address_choose"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            >
+            <TextView
+                android:id="@+id/tv_address_choose"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="地区选择"
+                android:textSize="@dimen/popTextSize"
+                android:gravity="center"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/back_dropdown"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical"
+                />
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/dividLineColor"
+        />
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/grid_swipe_coop_refresh"
         android:layout_width="match_parent"
@@ -28,7 +99,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginTop="10dp"
                 >
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/coop_grid_recycler"
@@ -40,4 +110,5 @@
             </LinearLayout>
         </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
 </LinearLayout>

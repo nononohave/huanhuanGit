@@ -312,7 +312,7 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
                 captureManager = new ImageCaptureManager(PersonalDataActivity.this);
             }
             Intent intentCapture = captureManager.dispatchTakePictureIntent();
-            imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", createImageFile());
+            imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", createImageFile());
             List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intentCapture, PackageManager.MATCH_DEFAULT_ONLY);
             for (ResolveInfo resolveInfo : resInfoList) {
                 String packageName = resolveInfo.activityInfo.packageName;
@@ -363,7 +363,7 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
                 // 选择照片
                 case REQUEST_CAMERA_CODE:
                     pathsReturn = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT);
-                    startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", new File(pathsReturn.get(0))),CROP_PHOTO_CODE);
+                    startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", new File(pathsReturn.get(0))),CROP_PHOTO_CODE);
                     break;
                 // 预览
                 case REQUEST_PREVIEW_CODE:

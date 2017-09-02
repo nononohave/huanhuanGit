@@ -22,6 +22,15 @@ public class UserValueData implements Serializable{
     private Double deposit;//押金
     private String RealName;//真实姓名
     private String endTime;//会员结束时间
+    private String rongToken;//融云
+
+    public String getRongToken() {
+        return rongToken;
+    }
+
+    public void setRongToken(String rongToken) {
+        this.rongToken = rongToken;
+    }
 
     public String getEndTime() {
         return endTime;

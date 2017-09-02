@@ -140,8 +140,20 @@ public class HttpRequest {
                 .execute(callback);
     }
 
+    /**
+     * 获取兑换分类
+     * @param callback
+     */
     public static void getExchangeClass(StringCallback callback){
         String url = TEXT_HUANHUAN_HOST + "ExchangeClasses";
+        OkHttpUtils.get().url(url)
+                .build()
+                .execute(callback);
+    }
+
+    //获取合作分类
+    public static void getCoopClass(StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "CooperationClasses";
         OkHttpUtils.get().url(url)
                 .build()
                 .execute(callback);
@@ -219,12 +231,39 @@ public class HttpRequest {
     }
 
     public static void getCooperateList(CoopList coopList, StringCallback callback){
-        String url = TEXT_HUANHUAN_HOST + "Cooperations";
-        OkHttpUtils.get().url(url)
-                .addParams("pageIndex", String.valueOf(coopList.getPageIndex()))
-                .addParams("pageSize", String.valueOf(coopList.getPageSize()))
-                .build()
-                .execute(callback);}
+        if(AppStringUtils.isEmpty(coopList.getCid()) && AppStringUtils.isEmpty(coopList.getCity())){
+            String url = TEXT_HUANHUAN_HOST + "Cooperations";
+            OkHttpUtils.get().url(url)
+                    .addParams("pageIndex", String.valueOf(coopList.getPageIndex()))
+                    .addParams("pageSize", String.valueOf(coopList.getPageSize()))
+                    .build()
+                    .execute(callback);}
+        if(AppStringUtils.isNotEmpty(coopList.getCid()) && AppStringUtils.isEmpty(coopList.getCity())){
+            String url = TEXT_HUANHUAN_HOST + "Cooperations";
+            OkHttpUtils.get().url(url)
+                    .addParams("pageIndex", String.valueOf(coopList.getPageIndex()))
+                    .addParams("pageSize", String.valueOf(coopList.getPageSize()))
+                    .addParams("cid", String.valueOf(coopList.getCid()))
+                    .build()
+                    .execute(callback);}
+        if(AppStringUtils.isEmpty(coopList.getCid()) && AppStringUtils.isNotEmpty(coopList.getCity())){
+            String url = TEXT_HUANHUAN_HOST + "Cooperations";
+            OkHttpUtils.get().url(url)
+                    .addParams("pageIndex", String.valueOf(coopList.getPageIndex()))
+                    .addParams("pageSize", String.valueOf(coopList.getPageSize()))
+                    .addParams("city",coopList.getCity())
+                    .build()
+                    .execute(callback);}
+        if(AppStringUtils.isNotEmpty(coopList.getCid()) && AppStringUtils.isNotEmpty(coopList.getCity())){
+            String url = TEXT_HUANHUAN_HOST + "Cooperations";
+            OkHttpUtils.get().url(url)
+                    .addParams("pageIndex", String.valueOf(coopList.getPageIndex()))
+                    .addParams("pageSize", String.valueOf(coopList.getPageSize()))
+                    .addParams("cid", String.valueOf(coopList.getCid()))
+                    .addParams("city",coopList.getCity())
+                    .build()
+                    .execute(callback);}
+        }
 
     public static void getCoopDetail(String id, String userId, StringCallback callback){
         String url = TEXT_HUANHUAN_HOST + "Cooperations/" + id;

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,7 +44,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonPublishActivity extends BaseActivity implements View.OnClickListener{
+public class PersonPublishActivity extends BaseActivity implements View.OnClickListener,AdapterView.OnItemClickListener{
 
     private AppManager appManager;
     private FrameLayout ll_person_publish;
@@ -359,6 +360,24 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                 });
             }
         });
+
+        //Item点击事件
+        adapterExchange.setListItemClick(new PersonExchangeAdapter.ListItemClick() {
+            @Override
+            public void listItemClick(View view, int position) {
+                Intent intentExchangeDetail = new Intent(PersonPublishActivity.this,ExchangeDetailActivity.class);
+                intentExchangeDetail.putExtra("exchangeId",String.valueOf(listPublish.get(position).getId()));
+                startActivity(intentExchangeDetail);
+            }
+        });
+        adapterCoop.setListItemClick(new PersonCoopAdapter.ListItemClick() {
+            @Override
+            public void listItemClick(View view, int position) {
+                Intent intentCoopDetail = new Intent(PersonPublishActivity.this,CooperateDetailActivity.class);
+                intentCoopDetail.putExtra("coopId",String.valueOf(listCoop.get(position).getId()));
+                startActivity(intentCoopDetail);
+            }
+        });
     }
     private void initData(int type) {
         if(type == 0) {
@@ -453,6 +472,11 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                 appManager.finishActivity();
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
     }
 
     class MyHandler extends Handler

@@ -83,8 +83,8 @@ import java.util.Map;
 public class PublishCoopActivity extends BaseActivity implements View.OnClickListener,AdapterView.OnItemClickListener{
 
     private EditText et_coop_cosTitle,et_publishCoop_cosAddressDetail,et_publish_cosRequest,et_publishCoop_cosPersonNums,et_publishCoop_cosDetailDesc;
-    private LinearLayout ll_publishCoop_Address,ll_publishCoop_time;
-    private TextView tv_publishCoop_cosCoopAddress,tv_publishCoop_cosTime;
+    private LinearLayout ll_publishCoop_Address,ll_publishCoop_time,ll_publishCoop_classify;
+    private TextView tv_publishCoop_cosCoopAddress,tv_publishCoop_cosTime,tv_publish_coop_cosClassify;
     private ImageView coop_select_img_page;
     private MyGridView gridView_coop;
 
@@ -175,8 +175,10 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
         et_publishCoop_cosDetailDesc = (EditText) findViewById(R.id.et_publishCoop_cosDetailDesc);
         ll_publishCoop_Address = (LinearLayout) findViewById(R.id.ll_publishCoop_Address);
         ll_publishCoop_time = (LinearLayout) findViewById(R.id.ll_publishCoop_time);
+        ll_publishCoop_classify = (LinearLayout) findViewById(R.id.ll_publishCoop_classify);
         tv_publishCoop_cosCoopAddress = (TextView) findViewById(R.id.tv_publishCoop_cosCoop);
         tv_publishCoop_cosTime = (TextView) findViewById(R.id.tv_publishCoop_cosTime);
+        tv_publish_coop_cosClassify = (TextView) findViewById(R.id.tv_publish_coop_cosClassify);
         coop_select_img_page = (ImageView) findViewById(R.id.coop_select_img_page);
         gridView_coop = (MyGridView) findViewById(R.id.gridView_coop);
 
@@ -184,10 +186,50 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
         ll_publishCoop_time.setOnClickListener(this);
         coop_select_img_page.setOnClickListener(this);
         gridView_coop.setOnItemClickListener(this);
+        ll_publishCoop_classify.setOnClickListener(this);
         userId = getUserId();
         ArrayList<String> listItem = new ArrayList<String>();
         loadAdpater(listItem);
         initJsonData();
+        initData();
+    }
+
+    private void initData() {
+        listClassify = new ArrayList<Classify>();
+        listClassifyString = new ArrayList<>();
+        HttpRequest.getCoopClass(new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                AppToastMgr.shortToast(PublishCoopActivity.this,"请求分类接口失败！");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Boolean success = jsonObject.getBoolean("success");
+                    String errorMsg = jsonObject.getString("errorMsg");
+                    if(success) {
+                        JSONArray arr = jsonObject.getJSONArray("data");
+                        for (int i = 0; i < arr.length(); i++) {
+                            Classify classify = new Classify();
+                            String id = arr.getJSONObject(i).getString("id");
+                            String className = arr.getJSONObject(i).getString("className");
+                            String classUsName = arr.getJSONObject(i).getString("classUsName");
+                            classify.setClassifyId(id);
+                            classify.setClassName(className);
+                            classify.setClassUsName(classUsName);
+                            listClassify.add(classify);
+                            listClassifyString.add(className);
+                        }
+                    }else{
+                        AppToastMgr.shortToast(PublishCoopActivity.this, " 请求分类接口失败！原因：" + errorMsg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -287,6 +329,28 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                     }
                 }, names);
                 break;
+            case R.id.ll_publishCoop_classify:
+                int position = 0;
+                String selectItem = tv_publish_coop_cosClassify.getText().toString();
+                if(AppStringUtils.isNotEmpty(selectItem) && listClassifyString != null && listClassifyString.size() > 0){
+                    position = listClassifyString.indexOf(selectItem);
+                }
+                //条件选择器
+                OptionsPickerView pvOptions = new  OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int option2, int options3 ,View v) {
+                        //返回的分别是三个级别的选中位置
+                        String className = listClassifyString.get(options1);
+                        tv_publish_coop_cosClassify.setText(className);
+                    }
+                }).setContentTextSize(20).isDialog(true)
+                        .setSelectOptions(position)
+                        .setCancelColor(getResources().getColor(R.color.titleBarTextColor))
+                        .setSubmitColor(getResources().getColor(R.color.titleBarTextColor))
+                        .build();
+                pvOptions.setPicker(listClassifyString, null, null);
+                pvOptions.show();
+                break;
         }
     }
     @Override
@@ -354,7 +418,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                     captureManager = new ImageCaptureManager(PublishCoopActivity.this);
                 }
                 Intent intentCapture = captureManager.dispatchTakePictureIntent();
-                imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", createImageFile());
+                imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", createImageFile());
                 List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intentCapture, PackageManager.MATCH_DEFAULT_ONLY);
                 for (ResolveInfo resolveInfo : resInfoList) {
                     String packageName = resolveInfo.activityInfo.packageName;
@@ -373,7 +437,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                     captureManager = new ImageCaptureManager(PublishCoopActivity.this);
                 }
                 Intent intentCapture = captureManager.dispatchTakePictureIntent();
-                imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", createImageFile());
+                imageUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", createImageFile());
                 List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intentCapture, PackageManager.MATCH_DEFAULT_ONLY);
                 for (ResolveInfo resolveInfo : resInfoList) {
                     String packageName = resolveInfo.activityInfo.packageName;
@@ -415,7 +479,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                 // 选择照片
                 case REQUEST_CAMERA_CODE:
                     pathsReturn = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT);
-                    startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", new File(pathsReturn.get(0))),CROP_PHOTO_CODE);
+                    startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", new File(pathsReturn.get(0))),CROP_PHOTO_CODE);
                     break;
                 // 预览
                 case REQUEST_PREVIEW_CODE:
@@ -447,7 +511,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                 // 调用相机拍照
                 case DOUBLE_REQUEST_TAKE_PHOTO:
                     if (captureManager.getCurrentPhotoPath() != null) {
-                        startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", new File(captureManager.getCurrentPhotoPath())),DOUBLE_CROP_CAMERA_CODE);
+                        startCrop(FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", new File(captureManager.getCurrentPhotoPath())),DOUBLE_CROP_CAMERA_CODE);
                     }
                     break;
                 case CROP_PHOTO_CODE:
@@ -644,9 +708,14 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
         String cosTime = tv_publishCoop_cosTime.getText().toString();
         String cosPersonNums = et_publishCoop_cosPersonNums.getText().toString();
         String cosDetailDesc = et_publishCoop_cosDetailDesc.getText().toString();
+        String cosClassify = tv_publish_coop_cosClassify.getText().toString();
 
         if(AppStringUtils.isEmpty(cosTitle)){
             AppToastMgr.shortToast(PublishCoopActivity.this, "请输入合作主题名称");
+            return;
+        }
+        if(AppStringUtils.isEmpty(cosClassify)){
+            AppToastMgr.shortToast(PublishCoopActivity.this, "请选择物品类别");
             return;
         }
         if(AppStringUtils.isEmpty(cosAddress)){
@@ -787,12 +856,15 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                     String cosRequest = et_publish_cosRequest.getText().toString();
                     String cosPersonNums = et_publishCoop_cosPersonNums.getText().toString();
                     String cosDetailDesc = et_publishCoop_cosDetailDesc.getText().toString();
-
+                    String selectClassifyId = "";
+                    int position = listClassifyString.indexOf(tv_publish_coop_cosClassify.getText().toString());
+                    selectClassifyId = listClassify.get(position).getClassifyId();
                     PublishCoop publishCoop = new PublishCoop();
                     publishCoop.setTitle(cosTitle);
                     publishCoop.setProv(provice);
                     publishCoop.setCity(city);
                     publishCoop.setDist(district);
+                    publishCoop.setClassId(Integer.valueOf(selectClassifyId));
                     publishCoop.setAddress(cosAddressDetail);
                     publishCoop.setWill(cosRequest);
                     publishCoop.setEnrollEnd(selectDate);

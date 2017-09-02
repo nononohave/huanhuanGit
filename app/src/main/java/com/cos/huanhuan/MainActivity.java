@@ -252,7 +252,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
             Intent intentCapture = captureManager.dispatchTakePictureIntent();
             File newFile = createImageFile();
-            Uri contentUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.fileprovider", newFile);
+            Uri contentUri = FileProvider.getUriForFile(this, "com.cos.huanhuan.photos.fileprovider", newFile);
             List<ResolveInfo> resInfoList= getPackageManager().queryIntentActivities(intentCapture, PackageManager.MATCH_DEFAULT_ONLY);
             for (ResolveInfo resolveInfo : resInfoList) {
                 String packageName = resolveInfo.activityInfo.packageName;

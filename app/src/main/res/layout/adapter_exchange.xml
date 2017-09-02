@@ -6,6 +6,7 @@
     android:descendantFocusability="blocksDescendants"
     >
     <RelativeLayout
+        android:id="@+id/rl_adapter_exchange_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"

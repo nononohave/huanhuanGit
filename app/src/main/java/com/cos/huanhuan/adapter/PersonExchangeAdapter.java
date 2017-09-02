@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
@@ -111,6 +112,13 @@ public class PersonExchangeAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     deleteClickListener.deleteClick(address_delete,position);
                 }
             });
+            final RelativeLayout itemClick = ((ViewHolder) holder).rl_adapter_exchange_item;
+            ((ViewHolder) holder).rl_adapter_exchange_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listItemClickListener.listItemClick(itemClick,position);
+                }
+            });
         }
     }
     @Override
@@ -120,12 +128,14 @@ public class PersonExchangeAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     class ViewHolder extends RecyclerView.ViewHolder
     {
+       public RelativeLayout rl_adapter_exchange_item;
        public CircleImageView iv_myPublish_headImg;
        public ImageView adapter_exchange_cover;
        public TextView adapter_exchange_title,adapter_exchange_author,adapter_exchange_status,adapter_exchange_time,refuse_exchange,agree_exchange,sendGoods_exchange,exchange_delete;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            rl_adapter_exchange_item = (RelativeLayout) itemView.findViewById(R.id.rl_adapter_exchange_item);
             iv_myPublish_headImg = (CircleImageView) itemView.findViewById(R.id.iv_myPublish_headImg);
             adapter_exchange_cover = (ImageView) itemView.findViewById(R.id.iv_adapter_exchange_cover);
             adapter_exchange_title = (TextView) itemView.findViewById(R.id.tv_adapter_exchange_title);
@@ -155,10 +165,16 @@ public class PersonExchangeAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public interface DeliverClick{
         void deliverClick(View view, int position);
     }
+    //
+    public interface ListItemClick{
+        void listItemClick(View view,int position);
+    }
     private RefuseClick refuseClickListener;
     private AgreeClick agreeClickListener;
     private DeleteClick deleteClickListener;
     private DeliverClick deliveryClickListener;
+    private ListItemClick listItemClickListener;
+    public void setListItemClick(ListItemClick listener){this.listItemClickListener = listener;}
     public void setRefuseClick(RefuseClick listener){
         this.refuseClickListener = listener;
     }

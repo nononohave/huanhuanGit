@@ -1,73 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/addAddressBack"
     tools:context="com.cos.huanhuan.activitys.ViewTrackingActivity">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@color/white"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        >
-        <ImageView
-            android:id="@+id/iv_view_head_tracking"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:src="@mipmap/public_placehold"
-            android:layout_centerVertical="true"
-            />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_toRightOf="@+id/iv_view_head_tracking"
-            android:layout_marginLeft="10dp"
-            android:gravity="center_vertical"
-            >
-            <TextView
-                android:id="@+id/tv_tracking_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/popTextSize"
-                />
-            <TextView
-                android:id="@+id/tv_tracking_from"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:textSize="@dimen/popTextSize"
-                />
-            <TextView
-                android:id="@+id/tv_tracking_no"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:textSize="@dimen/popTextSize"
-                />
-        </LinearLayout>
-    </RelativeLayout>
+
     <ScrollView
+        android:id="@+id/sl_view_tracking"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <LinearLayout
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/rl_view_tracking"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@color/white"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                >
+                <ImageView
+                    android:id="@+id/iv_view_head_tracking"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:src="@mipmap/public_placehold"
+                    android:layout_centerVertical="true"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_toRightOf="@+id/iv_view_head_tracking"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    >
+                    <TextView
+                        android:id="@+id/tv_tracking_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                    <TextView
+                        android:id="@+id/tv_tracking_from"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                    <TextView
+                        android:id="@+id/tv_tracking_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                </LinearLayout>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_below="@+id/rl_view_tracking"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                >
+                <com.cos.huanhuan.utils.MyListView
+                    android:id="@+id/list_order_delivery"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none"
+                    android:divider="@null"
+                    android:layout_marginBottom="65dp"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/white"
         >
-        <com.cos.huanhuan.utils.MyListView
-            android:id="@+id/list_order_delivery"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:divider="@null"
+            android:layout_height="1px"
+            android:background="@color/dividLineColor"
+            ></View>
+        <TextView
+            android:id="@+id/tv_tracking_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="物流客服"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:background="@drawable/btn_agress"
             />
-    </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

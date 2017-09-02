@@ -19,9 +19,8 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
@@ -30,7 +29,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppStartLoadTranslucent">
         <activity android:name=".activitys.StartActivity">
@@ -45,10 +43,21 @@
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="597ebcaa04e20525eb00030c" />
-
+        <meta-data
+            android:name="RONG_CLOUD_APP_KEY"
+            android:value="kj7swf8o7wbw2" />
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.cos.huanhuan.fileprovider"
+            android:authorities="com.cos.huanhuan.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/rc_file_path" />
+        </provider>
+        <provider
+            android:name=".utils.FileProviderApp"
+            android:authorities="com.cos.huanhuan.photos.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -142,8 +151,45 @@
         <activity android:name=".activitys.ResetActivitySecond" />
         <activity android:name=".activitys.ResetActivityThird" />
         <activity android:name=".activitys.UserAgreeActivity" />
-        <activity android:name=".activitys.IndexActivity" />
-        <activity android:name=".activitys.AllExchangeActivity" />
+
+        <!--会话列表-->
+        <activity
+            android:name=".activitys.IndexActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="com.cos.huanhuan"
+                    android:pathPrefix="/conversationlist"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+
+        <!--会话界面-->
+        <activity
+            android:name=".activitys.ConversationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="com.cos.huanhuan"
+                    android:pathPrefix="/conversation/"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activitys.AllExchangeActivity"
+            />
         <activity
             android:name=".activitys.PublishExchangeActivity"
             android:launchMode="singleTask"
@@ -185,6 +231,17 @@
         <activity android:name=".activitys.TrackingNoActivity" />
         <activity android:name=".activitys.MyExchangeActivity" />
         <activity android:name=".activitys.ViewTrackingActivity"></activity>
+
+        <receiver
+            android:exported="true"
+            android:name=".notifications.RongPushNotificationReceiver">
+            <intent-filter>
+                <action android:name="io.rong.push.intent.MESSAGE_ARRIVED" />
+                <action android:name="io.rong.push.intent.MI_MESSAGE_ARRIVED" />
+                <action android:name="io.rong.push.intent.MESSAGE_CLICKED" />
+                <action android:name="io.rong.push.intent.MI_MESSAGE_CLICKED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

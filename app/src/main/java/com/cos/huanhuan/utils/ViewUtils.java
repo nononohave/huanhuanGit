@@ -25,7 +25,6 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.AllExchangeActivity;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -164,6 +163,10 @@ public class ViewUtils {
                 popupWindow = new PopupWindow(popupView,
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
                 break;
+            case 7:
+                popupWindow = new PopupWindow(popupView,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+                break;
             default:
                 popupWindow = new PopupWindow(popupView,
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
@@ -172,6 +175,7 @@ public class ViewUtils {
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setTouchable(true);
+        //popupWindow.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         popupWindow.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         if(paramsType == 5){
@@ -179,6 +183,10 @@ public class ViewUtils {
             popupWindow.showAtLocation(root, Gravity.NO_GRAVITY, 0, 0);
         }else if(paramsType == 6){
             popupWindow.showAtLocation(root, Gravity.CENTER, 0, 0);
+        }else if(paramsType == 4){
+            popupWindow.showAtLocation(root, Gravity.NO_GRAVITY, DensityUtils.px2dip(context,550),DensityUtils.px2dip(context,550));
+        }else if(paramsType == 7){
+            popupWindow.showAsDropDown(root,60,0);
         }else{
             popupWindow.showAsDropDown(root,-235,40);
             setBackgroundAlpha(0.8f,context);
@@ -355,9 +363,18 @@ public class ViewUtils {
      *            屏幕透明度0.0-1.0 1表示完全不透明
      */
     public static void setBackgroundAlpha(float bgAlpha,Context mContext) {
-        WindowManager.LayoutParams lp = ((Activity) mContext).getWindow()
-                .getAttributes();
+//        WindowManager.LayoutParams lp = ((Activity) mContext).getWindow()
+//                .getAttributes();
+//        lp.alpha = bgAlpha;
+//        ((Activity) mContext).getWindow().setAttributes(lp);
+
+        WindowManager.LayoutParams lp = ((Activity) mContext).getWindow().getAttributes();
         lp.alpha = bgAlpha;
+        if (bgAlpha == 1) {
+            ((Activity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);//不移除该Flag的话,在有视频的页面上的视频会出现黑屏的bug
+        } else {
+            ((Activity) mContext).getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);//此行代码主要是解决在华为手机上半透明效果无效的bug
+        }
         ((Activity) mContext).getWindow().setAttributes(lp);
     }
     /**
@@ -476,11 +493,9 @@ public class ViewUtils {
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
             //mView.measure(0, 0);
             totalHeight += mView.getMeasuredHeight();
-            LogUtil.d("数据" + i, String.valueOf(totalHeight));
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (mAdapter.getCount() - 1));
-        LogUtil.d("数据", "listview总高度="+ params.height);
         listView.setLayoutParams(params);
         listView.requestLayout();
         return totalHeight;

@@ -49,7 +49,7 @@ public class MyExchangeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             PicassoUtils.getinstance().LoadImage(context, listMyExchange.get(position).getCover(), ((MyExchangeAdapter.ViewHolder) holder).iv_adapter_my_exchange_cover, R.mipmap.public_placehold, R.mipmap.public_placehold, PicassoUtils.PICASSO_BITMAP_SHOW_NORMAL_TYPE, 0);
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_exchangeNo.setText("兑换编号：" + listMyExchange.get(position).getSerialNum());
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_exchangeStatus.setText(listMyExchange.get(position).getState());
-            String author = "<font color='#666666'>By </font><font color='#4083A9'>" + listMyExchange.get(position).getNickname() + "</font>";
+            String author = "<font color='#4083A9'>" + listMyExchange.get(position).getNickname() + "</font>";
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_my_exchange_author.setText(Html.fromHtml(author));
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_my_exchange_time.setText(listMyExchange.get(position).getAddTime());
 

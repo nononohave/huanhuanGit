@@ -7,6 +7,24 @@ package com.cos.huanhuan.model;
 public class CoopList {
     private int pageIndex;//当前页
     private int pageSize;//每页数量
+    private String cid;//分类id
+    private String city;//市
+
+    public String getCid() {
+        return cid;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
 
     public int getPageIndex() {
         return pageIndex;

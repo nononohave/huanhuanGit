@@ -60,6 +60,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.model.Conversation;
+
 public class CooperateDetailActivity extends BaseActivity implements ObservableScrollView.ScrollViewListener,View.OnClickListener,AdapterView.OnItemClickListener {
 
     private ObservableScrollView scrollView;
@@ -79,6 +82,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
     //适配器
     private List<Image> imgList;
     private CoopDetailImageAdapter coopDetailImageAdapter;
+    private CoopDetail coopDetailItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,6 +170,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                     if(success){
                         JSONObject obj =jsonObject.getJSONObject("data");
                         CoopDetail coopDetail = JsonUtils.fromJson(obj.toString(), CoopDetail.class);
+                        coopDetailItem = coopDetail;
                         setData(coopDetail);
                     }else{
                         AppToastMgr.shortToast(CooperateDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
@@ -345,6 +350,11 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                 });
                 break;
             case R.id.btn_coop_chat:
+                if (RongIM.getInstance()!=null) {
+                    RongIM.getInstance().startPrivateChat(CooperateDetailActivity.this, coopDetailItem.getUserId(), "与" + coopDetailItem.getNickname() + "沟通中...");
+                }else{
+                    AppToastMgr.shortToast(CooperateDetailActivity.this,"融云初始化为null");
+                }
                 break;
         }
     }
