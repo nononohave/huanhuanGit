@@ -18,6 +18,7 @@ import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.AllExchangeActivity;
 import com.cos.huanhuan.fragments.IndexFragment;
 import com.cos.huanhuan.model.CardExchange;
+import com.cos.huanhuan.model.SlidePhotos;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.PicassoUtils;
 import com.cos.huanhuan.views.CircleImageView;
@@ -38,6 +39,7 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
     public static final int ITEM_TYPE_CONTENT = 1;
     private Context mContext;
     private List<CardExchange> cardList;
+    private List<SlidePhotos> listSlides;
     private View mHeaderView;
     private String[] paths = {"http://a2.qpic.cn/psb?/V10czDLU2UlwEh/1S47MQyOiG2Qg6izfj.Ji2JgwjfI40XITjhUM5IYNfQ!/b/dG0BAAAAAAAA&ek=1&kp=1&pt=0&bo=igJoAYoCaAEDACU!&tm=1502679600&sce=0-12-12&rf=0-18",
             "http://a2.qpic.cn/psb?/V10czDLU2UlwEh/1S47MQyOiG2Qg6izfj.Ji2JgwjfI40XITjhUM5IYNfQ!/b/dG0BAAAAAAAA&ek=1&kp=1&pt=0&bo=igJoAYoCaAEDACU!&tm=1502679600&sce=0-12-12&rf=0-18",
@@ -45,9 +47,10 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
             "http://a2.qpic.cn/psb?/V10czDLU2UlwEh/1S47MQyOiG2Qg6izfj.Ji2JgwjfI40XITjhUM5IYNfQ!/b/dG0BAAAAAAAA&ek=1&kp=1&pt=0&bo=igJoAYoCaAEDACU!&tm=1502679600&sce=0-12-12&rf=0-18",
             "http://a2.qpic.cn/psb?/V10czDLU2UlwEh/1S47MQyOiG2Qg6izfj.Ji2JgwjfI40XITjhUM5IYNfQ!/b/dG0BAAAAAAAA&ek=1&kp=1&pt=0&bo=igJoAYoCaAEDACU!&tm=1502679600&sce=0-12-12&rf=0-18"};
     //适配器初始化
-    public CardGridAdapter(Context context,List<CardExchange> datas) {
+    public CardGridAdapter(Context context, List<CardExchange> datas, List<SlidePhotos> listSlides) {
         this.mContext=context;
         this.cardList=datas;
+        this.listSlides = listSlides;
     }
 
     public void setHeaderView(View headerView) {
@@ -86,7 +89,7 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
             //设置透明度
             ((HeaderHolder)holder).roll_view_pager.setAnimationDurtion(300);
             //设置适配器
-            ((HeaderHolder)holder).roll_view_pager.setAdapter(new TestNormalAdapter(mContext,paths));
+            ((HeaderHolder)holder).roll_view_pager.setAdapter(new TestNormalAdapter(mContext,listSlides));
             ((HeaderHolder)holder).roll_view_pager.setHintView(new ColorPointHintView(mContext, mContext.getResources().getColor(R.color.titleBarTextColor), Color.WHITE));
             ((HeaderHolder)holder).tv_viewAllExchange.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -178,6 +181,7 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
     private class TestNormalAdapter extends StaticPagerAdapter {
         private Context context;
         private String[] paths;
+        private List<SlidePhotos> listData;
         private int[] imgs = {
                 R.mipmap.banner1,
                 R.mipmap.banner2,
@@ -185,9 +189,9 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
                 R.mipmap.banner4
         };
 
-        public TestNormalAdapter(Context context, String[] paths) {
+        public TestNormalAdapter(Context context, List<SlidePhotos> listData) {
             this.context = context;
-            this.paths = paths;
+            this.listData = listData;
         }
 
         @Override
@@ -195,7 +199,7 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
             View view = View.inflate(context, R.layout.scroll_img, null);
             ImageView img = (ImageView) view.findViewById(R.id.scrollImg);
             float roundRadius = 0;
-            PicassoUtils.getinstance().LoadImage(context,paths[position],img,R.mipmap.ic_launcher,R.mipmap.ic_launcher,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,roundRadius);
+            PicassoUtils.getinstance().LoadImage(context,listData.get(position).getImgUrl(),img,R.mipmap.ic_launcher,R.mipmap.ic_launcher,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,roundRadius);
             //PicassoUtils.getinstance().LoadImage(context,imgs[position],img,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,roundRadius);
             img.setScaleType(ImageView.ScaleType.FIT_XY);
             return view;
@@ -204,7 +208,7 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
 
         @Override
         public int getCount() {
-            return imgs.length;
+            return listData.size();
         }
     }
 

@@ -11,6 +11,7 @@ import com.cos.huanhuan.model.CommentMuti;
 import com.cos.huanhuan.model.CommentSimple;
 import com.cos.huanhuan.model.CoopDetail;
 import com.cos.huanhuan.model.CoopList;
+import com.cos.huanhuan.model.ExchangeAdd;
 import com.cos.huanhuan.model.ExchangeList;
 import com.cos.huanhuan.model.PersonData;
 import com.cos.huanhuan.model.PublishCoop;
@@ -35,6 +36,8 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import org.json.JSONException;
 
 import java.io.IOException;
+
+import static com.cos.huanhuan.R.string.recharge;
 
 /**
  * Created by Administrator on 2017/8/7.
@@ -114,6 +117,13 @@ public class HttpRequest {
 
     public static void getUserAgreeMent(int id,StringCallback stringCallback){
         String url = TEXT_HUANHUAN_HOST + "Members/UserAgreement/" + id;
+        OkHttpUtils.get().url(url)
+                .build()
+                .execute(stringCallback);
+    }
+
+    public static void getSlides(StringCallback stringCallback){
+        String url = TEXT_HUANHUAN_HOST + "Slides";
         OkHttpUtils.get().url(url)
                 .build()
                 .execute(stringCallback);
@@ -578,6 +588,22 @@ public class HttpRequest {
                 .build()
                 .execute(stringCallback);
     }
+
+    /**
+     * 确认兑换
+     * @param exchangeAdd
+     * @param stringCallback
+     * @throws JSONException
+     */
+    public static void rechargePersonValue(ExchangeAdd exchangeAdd, StringCallback stringCallback){
+        String url = TEXT_HUANHUAN_HOST + "ExchangeEvents";
+        OkHttpUtils.postString().url(url)
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .content(new Gson().toJson(exchangeAdd))
+                .build()
+                .execute(stringCallback);
+    }
+
     /**
      * 退换押金接口
      * @param userInfo

@@ -47,7 +47,6 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 			if (code == -1){
 				//错误
 			}
-
 			if (code == -2){
 				AppToastMgr.shortToast(WXPayEntryActivity.this,"您取消了付款");
 			}

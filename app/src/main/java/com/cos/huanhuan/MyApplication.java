@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.cos.huanhuan.fragments.MessageFragment;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
@@ -13,6 +14,9 @@ import com.umeng.socialize.UMShareConfig;
 import com.umeng.socialize.common.QueuedWork;
 
 import io.rong.imkit.RongIM;
+import io.rong.imkit.widget.provider.RealTimeLocationMessageProvider;
+import io.rong.push.RongPushClient;
+import io.rong.push.common.RongException;
 
 /**
  * @author wangfei

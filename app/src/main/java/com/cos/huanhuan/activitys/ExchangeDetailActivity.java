@@ -365,6 +365,13 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                 });
                 break;
             case R.id.btn_exchange_borrow:
+                Intent intentConfirmBorrow = new Intent(ExchangeDetailActivity.this,ComfirmExchangeActivity.class);
+                intentConfirmBorrow.putExtra("exchangeId",exchangeId);
+                if(userValueData != null){
+                    intentConfirmBorrow.putExtra("userValueData",userValueData);
+                }
+                intentConfirmBorrow.putExtra("isBorrow",0);
+                startActivity(intentConfirmBorrow);
                 break;
             case R.id.btn_exchange_now:
                 Intent intentConfirmExchange = new Intent(ExchangeDetailActivity.this,ComfirmExchangeActivity.class);
@@ -372,6 +379,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                 if(userValueData != null){
                     intentConfirmExchange.putExtra("userValueData",userValueData);
                 }
+                intentConfirmExchange.putExtra("isBorrow",1);
                 startActivity(intentConfirmExchange);
                 break;
         }

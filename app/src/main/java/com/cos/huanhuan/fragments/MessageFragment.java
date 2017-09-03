@@ -70,7 +70,7 @@ public class MessageFragment extends Fragment{
         titleBar.setTitle(this.getResources().getString(R.string.message));
     }
     private void reconnect(String token) {
-        RongIM.connect("t6c5oYz5grEOnn20oFvaDAndU7yxQsLXA3v69KPI1FJQdVx0/jPeVr38LU+tEbqemeTJ37DbHM/1Xp1NrJG7Aw==", new RongIMClient.ConnectCallback() {
+        RongIM.connect(token, new RongIMClient.ConnectCallback() {
             @Override
             public void onTokenIncorrect() {
                 Log.e(TAG, "---onTokenIncorrect--");

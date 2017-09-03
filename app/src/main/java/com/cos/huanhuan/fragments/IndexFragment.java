@@ -39,11 +39,14 @@ import com.cos.huanhuan.adapter.CardGridAdapter;
 import com.cos.huanhuan.model.CardExchange;
 import com.cos.huanhuan.model.Classify;
 import com.cos.huanhuan.model.ExchangeList;
+import com.cos.huanhuan.model.SlidePhotos;
+import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
 import com.cos.huanhuan.utils.FastBlur;
 import com.cos.huanhuan.utils.HttpRequest;
+import com.cos.huanhuan.utils.JsonUtils;
 import com.cos.huanhuan.utils.PicassoUtils;
 import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.PublicView;
@@ -84,6 +87,7 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
     private List<CardExchange> listCard;
     private List<Classify> listClassify;
     private int selectedTab = 0;
+    private List<SlidePhotos> listSlides;
     /**
      * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
      */
@@ -136,8 +140,9 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
         recyclerview.setLayoutManager(mLayoutManager);
         swipeRefreshLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
         listCard = new ArrayList<CardExchange>();
+        listSlides = new ArrayList<>();
 
-        cardGridAdapter = new CardGridAdapter(getActivity(),listCard);
+        cardGridAdapter = new CardGridAdapter(getActivity(),listCard,listSlides);
         recyclerview.setAdapter(cardGridAdapter);
         setHeader(recyclerview);
         int leftRight = DensityUtils.dip2px(getActivity(),5);
@@ -390,6 +395,33 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
             }
         });
 
+        HttpRequest.getSlides(new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                AppToastMgr.shortToast(getActivity(),"请求失败！");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Boolean success = jsonObject.getBoolean("success");
+                    String errorMsg = jsonObject.getString("errorMsg");
+                    if(success) {
+                        JSONArray arr = jsonObject.getJSONArray("list");
+                        for (int i = 0; i < arr.length(); i++) {
+                            SlidePhotos slides = JsonUtils.fromJson(arr.get(i).toString(),SlidePhotos.class);
+                            listSlides.add(slides);
+                        }
+                        cardGridAdapter.notifyDataSetChanged();
+                    }else{
+                        AppToastMgr.shortToast(getActivity(), " 请求失败！原因：" + errorMsg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void addTabClass(List<Classify> listClassify) {

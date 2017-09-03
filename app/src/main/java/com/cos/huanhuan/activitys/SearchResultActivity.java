@@ -31,6 +31,7 @@ import com.cos.huanhuan.adapter.CardGridAdapter;
 import com.cos.huanhuan.model.CardExchange;
 import com.cos.huanhuan.model.ExchangeList;
 import com.cos.huanhuan.model.ExchangeStatus;
+import com.cos.huanhuan.model.SlidePhotos;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
@@ -98,7 +99,7 @@ public class SearchResultActivity extends AppCompatActivity implements View.OnCl
         recyclerview.setLayoutManager(mLayoutManager);
         swipeRefreshLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
         listCard = new ArrayList<CardExchange>();
-        cardGridAdapter = new CardGridAdapter(this,listCard);
+        cardGridAdapter = new CardGridAdapter(this,listCard,new ArrayList<SlidePhotos>());
         recyclerview.setAdapter(cardGridAdapter);
         int leftRight = DensityUtils.dip2px(SearchResultActivity.this,5);
         int topBottom = DensityUtils.dip2px(SearchResultActivity.this,0);

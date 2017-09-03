@@ -24,11 +24,13 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        multiDexEnabled true
     }
     sourceSets {
         main {
             jni.srcDirs = []
             jniLibs.srcDirs = ['libs']
+            assets.srcDirs = ['src/main/assets']
         }
     }
     packagingOptions {
@@ -86,7 +88,6 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
-    compile files('libs/MiPush_SDK_Client_3_2_2.jar')
-    compile project(':IMKit')
     testCompile 'junit:junit:4.12'
+    compile project(':IMKit')
 }

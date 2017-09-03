@@ -34,6 +34,8 @@ import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.BaseActivity;
 import com.cos.huanhuan.activitys.IndexActivity;
 import com.cos.huanhuan.activitys.LoginActivity;
+import com.cos.huanhuan.activitys.MyExchangeActivity;
+import com.cos.huanhuan.model.ExchangeAdd;
 import com.cos.huanhuan.model.Image;
 import com.cos.huanhuan.model.Recharge;
 import com.cos.huanhuan.model.UserValueData;
@@ -63,7 +65,7 @@ public class PayDetailFragment extends DialogFragment {
     private LinearLayout LinPayWay;
     private Button btnPay,btn_choose_payWays;
     private ImageView imageCloseOne,imageCloseTwo,iv_choosed_aliPay,iv_choosed_wxPay;
-    private TextView tv_payWays;
+    private TextView tv_payWays,priceMoneyToPay;
     private static final int SDK_PAY_FLAG = 1;
     private String userId;
     private IWXAPI api;
@@ -71,11 +73,16 @@ public class PayDetailFragment extends DialogFragment {
     private Dialog dialogLoading;
     private int type;//判断从哪个页面传过来的支付选中页面，通过type调用不同的接口
     private double rechargeMoney;
+    private int addressId,exId;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userId = getArguments().getString("userId");
         type = getArguments().getInt("type");
+        if(type == 3 || type == 4 || type == 5){
+            addressId = getArguments().getInt("AddressId");
+            exId = getArguments().getInt("ExId");
+        }
         rechargeMoney = getArguments().getDouble("rechargeMoney");
         api = WXAPIFactory.createWXAPI(getActivity(), "wx34470b0a77faa852");
     }
@@ -115,6 +122,7 @@ public class PayDetailFragment extends DialogFragment {
         iv_choosed_aliPay = (ImageView)dialog.findViewById(R.id.iv_choosed_aliPay);//选中支付宝
         iv_choosed_wxPay = (ImageView)dialog.findViewById(R.id.iv_choosed_wxPay);//选中WX
         tv_payWays = (TextView) dialog.findViewById(R.id.tv_payWays);// 选中的支付方式
+        priceMoneyToPay = (TextView) dialog.findViewById(R.id.priceMoneyToPay);//支付的金额
         rePayWay.setOnClickListener(listener);
         re_aliPay.setOnClickListener(listener);
         re_wxPay.setOnClickListener(listener);
@@ -124,6 +132,7 @@ public class PayDetailFragment extends DialogFragment {
         btn_choose_payWays.setOnClickListener(listener);
         iv_choosed_aliPay.setOnClickListener(listener);
         iv_choosed_wxPay.setOnClickListener(listener);
+        priceMoneyToPay.setText(String.valueOf(rechargeMoney));
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -165,69 +174,142 @@ public class PayDetailFragment extends DialogFragment {
                     }else if(type == 2){
                         recharge.setType("会员充值");
                     }
+                    final ExchangeAdd exchangeAdd = new ExchangeAdd();
+                    exchangeAdd.setUserId(Integer.valueOf(userId));
+                    if(type == 3){
+                        exchangeAdd.setExamine("身家兑换");
+                    }else if(type == 4){
+                        exchangeAdd.setExamine("会员租赁");
+                    }else if(type == 5){
+                        exchangeAdd.setExamine("单次租赁");
+                    }
                     final String payType = tv_payWays.getText().toString().trim();
                     if(payType.equals("支付宝")){
                         recharge.setPayType("Ali");
+                        exchangeAdd.setPayType("Ali");
                     }else{
                         recharge.setPayType("Wx");
+                        exchangeAdd.setPayType("Wx");
                     }
-                    HttpRequest.rechargePersonValue(recharge, new StringCallback() {
-                        @Override
-                        public void onError(Request request, Exception e) {
-                            AppToastMgr.shortToast(getActivity(),"请求失败！");
-                        }
-
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                Boolean success = jsonObject.getBoolean("success");
-                                String errorMsg = jsonObject.getString("errorMsg");
-                                if(success){
-                                    getDialog().dismiss();
-                                    if(payType.equals("支付宝")) {
-                                        AppToastMgr.shortToast(getActivity(), "正常调起支付宝支付");
-                                        final String orderInfo = jsonObject.getString("data");
-                                        Runnable payRunnable = new Runnable() {
-
-                                            @Override
-                                            public void run() {
-                                                PayTask alipay = new PayTask(getActivity());
-                                                Map<String, String> result = alipay.payV2(orderInfo, true);
-                                                Log.i("msp", result.toString());
-
-                                                Message msg = new Message();
-                                                msg.what = SDK_PAY_FLAG;
-                                                msg.obj = result;
-                                                mHandler.sendMessage(msg);
-                                            }
-                                        };
-
-                                        Thread payThread = new Thread(payRunnable);
-                                        payThread.start();
-                                    }else{
-                                        JSONObject data = jsonObject.getJSONObject("data");
-                                        PayReq req = new PayReq();
-                                        req.appId			= data.getString("appid");
-                                        req.partnerId		= data.getString("partnerid");
-                                        req.prepayId		= data.getString("prepayid");
-                                        req.nonceStr		= data.getString("noncestr");
-                                        req.timeStamp		= data.getString("timestamp");
-                                        req.packageValue	= data.getString("package");
-                                        req.sign			= data.getString("sign");
-                                        req.extData			= "app data"; // optional
-                                        AppToastMgr.shortToast(getActivity(), "正常调起支付");
-                                        // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
-                                        api.sendReq(req);
-                                    }
-                                }else{
-                                    AppToastMgr.shortToast(getActivity(), " 获取充值信息失败！原因：" + errorMsg);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    exchangeAdd.setAddressId(addressId);
+                    exchangeAdd.setExId(exId);
+                    if(type == 1 || type == 2) {
+                        HttpRequest.rechargePersonValue(recharge, new StringCallback() {
+                            @Override
+                            public void onError(Request request, Exception e) {
+                                AppToastMgr.shortToast(getActivity(), "请求失败！");
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    Boolean success = jsonObject.getBoolean("success");
+                                    String errorMsg = jsonObject.getString("errorMsg");
+                                    if (success) {
+                                        getDialog().dismiss();
+                                        if (payType.equals("支付宝")) {
+                                            AppToastMgr.shortToast(getActivity(), "正常调起支付宝支付");
+                                            final String orderInfo = jsonObject.getString("data");
+                                            Runnable payRunnable = new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    PayTask alipay = new PayTask(getActivity());
+                                                    Map<String, String> result = alipay.payV2(orderInfo, true);
+                                                    Log.i("msp", result.toString());
+
+                                                    Message msg = new Message();
+                                                    msg.what = SDK_PAY_FLAG;
+                                                    msg.obj = result;
+                                                    mHandler.sendMessage(msg);
+                                                }
+                                            };
+
+                                            Thread payThread = new Thread(payRunnable);
+                                            payThread.start();
+                                        } else {
+                                            JSONObject data = jsonObject.getJSONObject("data");
+                                            PayReq req = new PayReq();
+                                            req.appId = data.getString("appid");
+                                            req.partnerId = data.getString("partnerid");
+                                            req.prepayId = data.getString("prepayid");
+                                            req.nonceStr = data.getString("noncestr");
+                                            req.timeStamp = data.getString("timestamp");
+                                            req.packageValue = data.getString("package");
+                                            req.sign = data.getString("sign");
+                                            req.extData = "app data"; // optional
+                                            AppToastMgr.shortToast(getActivity(), "正常调起支付");
+                                            // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
+                                            api.sendReq(req);
+                                        }
+                                    } else {
+                                        AppToastMgr.shortToast(getActivity(), " 获取充值信息失败！原因：" + errorMsg);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }else{
+                        HttpRequest.rechargePersonValue(exchangeAdd, new StringCallback() {
+                            @Override
+                            public void onError(Request request, Exception e) {
+                                AppToastMgr.shortToast(getActivity(), "请求失败！");
+                            }
+
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    Boolean success = jsonObject.getBoolean("success");
+                                    String errorMsg = jsonObject.getString("errorMsg");
+                                    if (success) {
+                                        getDialog().dismiss();
+                                        if (payType.equals("支付宝")) {
+                                            AppToastMgr.shortToast(getActivity(), "正常调起支付宝支付");
+                                            final String orderInfo = jsonObject.getString("data");
+                                            Runnable payRunnable = new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    PayTask alipay = new PayTask(getActivity());
+                                                    Map<String, String> result = alipay.payV2(orderInfo, true);
+                                                    Log.i("msp", result.toString());
+
+                                                    Message msg = new Message();
+                                                    msg.what = SDK_PAY_FLAG;
+                                                    msg.obj = result;
+                                                    mHandler.sendMessage(msg);
+                                                }
+                                            };
+
+                                            Thread payThread = new Thread(payRunnable);
+                                            payThread.start();
+                                        } else {
+                                            JSONObject data = jsonObject.getJSONObject("data");
+                                            PayReq req = new PayReq();
+                                            req.appId = data.getString("appid");
+                                            req.partnerId = data.getString("partnerid");
+                                            req.prepayId = data.getString("prepayid");
+                                            req.nonceStr = data.getString("noncestr");
+                                            req.timeStamp = data.getString("timestamp");
+                                            req.packageValue = data.getString("package");
+                                            req.sign = data.getString("sign");
+                                            req.extData = "app data"; // optional
+                                            AppToastMgr.shortToast(getActivity(), "正常调起支付");
+                                            // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
+                                            api.sendReq(req);
+                                        }
+                                    } else {
+                                        AppToastMgr.shortToast(getActivity(), " 获取充值信息失败！原因：" + errorMsg);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
                     break;
                 case R.id.close_one:
                     getDialog().dismiss();
@@ -273,6 +355,10 @@ public class PayDetailFragment extends DialogFragment {
                     if (TextUtils.equals(resultStatus, "9000")) {
                         // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
                         AppToastMgr.shortToast(mContext,"支付成功");
+                        if(type == 3 || type == 4 || type ==5){
+                            Intent intentMyExhchange = new Intent(getActivity(), MyExchangeActivity.class);
+                            startActivity(intentMyExhchange);
+                        }
                     } else {
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
                         AppToastMgr.shortToast(mContext,"支付失败");
