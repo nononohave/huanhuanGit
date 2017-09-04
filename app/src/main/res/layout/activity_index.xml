@@ -6,7 +6,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     tools:context="com.cos.huanhuan.activitys.IndexActivity">
-
+    <com.cos.huanhuan.views.TitleBar
+        android:id="@+id/index_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_content"
         android:layout_width="match_parent"

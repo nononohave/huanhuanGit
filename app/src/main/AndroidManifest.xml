@@ -45,17 +45,18 @@
         <meta-data
             android:name="RONG_CLOUD_APP_KEY"
             android:value="kj7swf8o7wbw2" />
+
         <service
             android:name="io.rong.imlib.ipc.RongService"
             android:exported="true"
             android:process=":ipc" />
+        <service
+            android:name="io.rong.imlib.ReConnectService"
+            android:exported="true" />
 
-        <service android:name="io.rong.imlib.ReConnectService"
-            android:exported="true"/>
-
-        <receiver android:name="io.rong.imlib.ConnectChangeReceiver"
-            android:exported="true"/>
-
+        <receiver
+            android:name="io.rong.imlib.ConnectChangeReceiver"
+            android:exported="true" />
         <receiver
             android:name="io.rong.imlib.HeartbeatReceiver"
             android:process=":ipc" />
@@ -81,20 +82,21 @@
         <service
             android:name="com.xiaomi.mipush.sdk.MessageHandleService"
             android:enabled="true" />
-        <!--注：此service必须在2.2.5版本以后（包括2.2.5版本）加入-->
+        <!-- 注：此service必须在2.2.5版本以后（包括2.2.5版本）加入 -->
 
         <service
             android:name="com.xiaomi.push.service.XMJobService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-        <!--注：此service必须在3.0.1版本以后（包括3.0.1版本）加入-->
+        <!-- 注：此service必须在3.0.1版本以后（包括3.0.1版本）加入 -->
 
         <receiver
             android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -139,6 +141,25 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <!--聚合会话列表-->
+        <activity
+            android:name=".activitys.SubConversationListActivtiy"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="com.cos.huanhuan"
+                    android:pathPrefix="/subconversationlist"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="com.umeng.socialize.media.WBShareCallBackActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -226,12 +247,11 @@
         <activity android:name=".activitys.ResetActivityThird" />
         <activity android:name=".activitys.UserAgreeActivity" />
 
-        <!--会话列表-->
+        <!-- 会话列表 -->
         <activity
             android:name=".activitys.IndexActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -244,12 +264,11 @@
             </intent-filter>
         </activity>
 
-        <!--会话界面-->
+        <!-- 会话界面 -->
         <activity
             android:name=".activitys.ConversationActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -261,9 +280,7 @@
                     android:scheme="rong" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activitys.AllExchangeActivity"
-            />
+        <activity android:name=".activitys.AllExchangeActivity" />
         <activity
             android:name=".activitys.PublishExchangeActivity"
             android:launchMode="singleTask"
@@ -304,11 +321,11 @@
         <activity android:name=".activitys.PersonPublishActivity" />
         <activity android:name=".activitys.TrackingNoActivity" />
         <activity android:name=".activitys.MyExchangeActivity" />
-        <activity android:name=".activitys.ViewTrackingActivity"></activity>
+        <activity android:name=".activitys.ViewTrackingActivity" />
 
         <receiver
-            android:exported="true"
-            android:name=".notifications.RongPushNotificationReceiver">
+            android:name=".notifications.RongPushNotificationReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="io.rong.push.intent.MESSAGE_ARRIVED" />
                 <action android:name="io.rong.push.intent.MI_MESSAGE_ARRIVED" />

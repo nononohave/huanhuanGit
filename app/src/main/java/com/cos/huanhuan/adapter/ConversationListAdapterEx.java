@@ -1,8 +1,11 @@
 package com.cos.huanhuan.adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.cos.huanhuan.R;
 
 import io.rong.imkit.model.UIConversation;
 import io.rong.imkit.widget.adapter.ConversationListAdapter;
@@ -12,8 +15,10 @@ import io.rong.imlib.model.Conversation;
  * Created by weiqinxiao on 15/11/5.
  */
 public class ConversationListAdapterEx extends ConversationListAdapter {
+    private Context context;
     public ConversationListAdapterEx(Context context) {
         super(context);
+        this.context = context;
     }
 
     @Override

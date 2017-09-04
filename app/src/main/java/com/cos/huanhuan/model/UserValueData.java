@@ -97,7 +97,7 @@ public class UserValueData implements Serializable{
     }
 
     public String getPortrait() {
-        return HttpRequest.IMG_HUANHUAN_HOST + portrait;
+        return portrait.substring(0,4).equals("http")?portrait : HttpRequest.IMG_HUANHUAN_HOST + portrait;
     }
 
     public void setPortrait(String portrait) {

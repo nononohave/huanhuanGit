@@ -2,6 +2,7 @@ package com.cos.huanhuan.activitys;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.cos.huanhuan.MainActivity;
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.fragments.MessageFragment;
 import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
@@ -44,8 +46,13 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener{
+import io.rong.imkit.RongIM;
+import io.rong.imlib.NativeObject;
+import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.UserInfo;
 
+public class LoginActivity extends BaseActivity implements View.OnClickListener{
+    private static final String TAG = MessageFragment.class.getSimpleName();
     private EditText et_phone,et_password;
     private ImageView iv_clearPhone,iv_showPassword,iv_wxLogin,iv_wbLogin,iv_qqLogin;
     private Button btn_login;
@@ -243,6 +250,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                             startActivity(intent);
                                             UserValueData userValueData = JsonUtils.fromJson(obj.toString(),UserValueData.class);
                                             sharedPreferencesHelper.saveObject("userData",userValueData);
+                                            reconnect(userValueData.getRongToken());
                                         }else{
                                             AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
                                         }
@@ -264,7 +272,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.iv_wxLogin:
                 //微信授权登录
-                AppToastMgr.shortToast(LoginActivity.this,"微信授权登录");
+                mShareAPI.doOauthVerify(LoginActivity.this, SHARE_MEDIA.WEIXIN, verifyAuthListener);
                 break;
             case R.id.iv_wbLogin:
                 //微博授权登录
@@ -303,6 +311,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 UMShareAPI.get(LoginActivity.this).getPlatformInfo(LoginActivity.this, SHARE_MEDIA.QQ, authListener);
             }else if(platform == SHARE_MEDIA.SINA){
                 UMShareAPI.get(LoginActivity.this).getPlatformInfo(LoginActivity.this, SHARE_MEDIA.SINA, authListener);
+            }else {
+                UMShareAPI.get(LoginActivity.this).getPlatformInfo(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
             }
         }
 
@@ -362,6 +372,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 figureUrl = data.get("iconurl");
             }else if(platform == SHARE_MEDIA.WEIXIN){
                 type = "wechat";
+                nickName = data.get("name");
+                gender = data.get("gender");
+                figureUrl = data.get("iconurl");
             }
             HttpRequest.oauthLogin(uid, type,nickName,gender, figureUrl, new StringCallback() {
                 @Override
@@ -377,11 +390,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         String errorMsg = jsonObject.getString("errorMsg");
                         if(success){
                             JSONObject obj = jsonObject.getJSONObject("data");
-                            AppACache appACache = AppACache.get(LoginActivity.this);
-                            appACache.put("userJsonData",obj);//将用户的数据json串存入到缓存中
-                            AppToastMgr.shortToast(LoginActivity.this, " 登录");
                             Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
                             startActivity(intent);
+                            final UserValueData userValueData = JsonUtils.fromJson(obj.toString(),UserValueData.class);
+                            sharedPreferencesHelper.saveObject("userData",userValueData);
+                            reconnect(userValueData.getRongToken());
+                            RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
+                                @Override
+                                public UserInfo getUserInfo(String s) {
+                                    //, String name, Uri portraitUri
+                                    UserInfo userInfo = new UserInfo(userValueData.getNickname(),String.valueOf(userValueData.getId()), Uri.parse(userValueData.getPortrait()));
+                                    return userInfo;
+                                }
+                            },true);
                         }else{
                             AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
                         }
@@ -412,7 +433,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             AppToastMgr.shortToast(LoginActivity.this,"取消授权");
         }
     };
+    private void reconnect(String token) {
+        RongIM.connect(token, new RongIMClient.ConnectCallback() {
+            @Override
+            public void onTokenIncorrect() {
+                AppToastMgr.shortToast(LoginActivity.this,"onTokenIncorrect");
+            }
 
+            @Override
+            public void onSuccess(String s) {
+
+                AppToastMgr.shortToast(LoginActivity.this,"连接融云成功");
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode e) {
+                AppToastMgr.shortToast(LoginActivity.this,"onError");
+                Log.e(TAG, "---onError--" + e);
+            }
+        });
+
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

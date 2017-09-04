@@ -21,9 +21,6 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
         multiDexEnabled true
     }
     sourceSets {
@@ -73,6 +70,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile project(':IMKit')
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
@@ -89,5 +87,4 @@ dependencies {
     compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
     testCompile 'junit:junit:4.12'
-    compile project(':IMKit')
 }

@@ -147,5 +147,6 @@
     <string name="tracking_msg">物流信息</string>
     <string name="my_exchange">我的兑换</string>
     <string name="message">消息</string>
+    <string name="system_message">系统消息</string>
     <string name="confirm_borrow">确认租借</string>
 </resources>

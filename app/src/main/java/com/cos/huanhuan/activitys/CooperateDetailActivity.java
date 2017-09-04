@@ -3,6 +3,7 @@ package com.cos.huanhuan.activitys;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -62,8 +63,9 @@ import java.util.TimerTask;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.UserInfo;
 
-public class CooperateDetailActivity extends BaseActivity implements ObservableScrollView.ScrollViewListener,View.OnClickListener,AdapterView.OnItemClickListener {
+public class CooperateDetailActivity extends BaseActivity implements ObservableScrollView.ScrollViewListener,View.OnClickListener,AdapterView.OnItemClickListener{
 
     private ObservableScrollView scrollView;
     private ImageView imageView_head_blur,img_coop_share,img_coop_back;
@@ -397,6 +399,4 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
             Toast.makeText(CooperateDetailActivity.this,"取消了",Toast.LENGTH_LONG).show();
         }
     };
-
-
 }
