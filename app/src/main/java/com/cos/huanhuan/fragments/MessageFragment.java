@@ -131,7 +131,6 @@ public class MessageFragment extends Fragment{
                 hashMap.put(Conversation.ConversationType.PUSH_SERVICE.getName(),true);
                 hashMap.put(Conversation.ConversationType.SYSTEM.getName(),true);
                 RongIM.getInstance().startConversationList(getActivity(),hashMap);
-                AppToastMgr.shortToast(getActivity(),"连接融云成功");
             }
 
             @Override

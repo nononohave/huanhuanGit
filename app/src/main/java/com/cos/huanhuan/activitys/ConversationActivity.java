@@ -60,7 +60,15 @@ public class ConversationActivity extends FragmentActivity implements RongIM.Use
         userValueData = sharedPreferencesHelper.getObject("userData");//该信息只用于判断登录与否，用户信息还是重新获取
         appManager = AppManager.getAppManager();
         SoftHideKeyBoardUtil.assistActivity(this);
-        appManager.addActivity(this);    }
+        appManager.addActivity(this);
+
+        UserValueData userValueDataLogin = sharedPreferencesHelper.getObject("userData");
+        if(userValueDataLogin == null) {
+            appManager.finishActivity();
+            Intent intent = new Intent(ConversationActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+    }
 
     private void initView() {
         boolean isImmersive = false;

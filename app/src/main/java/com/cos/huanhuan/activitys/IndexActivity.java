@@ -287,7 +287,6 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
 //                hashMap.put(Conversation.ConversationType.PUSH_SERVICE.getName(),true);
 //                hashMap.put(Conversation.ConversationType.SYSTEM.getName(),true);
 //                RongIM.getInstance().startConversationList(IndexActivity.this,hashMap);
-                AppToastMgr.shortToast(IndexActivity.this,"连接融云成功");
                 RongIM.getInstance().refreshUserInfoCache(new UserInfo(String.valueOf(userValueData.getId()),userValueData.getNickname(),Uri.parse(userValueData.getPortrait())));
             }
 
