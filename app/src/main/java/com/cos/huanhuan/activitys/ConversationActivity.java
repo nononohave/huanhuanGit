@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.model.UserValueData;
@@ -29,6 +30,8 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.rong.imkit.RongExtension;
+import io.rong.imkit.RongExtensionManager;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.UserInfo;
 
@@ -43,11 +46,11 @@ public class ConversationActivity extends FragmentActivity implements RongIM.Use
     private SharedPreferencesHelper sharedPreferencesHelper;
     private UserValueData userValueData;
     private Handler handler;
+    private RongExtension rc_extension;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conversation);
-        initView();
         userId = getIntent().getData().getQueryParameter("targetId");//用户id
         sUserName = getIntent().getData().getQueryParameter("title");//昵称
         initView();
@@ -80,6 +83,13 @@ public class ConversationActivity extends FragmentActivity implements RongIM.Use
         }
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         titleBar = (TitleBar) ConversationActivity.this.findViewById(R.id.conversation_title_bar);
+        rc_extension = (RongExtension) findViewById(R.id.rc_extension);
+        if(userId.equals("34")){
+            rc_extension.setVisibility(View.GONE);
+        }else{
+            rc_extension.setVisibility(View.VISIBLE);
+        }
+
         titleBar.setBackgroundColor(getResources().getColor(R.color.white));
         titleBar.setDividerColor(R.color.dividLineColor);
         titleBar.setTitleColor(getResources().getColor(R.color.titleBarTextColor));

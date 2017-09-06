@@ -23,6 +23,15 @@ public class UserValueData implements Serializable{
     private String RealName;//真实姓名
     private String endTime;//会员结束时间
     private String rongToken;//融云
+    private Boolean depositState;//是否是退押金申请中，true是
+
+    public Boolean getDepositState() {
+        return depositState;
+    }
+
+    public void setDepositState(Boolean depositState) {
+        this.depositState = depositState;
+    }
 
     public String getRongToken() {
         return rongToken;

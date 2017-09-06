@@ -121,6 +121,7 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
         rl_person_data_sex.setOnClickListener(this);
         rl_person_data_desc.setOnClickListener(this);
     }
+
     private void initData() {
         HttpRequest.getMembers(userId, new StringCallback() {
             @Override
@@ -460,7 +461,7 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
                 Boolean success = jsonObject.getBoolean("success");
                 String errorMsg = jsonObject.getString("errorMsg");
                 if(success){
-
+                    Picasso.with(PersonalDataActivity.this).load(new File(imagePaths.get(0))).placeholder(R.mipmap.comment_grey).into(person_data_headImage);
                 }else{
                     AppToastMgr.shortToast(PersonalDataActivity.this, " 头像上传失败！原因：" + errorMsg);
                 }

@@ -49,6 +49,7 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
@@ -298,12 +299,17 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
         switch (view.getId()){
             case R.id.img_coop_share:
                 //分享按钮
-                UMImage image = new UMImage(CooperateDetailActivity.this, "http://www.cnblogs.com/skins/CodingLife/images/title-yellow.png");//网络图片
-                new ShareAction(CooperateDetailActivity.this)
-                        .withMedia(image)
-                        .setDisplayList(SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE,SHARE_MEDIA.QQ,SHARE_MEDIA.QZONE,SHARE_MEDIA.SINA)
-                        .setCallback(umShareListener)
-                        .open();
+                if(coopDetailItem != null) {
+                    UMWeb web = new UMWeb(coopDetailItem.getShareURL());
+                    web.setTitle(coopDetailItem.getTitle());//标题
+                    web.setThumb(new UMImage(CooperateDetailActivity.this,R.mipmap.ic_launcher));  //缩略图
+                    web.setDescription(coopDetailItem.getDescribe());//描述
+                    new ShareAction(CooperateDetailActivity.this)
+                            .withMedia(web)
+                            .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE, SHARE_MEDIA.SINA)
+                            .setCallback(umShareListener)
+                            .open();
+                }
                 break;
             case R.id.img_coop_back:
                 //返回按钮
@@ -353,7 +359,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                 break;
             case R.id.btn_coop_chat:
                 if (RongIM.getInstance()!=null) {
-                    RongIM.getInstance().startPrivateChat(CooperateDetailActivity.this, coopDetailItem.getUserId(), "与" + coopDetailItem.getNickname() + "沟通中...");
+                    RongIM.getInstance().startPrivateChat(CooperateDetailActivity.this, coopDetailItem.getUserId(), coopDetailItem.getNickname());
                 }else{
                     AppToastMgr.shortToast(CooperateDetailActivity.this,"融云初始化为null");
                 }
@@ -377,7 +383,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
          */
         @Override
         public void onResult(SHARE_MEDIA platform) {
-            Toast.makeText(CooperateDetailActivity.this,"成功了",Toast.LENGTH_LONG).show();
+            AppToastMgr.shortToast(CooperateDetailActivity.this,"分享成功");
         }
 
         /**
@@ -387,7 +393,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
          */
         @Override
         public void onError(SHARE_MEDIA platform, Throwable t) {
-            Toast.makeText(CooperateDetailActivity.this,"失败"+t.getMessage(),Toast.LENGTH_LONG).show();
+            AppToastMgr.shortToast(CooperateDetailActivity.this,"分享失败");
         }
 
         /**
@@ -396,7 +402,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
          */
         @Override
         public void onCancel(SHARE_MEDIA platform) {
-            Toast.makeText(CooperateDetailActivity.this,"取消了",Toast.LENGTH_LONG).show();
+            AppToastMgr.shortToast(CooperateDetailActivity.this,"取消分享");
         }
     };
 }

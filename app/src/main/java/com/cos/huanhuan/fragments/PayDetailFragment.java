@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.alipay.sdk.app.PayTask;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.BaseActivity;
+import com.cos.huanhuan.activitys.ConversationActivity;
 import com.cos.huanhuan.activitys.IndexActivity;
 import com.cos.huanhuan.activitys.LoginActivity;
 import com.cos.huanhuan.activitys.MyExchangeActivity;
@@ -43,6 +44,7 @@ import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
+import com.cos.huanhuan.utils.SharedPreferencesHelper;
 import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.utils.alipay.PayResult;
 import com.squareup.okhttp.Request;
@@ -74,11 +76,13 @@ public class PayDetailFragment extends DialogFragment {
     private int type;//判断从哪个页面传过来的支付选中页面，通过type调用不同的接口
     private double rechargeMoney;
     private int addressId,exId;
+    private SharedPreferencesHelper sharedPreferencesHelper;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userId = getArguments().getString("userId");
         type = getArguments().getInt("type");
+        sharedPreferencesHelper = new SharedPreferencesHelper(getActivity());
         if(type == 3 || type == 4 || type == 5){
             addressId = getArguments().getInt("AddressId");
             exId = getArguments().getInt("ExId");
@@ -194,6 +198,7 @@ public class PayDetailFragment extends DialogFragment {
                     exchangeAdd.setAddressId(addressId);
                     exchangeAdd.setExId(exId);
                     if(type == 1 || type == 2) {
+                        sharedPreferencesHelper.put("isRecharge",true);
                         HttpRequest.rechargePersonValue(recharge, new StringCallback() {
                             @Override
                             public void onError(Request request, Exception e) {
@@ -252,7 +257,8 @@ public class PayDetailFragment extends DialogFragment {
                             }
                         });
                     }else{
-                        HttpRequest.rechargePersonValue(exchangeAdd, new StringCallback() {
+                        sharedPreferencesHelper.put("isRecharge",false);
+                        HttpRequest.ComfirmExchange(exchangeAdd, new StringCallback() {
                             @Override
                             public void onError(Request request, Exception e) {
                                 AppToastMgr.shortToast(getActivity(), "请求失败！");

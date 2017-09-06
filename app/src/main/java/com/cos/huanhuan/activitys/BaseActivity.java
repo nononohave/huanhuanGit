@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppACache;
+import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppNetworkMgr;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
@@ -41,6 +42,7 @@ public class BaseActivity extends AppCompatActivity
     public ViewGroup contentView;
     private String userId;
     private SharedPreferencesHelper sharedPreferencesHelper;
+    private AppManager appManager;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +69,7 @@ public class BaseActivity extends AppCompatActivity
         sharedPreferencesHelper = new SharedPreferencesHelper(BaseActivity.this);
         titleBar = (TitleBar) findViewById(R.id.title_bar);
         contentView=(ViewGroup) findViewById(R.id.base_contentview);
+        appManager = AppManager.getAppManager();
     }
 
     public void setNoNetWOrkLayout(){
@@ -88,6 +91,7 @@ public class BaseActivity extends AppCompatActivity
                 return "";
             }
         }else{
+            appManager.finishActivity();
             Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
             startActivity(intent);
         }

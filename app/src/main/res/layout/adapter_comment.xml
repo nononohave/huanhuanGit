@@ -85,6 +85,7 @@
                             android:textColor="@color/forgetPassText"
                             android:textSize="@dimen/small_text" />
                         <ImageView
+                            android:id="@+id/im_adapter_comment"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@mipmap/comment"

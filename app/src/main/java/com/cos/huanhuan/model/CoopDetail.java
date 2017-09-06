@@ -25,6 +25,16 @@ public class CoopDetail {
     private Boolean heed;
     private int commentNum;
 
+    private String shareURL;//分享路径
+
+    public String getShareURL() {
+        return shareURL;
+    }
+
+    public void setShareURL(String shareURL) {
+        this.shareURL = shareURL;
+    }
+
     public String getUserId() {
         return userId;
     }

@@ -24,6 +24,7 @@ import com.cos.huanhuan.model.ExchangeDetail;
 import com.cos.huanhuan.model.Image;
 import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
 import com.cos.huanhuan.utils.FastBlur;
@@ -31,6 +32,7 @@ import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
 import com.cos.huanhuan.utils.MyListView;
 import com.cos.huanhuan.utils.ObservableScrollView;
+import com.cos.huanhuan.utils.SharedPreferencesHelper;
 import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.CircleImageView;
 import com.cos.huanhuan.views.ImagPagerUtil;
@@ -42,6 +44,7 @@ import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
@@ -67,11 +70,14 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
     private Handler handler;
     private List<String> listStrImg;
     private Boolean isLike = false;
+    private SharedPreferencesHelper sharedPreferencesHelper;
     //适配器
     private List<Image> imgList;
     private CoopDetailImageAdapter coopDetailImageAdapter;
 
     private UserValueData userValueData;//用于传入下一个页面的用户身家信息
+    private String shareUrl;
+    private ExchangeDetail exchangeDetailItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,11 +87,17 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
         }
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
-        userId = getUserId();
+        sharedPreferencesHelper = new SharedPreferencesHelper(ExchangeDetailActivity.this);
+        UserValueData userValueData = sharedPreferencesHelper.getObject("userData");
         exchangeId = getIntent().getExtras().getString("exchangeId");
+        if(userValueData != null){
+            userId = String.valueOf(userValueData.getId());
+            initData(0);
+        }else{
+            initData(1);
+        }
         initView();
         initListeners();
-        initData();
     }
 
     private void initView() {
@@ -145,58 +157,87 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
 
 
 
-    private void initData() {
-        HttpRequest.getExchangeDetail(exchangeId, userId, new StringCallback() {
-            @Override
-            public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(ExchangeDetailActivity.this,"请求失败！");
-            }
-
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    Boolean success = jsonObject.getBoolean("success");
-                    String errorMsg = jsonObject.getString("errorMsg");
-                    if(success){
-                        JSONObject obj =jsonObject.getJSONObject("data");
-                        ExchangeDetail exchangeDetail = JsonUtils.fromJson(obj.toString(), ExchangeDetail.class);
-                        setData(exchangeDetail);
-                    }else{
-                        AppToastMgr.shortToast(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+    private void initData(int type) {
+        if(type == 0) {
+            HttpRequest.getExchangeDetail(exchangeId, userId, new StringCallback() {
+                @Override
+                public void onError(Request request, Exception e) {
+                    AppToastMgr.shortToast(ExchangeDetailActivity.this, "请求失败！");
                 }
-            }
-        });
 
-        HttpRequest.getMembers(userId, new StringCallback() {
-            @Override
-            public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(ExchangeDetailActivity.this,"请求失败！");
-            }
-
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    Boolean success = jsonObject.getBoolean("success");
-                    String errorMsg = jsonObject.getString("errorMsg");
-                    if(success){
-                        JSONObject obj =jsonObject.getJSONObject("data");
-                        userValueData = JsonUtils.fromJson(obj.toString(), UserValueData.class);
-                    }else{
-                        AppToastMgr.shortToast(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        Boolean success = jsonObject.getBoolean("success");
+                        String errorMsg = jsonObject.getString("errorMsg");
+                        if (success) {
+                            JSONObject obj = jsonObject.getJSONObject("data");
+                            ExchangeDetail exchangeDetail = JsonUtils.fromJson(obj.toString(), ExchangeDetail.class);
+                            setData(exchangeDetail);
+                        } else {
+                            AppToastMgr.shortToast(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        });
+            });
+            HttpRequest.getMembers(userId, new StringCallback() {
+                @Override
+                public void onError(Request request, Exception e) {
+                    AppToastMgr.shortToast(ExchangeDetailActivity.this,"请求失败！");
+                }
+
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        Boolean success = jsonObject.getBoolean("success");
+                        String errorMsg = jsonObject.getString("errorMsg");
+                        if(success){
+                            JSONObject obj =jsonObject.getJSONObject("data");
+                            userValueData = JsonUtils.fromJson(obj.toString(), UserValueData.class);
+                        }else{
+                            AppToastMgr.shortToast(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }else{
+            HttpRequest.getExchangeDetail(exchangeId, "", new StringCallback() {
+                @Override
+                public void onError(Request request, Exception e) {
+                    AppToastMgr.shortToast(ExchangeDetailActivity.this, "请求失败！");
+                }
+
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        Boolean success = jsonObject.getBoolean("success");
+                        String errorMsg = jsonObject.getString("errorMsg");
+                        if (success) {
+                            JSONObject obj = jsonObject.getJSONObject("data");
+                            ExchangeDetail exchangeDetail = JsonUtils.fromJson(obj.toString(), ExchangeDetail.class);
+                            setData(exchangeDetail);
+                        } else {
+                            AppToastMgr.shortToast(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
+
     }
 
     private void setData(final ExchangeDetail exchangeDetail) {
+        exchangeDetailItem = exchangeDetail;
         //配置数据
         Picasso.with(ExchangeDetailActivity.this).load(exchangeDetail.getPortrait()).placeholder(R.mipmap.public_placehold).into(imageView_head_blur);
         //设置头像
@@ -209,10 +250,6 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
         tv_exchange_finalValue.setText(exchangeDetail.getOfficial());
         tv_exchange_detailDesc.setText(exchangeDetail.getDescribe());
         tv_exchange_evalu.setText(String.valueOf(exchangeDetail.getCommentNum()));
-        if(userId.equals(String.valueOf(exchangeDetail.getUserId()))){
-            btn_exchange_borrow.setVisibility(View.GONE);
-            btn_exchange_now.setVisibility(View.GONE);
-        }
 
         if(exchangeDetail.getHeed()){
             tv_exchange_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_red),null,null);
@@ -311,76 +348,131 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
         switch (view.getId()){
             case R.id.img_exchange_share:
                 //分享按钮
-                UMImage image = new UMImage(ExchangeDetailActivity.this, "http://www.cnblogs.com/skins/CodingLife/images/title-yellow.png");//网络图片
-                new ShareAction(ExchangeDetailActivity.this)
-                        .withMedia(image)
-                        .setDisplayList(SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE,SHARE_MEDIA.QQ,SHARE_MEDIA.QZONE,SHARE_MEDIA.SINA)
-                        .setCallback(umShareListener)
-                        .open();
+//                UMImage image = new UMImage(ExchangeDetailActivity.this, shareUrl);//网络图片
+//                new ShareAction(ExchangeDetailActivity.this)
+//                        .withMedia(image)
+//                        .setDisplayList(SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE,SHARE_MEDIA.QQ,SHARE_MEDIA.QZONE,SHARE_MEDIA.SINA)
+//                        .setCallback(umShareListener)
+//                        .open();
+                if(exchangeDetailItem != null) {
+                    UMWeb web = new UMWeb(exchangeDetailItem.getShareURL());
+                    web.setTitle(exchangeDetailItem.getTitle());//标题
+                    web.setThumb(new UMImage(ExchangeDetailActivity.this,R.mipmap.ic_launcher));  //缩略图
+                    web.setDescription(exchangeDetailItem.getDescribe());//描述
+                    new ShareAction(ExchangeDetailActivity.this)
+                            .withMedia(web)
+                            .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE, SHARE_MEDIA.SINA)
+                            .setCallback(umShareListener)
+                            .open();
+                }
                 break;
             case R.id.img_exchange_back:
                 //返回按钮
                 appManager.finishActivity();
                 break;
             case R.id.tv_exchange_evalu:
-                Intent intentComment = new Intent(ExchangeDetailActivity.this,ExchangeCommentActivity.class);
-                intentComment.putExtra("exchangeId",exchangeId);
-                startActivity(intentComment);
+                if(AppStringUtils.isNotEmpty(userId)) {
+                    Intent intentComment = new Intent(ExchangeDetailActivity.this, ExchangeCommentActivity.class);
+                    intentComment.putExtra("exchangeId", exchangeId);
+                    startActivity(intentComment);
+                }else{
+                    AppToastMgr.shortToast(ExchangeDetailActivity.this,"未登录");
+                    Intent intentLogin = new Intent(ExchangeDetailActivity.this,LoginActivity.class);
+                    startActivity(intentLogin);
+                }
                 break;
             case R.id.tv_exchange_join:
-                HttpRequest.attentionExchange(exchangeId, userId, new Callback() {
-                    @Override
-                    public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(ExchangeDetailActivity.this,"请求失败！");
-                    }
-
-                    @Override
-                    public void onResponse(Response response) throws IOException {
-                        try {
-                            if (null != response.cacheResponse()) {
-                                String str = response.cacheResponse().toString();
-                            } else {
-                                try {
-                                    String str1 = response.body().string();
-                                    JSONObject jsonObject = new JSONObject(str1);
-                                    Boolean success = jsonObject.getBoolean("success");
-                                    if(success){
-                                        Message message=new Message();
-                                        handler.sendMessage(message);//发送message信息
-                                        message.what=3;//标志是哪个线程传数据
-                                    }else{
-                                        String errorMsg = jsonObject.getString("errorMsg");
-                                        AppToastMgr.shortToast(ExchangeDetailActivity.this,"修改失败！原因：" + errorMsg);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                String str = response.networkResponse().toString();
-                                Log.i("wangshu3", "network---" + str);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                if(AppStringUtils.isNotEmpty(userId)) {
+                    HttpRequest.attentionExchange(exchangeId, userId, new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+                            AppToastMgr.shortToast(ExchangeDetailActivity.this, "请求失败！");
                         }
-                    }
-                });
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            try {
+                                if (null != response.cacheResponse()) {
+                                    String str = response.cacheResponse().toString();
+                                } else {
+                                    try {
+                                        String str1 = response.body().string();
+                                        JSONObject jsonObject = new JSONObject(str1);
+                                        Boolean success = jsonObject.getBoolean("success");
+                                        if (success) {
+                                            Message message = new Message();
+                                            handler.sendMessage(message);//发送message信息
+                                            message.what = 3;//标志是哪个线程传数据
+                                        } else {
+                                            String errorMsg = jsonObject.getString("errorMsg");
+                                            AppToastMgr.shortToast(ExchangeDetailActivity.this, "修改失败！原因：" + errorMsg);
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    String str = response.networkResponse().toString();
+                                    Log.i("wangshu3", "network---" + str);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }else{
+                    AppToastMgr.shortToast(ExchangeDetailActivity.this,"未登录");
+                    Intent intentLogin = new Intent(ExchangeDetailActivity.this,LoginActivity.class);
+                    startActivity(intentLogin);
+                }
                 break;
             case R.id.btn_exchange_borrow:
-                Intent intentConfirmBorrow = new Intent(ExchangeDetailActivity.this,ComfirmExchangeActivity.class);
-                intentConfirmBorrow.putExtra("exchangeId",exchangeId);
-                if(userValueData != null){
-                    intentConfirmBorrow.putExtra("userValueData",userValueData);
+                if(AppStringUtils.isNotEmpty(userId)) {
+                    if (exchangeDetailItem != null) {
+                        if(exchangeDetailItem.getExamineName().equals("可兑换")) {
+                            if (!userId.equals(String.valueOf(exchangeDetailItem.getUserId()))) {
+                                Intent intentConfirmBorrow = new Intent(ExchangeDetailActivity.this, ComfirmExchangeActivity.class);
+                                intentConfirmBorrow.putExtra("exchangeId", exchangeId);
+                                if (userValueData != null) {
+                                    intentConfirmBorrow.putExtra("userValueData", userValueData);
+                                }
+                                intentConfirmBorrow.putExtra("isBorrow", 0);
+                                startActivity(intentConfirmBorrow);
+                            } else {
+                                AppToastMgr.shortToast(ExchangeDetailActivity.this, "无法兑换自己发布的兑换！");
+                            }
+                        }else{
+                            AppToastMgr.shortToast(ExchangeDetailActivity.this, "该产品暂不能租借");
+                        }
+                    }
+                }else{
+                    AppToastMgr.shortToast(ExchangeDetailActivity.this,"未登录");
+                    Intent intentLogin = new Intent(ExchangeDetailActivity.this,LoginActivity.class);
+                    startActivity(intentLogin);
                 }
-                intentConfirmBorrow.putExtra("isBorrow",0);
-                startActivity(intentConfirmBorrow);
                 break;
             case R.id.btn_exchange_now:
-                Intent intentConfirmExchange = new Intent(ExchangeDetailActivity.this,ComfirmExchangeActivity.class);
-                intentConfirmExchange.putExtra("exchangeId",exchangeId);
-                if(userValueData != null){
-                    intentConfirmExchange.putExtra("userValueData",userValueData);
+                if(AppStringUtils.isNotEmpty(userId)){
+                    if(exchangeDetailItem != null){
+                        if(exchangeDetailItem.getExamineName().equals("可兑换")) {
+                            if (!userId.equals(String.valueOf(exchangeDetailItem.getUserId()))) {
+                                Intent intentConfirmExchange = new Intent(ExchangeDetailActivity.this, ComfirmExchangeActivity.class);
+                                intentConfirmExchange.putExtra("exchangeId", exchangeId);
+                                if (userValueData != null) {
+                                    intentConfirmExchange.putExtra("userValueData", userValueData);
+                                }
+                                intentConfirmExchange.putExtra("isBorrow", 1);
+                                startActivity(intentConfirmExchange);
+                            } else {
+                                AppToastMgr.shortToast(ExchangeDetailActivity.this, "无法兑换自己发布的兑换！");
+                            }
+                        }else{
+                            AppToastMgr.shortToast(ExchangeDetailActivity.this, "该产品暂不能兑换");
+                        }
+                    }
+                }else{
+                    AppToastMgr.shortToast(ExchangeDetailActivity.this,"未登录");
+                    Intent intentLogin = new Intent(ExchangeDetailActivity.this,LoginActivity.class);
+                    startActivity(intentLogin);
                 }
-                intentConfirmExchange.putExtra("isBorrow",1);
-                startActivity(intentConfirmExchange);
                 break;
         }
     }
@@ -401,7 +493,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
          */
         @Override
         public void onResult(SHARE_MEDIA platform) {
-            Toast.makeText(ExchangeDetailActivity.this,"成功了",Toast.LENGTH_LONG).show();
+            AppToastMgr.shortToast(ExchangeDetailActivity.this,"分享成功");
         }
 
         /**
@@ -411,7 +503,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
          */
         @Override
         public void onError(SHARE_MEDIA platform, Throwable t) {
-            Toast.makeText(ExchangeDetailActivity.this,"失败"+t.getMessage(),Toast.LENGTH_LONG).show();
+            AppToastMgr.shortToast(ExchangeDetailActivity.this,"分享失败");
         }
 
         /**
@@ -420,7 +512,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
          */
         @Override
         public void onCancel(SHARE_MEDIA platform) {
-            Toast.makeText(ExchangeDetailActivity.this,"取消了",Toast.LENGTH_LONG).show();
+            AppToastMgr.shortToast(ExchangeDetailActivity.this,"取消分享");
         }
     };
 

@@ -141,6 +141,14 @@ public class CooperateFragment extends Fragment implements View.OnClickListener,
         titleBar.setActionTextColor(getResources().getColor(R.color.titleBarTextColor));
         titleBar.setTitleColor(getResources().getColor(R.color.titleBarTextColor));
         titleBar.setTitle(this.getResources().getString(R.string.cooperate));
+        titleBar.setLeftTextColor(getResources().getColor(R.color.titleBarTextColor));
+        titleBar.setLeftText(getResources().getText(R.string.all));
+        titleBar.setLeftClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getData(new CoopList());
+            }
+        });
         final View popPulishView = LayoutInflater.from(getActivity()).inflate(R.layout.popwindow_publish, null);
         final ImageView backBlurImg = (ImageView)popPulishView.findViewById(R.id.back_blur_pop);
         final RelativeLayout rl = (RelativeLayout) popPulishView.findViewById(R.id.back_rl_blur);
@@ -170,7 +178,6 @@ public class CooperateFragment extends Fragment implements View.OnClickListener,
         coopCardGridAdapter.setOnImageClick(new CoopCardGridAdapter.OnImageClick() {
             @Override
             public void OnImageClick(View view, int position) {
-                AppToastMgr.shortToast(getActivity(),"选中"+position);
                 Intent intent = new Intent(getActivity(), CooperateDetailActivity.class);
                 intent.putExtra("coopId",listCardCoop.get(position).getCardId());//传入合作id
                 startActivity(intent);
@@ -179,7 +186,6 @@ public class CooperateFragment extends Fragment implements View.OnClickListener,
         coopCardGridAdapter.setOnUserClick(new CoopCardGridAdapter.OnUserClick() {
             @Override
             public void OnUserClick(View view, int position) {
-                AppToastMgr.shortToast(getActivity(),"选中"+position);
             }
         });
 
@@ -194,6 +200,15 @@ public class CooperateFragment extends Fragment implements View.OnClickListener,
 
         initData();
         initJsonData();
+        CoopList coopList = new CoopList();
+        getData(coopList);
+        cid = "";
+        cityStr = "";
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         CoopList coopList = new CoopList();
         getData(coopList);
         cid = "";

@@ -84,53 +84,18 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((CommentAdapter.MyViewHolder) holder).iv_adapter_good.setImageResource(R.mipmap.good_grey);
             ((CommentAdapter.MyViewHolder) holder).tv_adapter_goodNums.setTextColor(context.getResources().getColor(R.color.forgetPassText));
         }
+
+        ((CommentAdapter.MyViewHolder) holder).tv_adapter_goodNums.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickGoodNums(position);
+            }
+        });
+
         ((CommentAdapter.MyViewHolder) holder).iv_adapter_good.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HttpRequest.goodComments(String.valueOf(listComments.get(position).getId()), String.valueOf(userId), new Callback() {
-                    @Override
-                    public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(context,"请求失败！");
-                    }
-
-                    @Override
-                    public void onResponse(Response response) throws IOException {
-                        try {
-                            if (null != response.cacheResponse()) {
-                                String str = response.cacheResponse().toString();
-                            } else {
-                                try {
-                                    String str1 = response.body().string();
-                                    JSONObject jsonObject = new JSONObject(str1);
-                                    Boolean success = jsonObject.getBoolean("success");
-                                    if(success){
-                                        if(listComments.get(position).getLike()){
-                                            Message message=new Message();
-                                            handler.sendMessage(message);//发送message信息
-                                            message.what=2;//标志是哪个线程传数据
-                                        }else{
-                                            listComments.get(position).setLike(true);
-                                            int likeNums = listComments.get(position).getLikeNum() + 1;
-                                            listComments.get(position).setLikeNum(likeNums);
-                                        }
-                                        Message message=new Message();
-                                        handler.sendMessage(message);//发送message信息
-                                        message.what=1;//标志是哪个线程传数据
-                                    }else{
-                                        String errorMsg = jsonObject.getString("errorMsg");
-                                        AppToastMgr.shortToast(context,"修改失败！原因：" + errorMsg);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                String str = response.networkResponse().toString();
-                                Log.i("wangshu3", "network---" + str);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },isExchange);
+                clickGoodNums(position);
             }
         });
 
@@ -140,6 +105,14 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 mOnReplayClickListener.OnReplayClick(((CommentAdapter.MyViewHolder) holder).tv_adapter_comment,position);
             }
         });
+
+        ((CommentAdapter.MyViewHolder) holder).im_adapter_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnReplayClickListener.OnReplayClick(((CommentAdapter.MyViewHolder) holder).im_adapter_comment,position);
+            }
+        });
+
         //回复人id不为0并且回复文字不为空
         if(listComments.get(position).getReplyUserId() != 0){
             String commentDetail = "回复" + "<font color='#4083A9'>@" + listComments.get(position).getReplyNickname() + "：</font>" +listComments.get(position).getText();
@@ -147,6 +120,53 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }else{
             ((CommentAdapter.MyViewHolder) holder).tv_comment_detail.setText(listComments.get(position).getText());
         }
+    }
+
+    private void clickGoodNums(final int position) {
+        HttpRequest.goodComments(String.valueOf(listComments.get(position).getId()), String.valueOf(userId), new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                AppToastMgr.shortToast(context,"请求失败！");
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                try {
+                    if (null != response.cacheResponse()) {
+                        String str = response.cacheResponse().toString();
+                    } else {
+                        try {
+                            String str1 = response.body().string();
+                            JSONObject jsonObject = new JSONObject(str1);
+                            Boolean success = jsonObject.getBoolean("success");
+                            if(success){
+                                if(listComments.get(position).getLike()){
+                                    Message message=new Message();
+                                    handler.sendMessage(message);//发送message信息
+                                    message.what=2;//标志是哪个线程传数据
+                                }else{
+                                    listComments.get(position).setLike(true);
+                                    int likeNums = listComments.get(position).getLikeNum() + 1;
+                                    listComments.get(position).setLikeNum(likeNums);
+                                }
+                                Message message=new Message();
+                                handler.sendMessage(message);//发送message信息
+                                message.what=1;//标志是哪个线程传数据
+                            }else{
+                                String errorMsg = jsonObject.getString("errorMsg");
+                                AppToastMgr.shortToast(context,"修改失败！原因：" + errorMsg);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        String str = response.networkResponse().toString();
+                        Log.i("wangshu3", "network---" + str);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        },isExchange);
     }
 
     @Override
@@ -158,13 +178,14 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     //自定义ViewHolder，用于加载图片
     class MyViewHolder extends RecyclerView.ViewHolder {
         private CircleImageView cim_adapter_comment;
-        private ImageView iv_adapter_good;
+        private ImageView iv_adapter_good,im_adapter_comment;
         private TextView tv_comment_name, tv_comment_detail,tv_comment_time,tv_adapter_goodNums,tv_adapter_comment;
 
         public MyViewHolder(View view) {
             super(view);
             cim_adapter_comment = (CircleImageView) view.findViewById(R.id.cim_adapter_comment);
             iv_adapter_good = (ImageView) view.findViewById(R.id.iv_adapter_good);
+            im_adapter_comment = (ImageView) view.findViewById(R.id.im_adapter_comment);
             tv_comment_name = (TextView) view.findViewById(R.id.tv_comment_name);
             tv_comment_detail= (TextView) view.findViewById(R.id.tv_comment_detail);
             tv_comment_time = (TextView) view.findViewById(R.id.tv_comment_time);

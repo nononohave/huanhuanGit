@@ -398,6 +398,8 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                         if (success) {
                             JSONObject obj = jsonObject.getJSONObject("data");
                             if(obj.getInt("totalRecord") != 0){
+                                ll_person_publish.removeView(swipeRefreshLayout);
+                                ll_person_publish.addView(swipeRefreshLayout);
                                 JSONArray arr = obj.getJSONArray("data");
                                 for (int i = 0; i < arr.length(); i++) {
                                     PersonPublish personPublish = JsonUtils.fromJson(arr.get(i).toString(), PersonPublish.class);
@@ -435,6 +437,8 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                         if (success) {
                             JSONObject obj = jsonObject.getJSONObject("data");
                             if(obj.getInt("totalRecord") != 0){
+                                ll_person_publish.removeView(swipeRefreshLayout);
+                                ll_person_publish.addView(swipeRefreshLayout);
                                 JSONArray arr = obj.getJSONArray("data");
                                 for (int i = 0; i < arr.length(); i++) {
                                     PersonCoop personCoop = JsonUtils.fromJson(arr.get(i).toString(), PersonCoop.class);

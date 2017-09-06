@@ -41,7 +41,7 @@ public class MyApplication extends Application {
         PlatformConfig.setWeixin("wx34470b0a77faa852", "8c280585efe26ea15a0cf75cb3f2bf06");
         //豆瓣RENREN平台目前只能在服务器端配置
         PlatformConfig.setSinaWeibo("1693410036", "ceca1abae1dd223adcf0f439a2c9d6f5","http://sns.whalecloud.com/sina2/callback");
-        PlatformConfig.setQQZone("100424468", "c7394704798a158208a74ab60104f0ba");
+        PlatformConfig.setQQZone("1105784182", "PY8bHkSlUjZAyOLJ");
     }
     public static String getCurProcessName(Context context) {
         int pid = android.os.Process.myPid();

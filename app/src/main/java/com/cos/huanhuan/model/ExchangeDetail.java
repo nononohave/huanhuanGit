@@ -27,6 +27,15 @@ public class ExchangeDetail {
     private String nickname;//昵称
     private String portrait;//头像
     private String desc;//个人描述
+    private String shareURL;//分享路径
+
+    public String getShareURL() {
+        return shareURL;
+    }
+
+    public void setShareURL(String shareURL) {
+        this.shareURL = shareURL;
+    }
 
     public int getId() {
         return id;

@@ -299,6 +299,9 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
                                     }
                                 }
                             });
+                        }else{
+                            AppToastMgr.shortToast(AddNewAddressActivity.this, " 新增地址成功！" );
+                            appManager.finishActivity();
                         }
                     }else{
                         AppToastMgr.shortToast(AddNewAddressActivity.this, " 请求失败！原因：" + errorMsg);

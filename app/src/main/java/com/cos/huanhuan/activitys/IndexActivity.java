@@ -1,15 +1,19 @@
 package com.cos.huanhuan.activitys;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,6 +69,8 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
     private SharedPreferencesHelper sharedPreferencesHelper;
     private UserValueData userValueData;
     private Handler handler;
+    private static final int RETURN_CAMERA_CODE = 123;
+    private static final int RETURN_PHOTOS_CODE = 124;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +92,18 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
         mBottomBarLayout = (BottomBarLayout) findViewById(R.id.bbl);
         index_title_bar = (TitleBar) findViewById(R.id.index_title_bar);
         RongIM.setUserInfoProvider(this, true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //判断该应用是否有写SD卡权限，如果没有再去申请
+            if (ContextCompat.checkSelfPermission(IndexActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(IndexActivity.this, new String[]{Manifest.permission.CAMERA}, RETURN_CAMERA_CODE);
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //判断该应用是否有写SD卡权限，如果没有再去申请
+            if (ContextCompat.checkSelfPermission(IndexActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(IndexActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RETURN_PHOTOS_CODE);
+            }
+        }
     }
 
     private void initData() {
@@ -99,8 +117,6 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
 
 //        MessageFragment messageFragment = new MessageFragment();
 //        mFragmentList.add(messageFragment);
-
-        RongIM.getInstance().setConversationToTop(Conversation.ConversationType.SYSTEM,"34",true);
         ConversationListFragment conversationListFragment = new ConversationListFragment();
         Uri uri = Uri.parse("rong://" + IndexActivity.this.getApplicationInfo().packageName).buildUpon()
                 .appendPath("conversationlist")       .appendQueryParameter(Conversation.ConversationType.PRIVATE.getName(), "false") //设置私聊会话，该会话聚合显示
@@ -204,9 +220,6 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
                         } else {
                             if((RongIM.getInstance().getCurrentConnectionStatus() != RongIMClient.ConnectionStatusListener.ConnectionStatus.CONNECTED)){
                                 reconnect(userValueData.getRongToken());
-                                //RongIM.getInstance().setConversationToTop(uiConversation.getConversationType(),uiConversation.getConversationTargetId(),true);
-                            }else{
-                                AppToastMgr.shortToast(IndexActivity.this,"已连接");
                             }
                         }
                     }

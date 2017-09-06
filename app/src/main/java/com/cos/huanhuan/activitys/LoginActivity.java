@@ -49,6 +49,7 @@ import java.util.Map;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.NativeObject;
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.UserInfo;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener{
@@ -437,18 +438,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         RongIM.connect(token, new RongIMClient.ConnectCallback() {
             @Override
             public void onTokenIncorrect() {
-                AppToastMgr.shortToast(LoginActivity.this,"onTokenIncorrect");
             }
 
             @Override
             public void onSuccess(String s) {
+                RongIM.getInstance().setConversationToTop(Conversation.ConversationType.PRIVATE, "34", true, new RongIMClient.ResultCallback<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
 
-                AppToastMgr.shortToast(LoginActivity.this,"连接融云成功");
+                    }
+
+                    @Override
+                    public void onError(RongIMClient.ErrorCode errorCode) {
+
+                    }
+                });
             }
 
             @Override
             public void onError(RongIMClient.ErrorCode e) {
-                AppToastMgr.shortToast(LoginActivity.this,"onError");
                 Log.e(TAG, "---onError--" + e);
             }
         });

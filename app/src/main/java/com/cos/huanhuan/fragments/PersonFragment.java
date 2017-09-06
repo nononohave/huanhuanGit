@@ -119,9 +119,15 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
 
     private void initData() {
         userValueData = sharedPreferencesHelper.getObject("userData");//该信息只用于判断登录与否，用户信息还是重新获取
+        final UserValueData userValueDataDetail = sharedPreferencesHelper.getObject("userDataDetail");//该信息用户详细信息
+        if(userValueDataDetail!=null) {
+            //先设置一遍用户信息
+            setData(userValueDataDetail);
+        }
         if(userValueData != null){
             rl_person_login.setVisibility(View.VISIBLE);
             rl_person_noLogin.setVisibility(View.GONE);
+
             HttpRequest.getMembers(String.valueOf(userValueData.getId()), new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
@@ -137,25 +143,13 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
                         if(success){
                             JSONObject obj =jsonObject.getJSONObject("data");
                             UserValueData userValueDataItem = JsonUtils.fromJson(obj.toString(), UserValueData.class);
-                            PicassoUtils.getinstance().LoadImage(getActivity(),userValueDataItem.getPortrait(),person_headImage,R.mipmap.comment_grey,R.mipmap.comment_grey,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,0);
-                            if(AppStringUtils.isNotEmpty(userValueDataItem.getNickname())){
-                                person_nickName.setText(userValueDataItem.getNickname());
-                            }else{
-                                person_nickName.setText("暂无昵称");
-                            }
-                            if(AppStringUtils.isNotEmpty(userValueDataItem.getDescribe())) {
-                                if(userValueDataItem.getDescribe().length() >= 14){
-                                    person_Desc.setText(userValueDataItem.getDescribe().substring(0,13) + "...");
-                                }else{
-                                    person_Desc.setText(userValueDataItem.getDescribe());
+                            if(userValueDataDetail != null) {
+                                if (!userValueDataDetail.equals(userValueDataItem)) {
+                                    sharedPreferencesHelper.saveObject("userDataDetail", userValueDataItem);
+                                    setData(userValueDataItem);
                                 }
                             }else{
-                                person_Desc.setText("暂无个性签名");
-                            }
-                            if(userValueDataItem.getGender().equals("女")){
-                                person_sex.setImageResource(R.mipmap.sex_woman);
-                            }else{
-                                person_sex.setImageResource(R.mipmap.sex_man);
+                                setData(userValueDataItem);
                             }
                         }else{
                             AppToastMgr.shortToast(getActivity(), " 接口调用失败！原因：" + errorMsg);
@@ -170,6 +164,29 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
             rl_person_noLogin.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void setData(UserValueData userValueDataItem) {
+        PicassoUtils.getinstance().LoadImage(getActivity(), userValueDataItem.getPortrait(), person_headImage, R.mipmap.comment_grey, R.mipmap.comment_grey, PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE, 0);
+        if (AppStringUtils.isNotEmpty(userValueDataItem.getNickname())) {
+            person_nickName.setText(userValueDataItem.getNickname());
+        } else {
+            person_nickName.setText("暂无昵称");
+        }
+        if (AppStringUtils.isNotEmpty(userValueDataItem.getDescribe())) {
+            if (userValueDataItem.getDescribe().length() >= 14) {
+                person_Desc.setText(userValueDataItem.getDescribe().substring(0, 13) + "...");
+            } else {
+                person_Desc.setText(userValueDataItem.getDescribe());
+            }
+        } else {
+            person_Desc.setText("暂无个性签名");
+        }
+        if (userValueDataItem.getGender().equals("女")) {
+            person_sex.setImageResource(R.mipmap.sex_woman);
+        } else {
+            person_sex.setImageResource(R.mipmap.sex_man);
+        }
     }
 
     @Override

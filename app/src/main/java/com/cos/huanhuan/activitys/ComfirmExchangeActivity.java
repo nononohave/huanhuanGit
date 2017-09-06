@@ -55,6 +55,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
     public static int CHOOSE_ADDRESS = 333;
     private ConfirmDetail confirmDetailItem;
     private int isBorrow;
+    private int typeItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +111,15 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
         btn_confirm.setOnClickListener(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        initData(typeItem);
+    }
+
     private void initData(int type) {
+        typeItem = type;
         if(type == 0){
             //默认单词租赁
             examine = "单次租赁";
@@ -216,7 +225,11 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                                     initData(0);
                                     break;
                                 case 1:
-                                    initData(2);
+                                    if(userValueData.getSurplus() > 0){
+                                        initData(2);
+                                    }else{
+                                        AppToastMgr.shortToast(ComfirmExchangeActivity.this,"没有会员次数");
+                                    }
                                     break;
                                 default:
                                     break;
@@ -245,6 +258,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                 startActivity(intentCreateAddress);
                 break;
             case R.id.btn_confirm_exchange:
+               // ComfirmExchangeActivity.this.finish();
                 String exchangeWays = tv_exchange_ways.getText().toString();
                 PayDetailFragment payDetailFragment=new PayDetailFragment();
                 Bundle args = new Bundle();
@@ -262,7 +276,6 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                 args.putInt("ExId",Integer.valueOf(exchangeId));
                 payDetailFragment.setArguments(args);
                 payDetailFragment.show(getSupportFragmentManager(),"payDetailFragment");
-                //appManager.finishActivity();
                 break;
         }
     }

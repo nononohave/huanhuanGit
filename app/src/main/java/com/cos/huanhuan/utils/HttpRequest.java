@@ -369,10 +369,17 @@ public class HttpRequest {
 
     public static void getExchangeDetail(String id, String userId, StringCallback callback){
         String url = TEXT_HUANHUAN_HOST + "Exchanges/" + id;
-        OkHttpUtils.get().url(url)
-                .addParams("userId", userId)
-                .build()
-                .execute(callback);}
+            if(AppStringUtils.isNotEmpty(userId)) {
+                OkHttpUtils.get().url(url)
+                        .addParams("userId", userId)
+                        .build()
+                        .execute(callback);
+            }else{
+                OkHttpUtils.get().url(url)
+                        .build()
+                        .execute(callback);
+            }
+        }
 
     public static void attentionExchange(String id,String userId, Callback callback){
         String url = TEXT_HUANHUAN_HOST + "Exchanges/"  + id;
@@ -595,7 +602,7 @@ public class HttpRequest {
      * @param stringCallback
      * @throws JSONException
      */
-    public static void rechargePersonValue(ExchangeAdd exchangeAdd, StringCallback stringCallback){
+    public static void ComfirmExchange(ExchangeAdd exchangeAdd, StringCallback stringCallback){
         String url = TEXT_HUANHUAN_HOST + "ExchangeEvents";
         OkHttpUtils.postString().url(url)
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
@@ -707,9 +714,10 @@ public class HttpRequest {
      * @param callback
      */
     public static void commitTrackingNo(String id, String code,Callback callback){
-        String url = TEXT_HUANHUAN_HOST + "Exchanges/LogisticCode/" + id + "?code=" + code;
+        String url = TEXT_HUANHUAN_HOST + "Exchanges/LogisticCode/" + id + "?code=" +code;
         OkHttpClient client = new OkHttpClient();
         TrackingCode trackingCode = new TrackingCode();
+        trackingCode.setCode(code);
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(trackingCode));
         Request request = new Request.Builder()
                 .url(url)

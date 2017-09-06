@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.cos.huanhuan.views.TitleBar
         android:id="@+id/conversation_title_bar"
@@ -11,4 +13,10 @@
         android:name="io.rong.imkit.fragment.ConversationFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <io.rong.imkit.RongExtension
+        android:id="@+id/rc_extension"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:RCStyle="SCE" />
 </LinearLayout>
