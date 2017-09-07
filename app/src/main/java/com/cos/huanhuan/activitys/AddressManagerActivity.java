@@ -1,5 +1,7 @@
 package com.cos.huanhuan.activitys;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -91,6 +93,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
                 addressAdapter.notifyDataSetChanged();
             }
         });
+
 //        setRightButton(new TitleBar.TextAction(this.getResources().getString(R.string.add_new_address)) {
 //            @Override
 //            public void performAction(View view) {
@@ -174,47 +177,66 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
             @Override
             public void deleteClick(View view, final int position) {
                 //if(!listAddress.get(position).getDefault()){
-                    HttpRequest.deleteAddress(String.valueOf(listAddress.get(position).getId()), new Callback() {
-                        @Override
-                        public void onFailure(Request request, IOException e) {
-                            AppToastMgr.shortToast(AddressManagerActivity.this, "请求失败！");
-                        }
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddressManagerActivity.this);
+                builder.setTitle("确认删除地址吗？");
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                        @Override
-                        public void onResponse(Response response) throws IOException {
-                            try {
-                                if (null != response.cacheResponse()) {
-                                } else {
-                                    try {
-                                        String str1 = response.body().string();
-                                        JSONObject jsonObject = new JSONObject(str1);
-                                        Boolean success = jsonObject.getBoolean("success");
-                                        if (success) {
-                                            Message message = new Message();
-                                            Bundle bundle = new Bundle();
-                                            bundle.putString("position", String.valueOf(position));
-                                            message.setData(bundle);
-                                            handler.sendMessage(message);//发送message信息
-                                            message.what = 2;//标志是哪个线程传数据
-                                        } else {
-                                            String errorMsg = jsonObject.getString("errorMsg");
-                                            AppToastMgr.shortToast(AddressManagerActivity.this, "修改失败！原因：" + errorMsg);
-                                        }
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    }
+                });
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        deleteAddress(position);
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
 //                }else{
 //                    AppToastMgr.shortToast(AddressManagerActivity.this, "不能删除默认地址，请重新选择或者修改默认地址");
 //                }
-            }
         });
 
+    }
+
+    private void deleteAddress(final int position) {
+        HttpRequest.deleteAddress(String.valueOf(listAddress.get(position).getId()), new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                AppToastMgr.shortToast(AddressManagerActivity.this, "请求失败！");
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                try {
+                    if (null != response.cacheResponse()) {
+                    } else {
+                        try {
+                            String str1 = response.body().string();
+                            JSONObject jsonObject = new JSONObject(str1);
+                            Boolean success = jsonObject.getBoolean("success");
+                            if (success) {
+                                Message message = new Message();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("position", String.valueOf(position));
+                                message.setData(bundle);
+                                handler.sendMessage(message);//发送message信息
+                                message.what = 2;//标志是哪个线程传数据
+                            } else {
+                                String errorMsg = jsonObject.getString("errorMsg");
+                                AppToastMgr.shortToast(AddressManagerActivity.this, "修改失败！原因：" + errorMsg);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void initData() {

@@ -921,6 +921,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                     if(success) {
                         dialog.dismiss();
                         AppToastMgr.shortToast(PublishCoopActivity.this, " 发布成功");
+                        appManager.finishActivity();
                     }else{
                         dialog.dismiss();
                         AppToastMgr.shortToast(PublishCoopActivity.this, " 发布失败！原因：" + errorMsg);

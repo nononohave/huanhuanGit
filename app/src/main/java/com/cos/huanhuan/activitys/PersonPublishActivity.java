@@ -1,5 +1,7 @@
 package com.cos.huanhuan.activitys;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
@@ -225,44 +227,22 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
         adapterExchange.setDeleteClick(new PersonExchangeAdapter.DeleteClick() {
             @Override
             public void deleteClick(View view, final int position) {
-                HttpRequest.deleteExchange(String.valueOf(listPublish.get(position).getId()), new Callback() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(PersonPublishActivity.this);
+                builder.setTitle("确认删除地址吗？");
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(PersonPublishActivity.this,"请求失败！");
-                    }
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                    @Override
-                    public void onResponse(Response response) throws IOException {
-                        try {
-                            if (null != response.cacheResponse()) {
-                                String str = response.cacheResponse().toString();
-                            } else {
-                                try {
-                                    String str1 = response.body().string();
-                                    JSONObject jsonObject = new JSONObject(str1);
-                                    Boolean success = jsonObject.getBoolean("success");
-                                    if(success){
-                                        Message message=new Message();
-                                        Bundle bundle = new Bundle();
-                                        bundle.putInt("position",position);
-                                        message.setData(bundle);
-                                        handler.sendMessage(message);//发送message信息
-                                        message.what=1;//标志是哪个线程传数据
-                                    }else{
-                                        String errorMsg = jsonObject.getString("errorMsg");
-                                        AppToastMgr.shortToast(PersonPublishActivity.this,"修改失败！原因：" + errorMsg);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                String str = response.networkResponse().toString();
-                                Log.i("wangshu3", "network---" + str);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
                     }
                 });
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        deletePublishExchange(position);
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
         //同意操作
@@ -379,6 +359,48 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
             }
         });
     }
+
+    private void deletePublishExchange(final int position) {
+        HttpRequest.deleteExchange(String.valueOf(listPublish.get(position).getId()), new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                AppToastMgr.shortToast(PersonPublishActivity.this,"请求失败！");
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                try {
+                    if (null != response.cacheResponse()) {
+                        String str = response.cacheResponse().toString();
+                    } else {
+                        try {
+                            String str1 = response.body().string();
+                            JSONObject jsonObject = new JSONObject(str1);
+                            Boolean success = jsonObject.getBoolean("success");
+                            if(success){
+                                Message message=new Message();
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("position",position);
+                                message.setData(bundle);
+                                handler.sendMessage(message);//发送message信息
+                                message.what=1;//标志是哪个线程传数据
+                            }else{
+                                String errorMsg = jsonObject.getString("errorMsg");
+                                AppToastMgr.shortToast(PersonPublishActivity.this,"修改失败！原因：" + errorMsg);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        String str = response.networkResponse().toString();
+                        Log.i("wangshu3", "network---" + str);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     private void initData(int type) {
         if(type == 0) {
             pageIndex = 1;

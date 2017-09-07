@@ -753,4 +753,18 @@ public class HttpRequest {
         OkHttpUtils.get().url(url)
                 .build()
                 .execute(callback);}
+
+    /**
+     * 重新获取token
+     * @param stringCallback
+     * @throws JSONException
+     */
+    public static void reGetToken( String userId,String nickname,StringCallback stringCallback) {
+        String url = TEXT_HUANHUAN_HOST + "RongClouds/Token";
+        OkHttpUtils.get().url(url)
+                .addParams("userId", userId)
+                .addParams("nickname",nickname)
+                .build()
+                .execute(stringCallback);
+    }
 }

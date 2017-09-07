@@ -145,7 +145,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         iv_wxLogin.setOnClickListener(this);
         iv_wbLogin.setOnClickListener(this);
         iv_qqLogin.setOnClickListener(this);
-
+        //填充手机号
+        if(sharedPreferencesHelper.get("phoneItem","") != null) {
+            String phoneSp = (String) sharedPreferencesHelper.get("phoneItem", "");
+            if (AppStringUtils.isNotEmpty(phoneSp)) {
+                et_phone.setText(phoneSp);
+                isPhoneEdit = true;
+                et_phone.setSelection(phoneSp.length());
+            }
+        }
         //手机号文本框监听事件
         et_phone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -247,11 +255,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                         String errorMsg = jsonObject.getString("errorMsg");
                                         if(success){
                                             JSONObject obj = jsonObject.getJSONObject("data");
-                                            Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
-                                            startActivity(intent);
                                             UserValueData userValueData = JsonUtils.fromJson(obj.toString(),UserValueData.class);
                                             sharedPreferencesHelper.saveObject("userData",userValueData);
-                                            reconnect(userValueData.getRongToken());
+                                            sharedPreferencesHelper.put("phoneItem",phone);//记录手机号，下次登录自动填充
+                                            if(userValueData.getRongToken() != null && AppStringUtils.isNotEmpty(userValueData.getRongToken())){
+                                                reconnect(userValueData.getRongToken());
+                                            }else{
+                                                regetToken(userValueData);
+                                            }
+                                            Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
+                                            startActivity(intent);
                                         }else{
                                             AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
                                         }
@@ -288,6 +301,39 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 startActivity(intent);
                 break;
         }
+    }
+
+    /**
+     * 重新获取token
+     * @param userValueData
+     */
+    private void regetToken(final UserValueData userValueData) {
+        HttpRequest.reGetToken(String.valueOf(userValueData.getId()), userValueData.getNickname(), new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                AppToastMgr.shortToast(LoginActivity.this,"请求失败！");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Boolean success = jsonObject.getBoolean("success");
+                    String errorMsg = jsonObject.getString("errorMsg");
+                    if(success){
+                        String token = jsonObject.getString("data");
+                        userValueData.setRongToken(token);
+                        sharedPreferencesHelper.saveObject("userData",userValueData);
+                        reconnect(token);
+                    }else{
+                        AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
     //注意先需要调用一下获取doOauthVerify进行授权然后再掉获取用户资料的方法
