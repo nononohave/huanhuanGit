@@ -17,10 +17,12 @@ import com.cos.huanhuan.fragments.PayDetailFragment;
 import com.cos.huanhuan.model.RechargeMoney;
 import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
 import com.squareup.okhttp.Request;
+import com.ta.utdid2.android.utils.StringUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
@@ -39,6 +41,7 @@ public class PersonValueActivity extends BaseActivity implements View.OnClickLis
     private GridViewAdapter adapter;
     private List<RechargeMoney> listRecharge;
     private String userId;
+    private Double chargeValue = 0.0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,23 +132,29 @@ public class PersonValueActivity extends BaseActivity implements View.OnClickLis
                 appManager.finishActivity();
                 break;
             case R.id.btn_person_value_recharge:
-                PayDetailFragment payDetailFragment=new PayDetailFragment();
-                Bundle args = new Bundle();
-                args.putString("userId", userId);
-                args.putInt("type",1);
-                args.putDouble("rechargeMoney",0.01);
-                payDetailFragment.setArguments(args);
-                payDetailFragment.show(getSupportFragmentManager(),"payDetailFragment");
+                if(chargeValue > 0) {
+                    PayDetailFragment payDetailFragment = new PayDetailFragment();
+                    Bundle args = new Bundle();
+                    args.putString("userId", userId);
+                    args.putInt("type", 1);
+                    args.putDouble("rechargeMoney", chargeValue);
+                    payDetailFragment.setArguments(args);
+                    payDetailFragment.show(getSupportFragmentManager(), "payDetailFragment");
+                }else{
+                    AppToastMgr.shortToast(PersonValueActivity.this,"请选择充值金额");
+                }
                 break;
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        chargeValue = 0.0;//每次点击置为0
         for (int i = 0; i < listRecharge.size(); i++) {
             if(position == i){
                 listRecharge.get(i).setClick(true);
                 tv_person_value_pay.setText(String.valueOf(listRecharge.get(i).getMoney()) + "元");
+                chargeValue = Double.valueOf(listRecharge.get(i).getMoney());
             }else{
                 listRecharge.get(i).setClick(false);
             }

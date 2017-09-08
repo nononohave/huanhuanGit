@@ -10,6 +10,8 @@ import android.widget.EditText;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.fragments.PayDetailFragment;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
+import com.cos.huanhuan.utils.AppToastMgr;
 
 public class OtherMoneyActivity extends BaseActivity implements View.OnClickListener{
 
@@ -17,6 +19,7 @@ public class OtherMoneyActivity extends BaseActivity implements View.OnClickList
     private EditText et_recharge_money;
     private Button btn_recharge_now;
     private String userId;
+    private Double rechargeMoney = 0.0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,13 +55,23 @@ public class OtherMoneyActivity extends BaseActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_recharge_now:
-                PayDetailFragment payDetailFragment=new PayDetailFragment();
-                Bundle args = new Bundle();
-                args.putString("userId", userId);
-                args.putInt("type",1);
-                args.putDouble("rechargeMoney",0.01);
-                payDetailFragment.setArguments(args);
-                payDetailFragment.show(getSupportFragmentManager(),"payDetailFragment");
+                String decimal = et_recharge_money.getText().toString();
+                if(AppStringUtils.isNotEmpty(decimal)) {
+                    rechargeMoney = Double.parseDouble(decimal);
+                    if(rechargeMoney > 0) {
+                        PayDetailFragment payDetailFragment = new PayDetailFragment();
+                        Bundle args = new Bundle();
+                        args.putString("userId", userId);
+                        args.putInt("type", 1);
+                        args.putDouble("rechargeMoney", rechargeMoney);
+                        payDetailFragment.setArguments(args);
+                        payDetailFragment.show(getSupportFragmentManager(), "payDetailFragment");
+                    }else{
+                        AppToastMgr.shortToast(OtherMoneyActivity.this,"请输入正确的充值金额");
+                    }
+                }else{
+                    AppToastMgr.shortToast(OtherMoneyActivity.this,"请输入充值金额");
+                }
                 break;
         }
     }

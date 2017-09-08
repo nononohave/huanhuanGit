@@ -228,7 +228,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
             @Override
             public void deleteClick(View view, final int position) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(PersonPublishActivity.this);
-                builder.setTitle("确认删除地址吗？");
+                builder.setTitle("确认删除兑换吗？");
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

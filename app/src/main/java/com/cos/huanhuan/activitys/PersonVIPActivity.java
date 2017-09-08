@@ -132,7 +132,7 @@ public class PersonVIPActivity extends BaseActivity implements View.OnClickListe
                     Bundle args = new Bundle();
                     args.putString("userId", userId);
                     args.putInt("type",2);
-                    args.putDouble("rechargeMoney",0.01);
+                    args.putDouble("rechargeMoney",99.0);//这里默认设置为99后续应该会改动
                     payDetailFragment.setArguments(args);
                     payDetailFragment.show(getSupportFragmentManager(),"payDetailFragment");
                 }else{

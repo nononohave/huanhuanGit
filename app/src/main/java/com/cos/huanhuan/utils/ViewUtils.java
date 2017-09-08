@@ -184,7 +184,7 @@ public class ViewUtils {
         }else if(paramsType == 6){
             popupWindow.showAtLocation(root, Gravity.CENTER, 0, 0);
         }else if(paramsType == 4){
-            popupWindow.showAtLocation(root, Gravity.NO_GRAVITY, DensityUtils.px2dip(context,550),DensityUtils.px2dip(context,550));
+            popupWindow.showAtLocation(root, Gravity.CLIP_HORIZONTAL|Gravity.TOP, 0,DensityUtils.dip2px(context,65));
         }else if(paramsType == 7){
             popupWindow.showAsDropDown(root,60,0);
         }else{

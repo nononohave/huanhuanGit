@@ -364,6 +364,11 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
         }else{
             exChange.setEid("");
         }
+        if(position == 0){
+            setTitle("全部兑换");
+        }else{
+            setTitle(listExchangeStatus.get(position-1).getExchangeStatusName());
+        }
         getData(exChange);
         ViewUtils.dismissPopup();
         selectItem = position;
