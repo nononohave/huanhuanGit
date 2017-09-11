@@ -39,6 +39,7 @@ public class MyApplication extends Application {
     //各个平台的配置，建议放在全局Application或者程序入口
     {
         PlatformConfig.setWeixin("wx34470b0a77faa852", "8c280585efe26ea15a0cf75cb3f2bf06");
+        //PlatformConfig.setWeixin("wx34470b0a77faa852", "6cb85789a5e4f20bf69b268492a2aea8");
         //豆瓣RENREN平台目前只能在服务器端配置
         PlatformConfig.setSinaWeibo("1693410036", "ceca1abae1dd223adcf0f439a2c9d6f5","http://sns.whalecloud.com/sina2/callback");
         PlatformConfig.setQQZone("1105784182", "PY8bHkSlUjZAyOLJ");

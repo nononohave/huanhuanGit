@@ -52,6 +52,13 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
     private CircleImageView person_headImage,person_headImage_noLogin;
     private UserValueData userValueData;
     private SharedPreferencesHelper sharedPreferencesHelper;
+    public static PersonFragment instance = null;
+    public static PersonFragment getInstance(){
+        if(instance == null){
+            instance = new PersonFragment();
+        }
+        return instance;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_person, container, false);

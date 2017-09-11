@@ -45,10 +45,10 @@ import static com.cos.huanhuan.R.string.recharge;
 
 public class HttpRequest {
 
-//    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
-//    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn";
-    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn:8081/api/v1/";
-    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn:8081";
+    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
+    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn";
+//    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn:8081/api/v1/";
+//    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn:8081";
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 

@@ -271,9 +271,7 @@ public class PayDetailFragment extends DialogFragment {
                                     Boolean success = jsonObject.getBoolean("success");
                                     String errorMsg = jsonObject.getString("errorMsg");
                                     if (success) {
-                                        getDialog().dismiss();
                                         if (payType.equals("支付宝")) {
-                                            AppToastMgr.shortToast(getActivity(), "正常调起支付宝支付");
                                             final String orderInfo = jsonObject.getString("data");
                                             Runnable payRunnable = new Runnable() {
 
@@ -303,7 +301,6 @@ public class PayDetailFragment extends DialogFragment {
                                             req.packageValue = data.getString("package");
                                             req.sign = data.getString("sign");
                                             req.extData = "app data"; // optional
-                                            AppToastMgr.shortToast(getActivity(), "正常调起支付");
                                             // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
                                             api.sendReq(req);
                                         }
@@ -361,6 +358,7 @@ public class PayDetailFragment extends DialogFragment {
                     if (TextUtils.equals(resultStatus, "9000")) {
                         // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
                         AppToastMgr.shortToast(mContext,"支付成功");
+                        getDialog().dismiss();
                         if(type == 3 || type == 4 || type ==5){
                             Intent intentMyExhchange = new Intent(getActivity(), MyExchangeActivity.class);
                             startActivity(intentMyExhchange);

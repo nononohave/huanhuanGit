@@ -283,10 +283,10 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
                             JSONObject jsonObject = new JSONObject(str1);
                             Boolean success = jsonObject.getBoolean("success");
                             if(success){
-                                AppToastMgr.shortToast(PersonalDataActivity.this,"修改成功！");
+                                //AppToastMgr.shortToast(PersonalDataActivity.this,"修改成功！");
                             }else{
                                 String errorMsg = jsonObject.getString("errorMsg");
-                                AppToastMgr.shortToast(PersonalDataActivity.this,"修改失败！原因：" + errorMsg);
+                                //AppToastMgr.shortToast(PersonalDataActivity.this,"修改失败！原因：" + errorMsg);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();

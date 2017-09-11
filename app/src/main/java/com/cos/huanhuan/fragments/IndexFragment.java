@@ -88,10 +88,17 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
     private List<Classify> listClassify;
     private int selectedTab = 0;
     private List<SlidePhotos> listSlides;
+    public static IndexFragment instance = null;
     /**
      * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
      */
     private LruCache<String, Bitmap> mMemoryCache;
+    public static IndexFragment getInstance(){
+        if(instance == null){
+            instance = new IndexFragment();
+        }
+        return instance;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_index, container, false);

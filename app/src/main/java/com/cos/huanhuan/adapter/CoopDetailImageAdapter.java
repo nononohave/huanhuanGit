@@ -54,8 +54,12 @@ public class CoopDetailImageAdapter extends BaseAdapter {
         convertView = LayoutInflater.from(context).inflate(R.layout.coop_detail_image, null);
         imageView = (ImageView) convertView.findViewById(R.id.imageView);
         convertView.setTag(imageView);
-        imgHeight = new Double(AppBigDecimal.multiply(AppBigDecimal.divide(Double.valueOf(screenWidth), Double.valueOf(getItem(position).getWidth())), Double.valueOf(getItem(position).getHeight()), 0)).intValue();
-        Picasso.with(context).load(getItem(position).getImgPath()).placeholder(R.mipmap.public_placehold).resize(screenWidth, imgHeight).into(imageView);
+        if(getItem(position).getWidth() != 0 && getItem(position).getHeight() != 0) {
+            imgHeight = new Double(AppBigDecimal.multiply(AppBigDecimal.divide(Double.valueOf(screenWidth), Double.valueOf(getItem(position).getWidth())), Double.valueOf(getItem(position).getHeight()), 0)).intValue();
+            Picasso.with(context).load(getItem(position).getImgPath()).placeholder(R.mipmap.public_placehold).resize(screenWidth, imgHeight).into(imageView);
+        }else{
+            Picasso.with(context).load(getItem(position).getImgPath()).placeholder(R.mipmap.public_placehold).into(imageView);
+        }
         return convertView;
     }
 }

@@ -135,7 +135,6 @@ public class MessageFragment extends Fragment{
 
             @Override
             public void onError(RongIMClient.ErrorCode e) {
-                AppToastMgr.shortToast(getActivity(),"onError");
                 Log.e(TAG, "---onError--" + e);
             }
         });

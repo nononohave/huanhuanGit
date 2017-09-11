@@ -87,6 +87,13 @@ public class CooperateFragment extends Fragment implements View.OnClickListener,
     private PopViewListAdapter adapter;
     private View popupView;
     private String cid;
+    public static CooperateFragment instance = null;
+    public static CooperateFragment getInstance(){
+        if(instance == null){
+            instance = new CooperateFragment();
+        }
+        return instance;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

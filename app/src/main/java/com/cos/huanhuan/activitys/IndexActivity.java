@@ -172,43 +172,75 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
         mBottomBarLayout.setOnItemSelectedListener(new BottomBarLayout.OnItemSelectedListener() {
             @Override
             public void onItemSelected(final BottomBarItem bottomBarItem, int position) {
-                if (position == 0){
-                    //如果是第一个，即首页
-                    if (mBottomBarLayout.getCurrentItem() == position){
-                        //如果是在原来位置上点击,更换首页图标并播放旋转动画
-                        bottomBarItem.setIconSelectedResourceId(R.mipmap.tab_loading);//更换成加载图标
-                        bottomBarItem.setStatus(true);
-
-                        //播放旋转动画
-                        if (mRotateAnimation == null) {
-                            mRotateAnimation = new RotateAnimation(0, 360,
-                                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                                    0.5f);
-                            mRotateAnimation.setDuration(800);
-                            mRotateAnimation.setRepeatCount(-1);
-                        }
-                        ImageView bottomImageView = bottomBarItem.getImageView();
-                        bottomImageView.setAnimation(mRotateAnimation);
-                        bottomImageView.startAnimation(mRotateAnimation);//播放旋转动画
-
-                        //模拟数据刷新完毕
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                bottomBarItem.setIconSelectedResourceId(R.mipmap.tab_home_selected);//更换成首页原来图标
-                                bottomBarItem.setStatus(true);//刷新图标
-                                cancelTabLoading(bottomBarItem);
+                if(position == 2){
+                    sharedPreferencesHelper = new SharedPreferencesHelper(IndexActivity.this);
+                    userValueData = sharedPreferencesHelper.getObject("userData");//该信息只用于判断登录与否，用户信息还是重新获取
+                    if(userValueData != null) {
+                        if (AppStringUtils.isEmpty(userValueData.getRongToken()) || userValueData.getRongToken().equals("default")) {
+                            AppToastMgr.shortToast(IndexActivity.this,"未登录");
+                        } else {
+                            if((RongIM.getInstance().getCurrentConnectionStatus() != RongIMClient.ConnectionStatusListener.ConnectionStatus.CONNECTED)){
+                                reconnect(userValueData.getRongToken());
                             }
-                        },3000);
-                        return;
+                        }
                     }
+
+//                    index_title_bar.setVisibility(View.VISIBLE);
+//                    index_title_bar.setBackgroundColor(getResources().getColor(R.color.white));
+//                    index_title_bar.setDividerColor(R.color.dividLineColor);
+//                    index_title_bar.setTitleColor(getResources().getColor(R.color.titleBarTextColor));
+//                    index_title_bar.setTitle(getResources().getString(R.string.message));
+                }else{
+                    //index_title_bar.setVisibility(View.GONE);
                 }
+//                if (position == 0){
+//                    //如果是第一个，即首页
+//                    if (mBottomBarLayout.getCurrentItem() == position){
+//                        //如果是在原来位置上点击,更换首页图标并播放旋转动画
+//                        bottomBarItem.setIconSelectedResourceId(R.mipmap.tab_loading);//更换成加载图标
+//                        bottomBarItem.setStatus(true);
+//
+//                        //播放旋转动画
+//                        if (mRotateAnimation == null) {
+//                            mRotateAnimation = new RotateAnimation(0, 360,
+//                                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+//                                    0.5f);
+//                            mRotateAnimation.setDuration(800);
+//                            mRotateAnimation.setRepeatCount(-1);
+//                        }
+//                        ImageView bottomImageView = bottomBarItem.getImageView();
+//                        bottomImageView.setAnimation(mRotateAnimation);
+//                        bottomImageView.startAnimation(mRotateAnimation);//播放旋转动画
+//
+//                        //模拟数据刷新完毕
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                bottomBarItem.setIconSelectedResourceId(R.mipmap.tab_home_selected);//更换成首页原来图标
+//                                bottomBarItem.setStatus(true);//刷新图标
+//                                cancelTabLoading(bottomBarItem);
+//                            }
+//                        },3000);
+//                        return;
+//                    }
+//                }
 
                 //如果点击了其他条目
                 BottomBarItem bottomItem = mBottomBarLayout.getBottomItem(0);
                 bottomItem.setIconSelectedResourceId(R.mipmap.tab_home_selected);//更换为原来的图标
 
                 cancelTabLoading(bottomItem);//停止旋转动画
+            }
+        });
+
+        mVpContent.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
                 if(position == 2){
                     sharedPreferencesHelper = new SharedPreferencesHelper(IndexActivity.this);
                     userValueData = sharedPreferencesHelper.getObject("userData");//该信息只用于判断登录与否，用户信息还是重新获取
@@ -224,14 +256,19 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
                         }
                     }
 
-                    index_title_bar.setVisibility(View.VISIBLE);
-                    index_title_bar.setBackgroundColor(getResources().getColor(R.color.white));
-                    index_title_bar.setDividerColor(R.color.dividLineColor);
-                    index_title_bar.setTitleColor(getResources().getColor(R.color.titleBarTextColor));
-                    index_title_bar.setTitle(getResources().getString(R.string.message));
+//                    index_title_bar.setVisibility(View.VISIBLE);
+//                    index_title_bar.setBackgroundColor(getResources().getColor(R.color.white));
+//                    index_title_bar.setDividerColor(R.color.dividLineColor);
+//                    index_title_bar.setTitleColor(getResources().getColor(R.color.titleBarTextColor));
+//                    index_title_bar.setTitle(getResources().getString(R.string.message));
                 }else{
-                    index_title_bar.setVisibility(View.GONE);
+                    //index_title_bar.setVisibility(View.GONE);
                 }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
     }
@@ -275,7 +312,6 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
         RongIM.connect(token, new RongIMClient.ConnectCallback() {
             @Override
             public void onTokenIncorrect() {
-                AppToastMgr.shortToast(IndexActivity.this,"onTokenIncorrect");
             }
 
             @Override
@@ -292,7 +328,6 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
 
             @Override
             public void onError(RongIMClient.ErrorCode e) {
-                AppToastMgr.shortToast(IndexActivity.this,"onError");
             }
         });
 

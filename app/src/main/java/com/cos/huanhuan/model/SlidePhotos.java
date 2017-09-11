@@ -20,7 +20,7 @@ public class SlidePhotos {
     }
 
     public String getImgUrl() {
-        return HttpRequest.IMG_HUANHUAN_HOST + imgUrl;
+        return imgUrl.substring(0,4).equals("http")?imgUrl : HttpRequest.IMG_HUANHUAN_HOST + imgUrl;
     }
 
     public void setImgUrl(String imgUrl) {
