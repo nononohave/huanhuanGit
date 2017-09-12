@@ -104,10 +104,10 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
             @Override
             public void performAction(View view) {
                 ViewUtils.showPopupWindow(AllExchangeActivity.this,getCenTextView(),5,popPulishView);
-                Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.takeScreenShot(AllExchangeActivity.this), 15, true);
-                backBlurImg.setVisibility(View.VISIBLE);
-                rl.bringToFront();
-                backBlurImg.setImageBitmap(scaledBitmap);
+//                Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.takeScreenShot(AllExchangeActivity.this), 15, true);
+//                backBlurImg.setVisibility(View.VISIBLE);
+//                rl.bringToFront();
+//                backBlurImg.setImageBitmap(scaledBitmap);
             }
         });
         final TextView tv = getCenTextView();
@@ -125,7 +125,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
         setCenLayoutClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ViewUtils.showPopupWindow(AllExchangeActivity.this,getTitleBar(),4,popupView);
+                ViewUtils.showPopupWindow(AllExchangeActivity.this,getTitleBar(),5,popupView);
             }
         });
         listView.setOnItemClickListener(this);

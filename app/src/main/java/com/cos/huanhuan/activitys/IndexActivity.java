@@ -13,11 +13,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
@@ -89,6 +91,7 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
 
     private void initView() {
         mVpContent = (ViewPager) findViewById(R.id.vp_content);
+        mVpContent.setOffscreenPageLimit(4);
         mBottomBarLayout = (BottomBarLayout) findViewById(R.id.bbl);
         index_title_bar = (TitleBar) findViewById(R.id.index_title_bar);
         RongIM.setUserInfoProvider(this, true);
@@ -293,9 +296,10 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
     }
 
     class MyAdapter extends FragmentStatePagerAdapter {
-
+        private FragmentManager manager;
         public MyAdapter(FragmentManager fm) {
             super(fm);
+            this.manager = fm;
         }
 
         @Override
@@ -308,6 +312,7 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
             return mFragmentList.size();
         }
     }
+
     private void reconnect(String token) {
         RongIM.connect(token, new RongIMClient.ConnectCallback() {
             @Override
@@ -316,13 +321,6 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
 
             @Override
             public void onSuccess(String s) {
-
-//                HashMap<String, Boolean> hashMap = new HashMap<>();
-//                //会话类型 以及是否聚合显示
-//                hashMap.put(Conversation.ConversationType.PRIVATE.getName(),false);
-//                hashMap.put(Conversation.ConversationType.PUSH_SERVICE.getName(),true);
-//                hashMap.put(Conversation.ConversationType.SYSTEM.getName(),true);
-//                RongIM.getInstance().startConversationList(IndexActivity.this,hashMap);
                 RongIM.getInstance().refreshUserInfoCache(new UserInfo(String.valueOf(userValueData.getId()),userValueData.getNickname(),Uri.parse(userValueData.getPortrait())));
             }
 

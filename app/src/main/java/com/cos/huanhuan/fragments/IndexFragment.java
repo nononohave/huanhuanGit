@@ -199,10 +199,10 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 ViewUtils.showPopupWindow(getActivity(),titleBar,5,popPulishView);
-                Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.takeScreenShot(getActivity()), 15, true);
-                backBlurImg.setVisibility(View.VISIBLE);
-                rl.bringToFront();
-                backBlurImg.setImageBitmap(scaledBitmap);
+//                Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.takeScreenShot(getActivity()), 15, true);
+//                backBlurImg.setVisibility(View.VISIBLE);
+//                rl.bringToFront();
+//                backBlurImg.setImageBitmap(scaledBitmap);
             }
         });
         imageClose.setOnClickListener(this);

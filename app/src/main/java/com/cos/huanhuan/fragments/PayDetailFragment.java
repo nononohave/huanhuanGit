@@ -42,6 +42,7 @@ import com.cos.huanhuan.model.Recharge;
 import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
+import com.cos.huanhuan.utils.ButtonUtils;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
 import com.cos.huanhuan.utils.SharedPreferencesHelper;
@@ -72,11 +73,11 @@ public class PayDetailFragment extends DialogFragment {
     private String userId;
     private IWXAPI api;
     private Context mContext;
-    private Dialog dialogLoading;
     private int type;//判断从哪个页面传过来的支付选中页面，通过type调用不同的接口
     private double rechargeMoney;
     private int addressId,exId;
     private SharedPreferencesHelper sharedPreferencesHelper;
+    private Dialog dialogLoading;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,6 +171,9 @@ public class PayDetailFragment extends DialogFragment {
                     iv_choosed_wxPay.setVisibility(View.VISIBLE);
                     break;
                 case R.id.btn_confirm_pay://确认付款
+                    dialogLoading = ViewUtils.createLoadingDialog(getActivity());
+                    dialogLoading.show();
+                    //写你相关操作即可
                     final Recharge recharge = new Recharge();
                     recharge.setUserId(Integer.valueOf(userId));
                     recharge.setMoney(rechargeMoney);
@@ -203,6 +207,7 @@ public class PayDetailFragment extends DialogFragment {
                             @Override
                             public void onError(Request request, Exception e) {
                                 AppToastMgr.shortToast(getActivity(), "请求失败！");
+                                dialogLoading.dismiss();
                             }
 
                             @Override
@@ -213,8 +218,9 @@ public class PayDetailFragment extends DialogFragment {
                                     String errorMsg = jsonObject.getString("errorMsg");
                                     if (success) {
                                         getDialog().dismiss();
+                                        dialogLoading.dismiss();
                                         if (payType.equals("支付宝")) {
-                                            AppToastMgr.shortToast(getActivity(), "正常调起支付宝支付");
+                                            //AppToastMgr.shortToast(getActivity(), "正常调起支付宝支付");
                                             final String orderInfo = jsonObject.getString("data");
                                             Runnable payRunnable = new Runnable() {
 
@@ -244,7 +250,7 @@ public class PayDetailFragment extends DialogFragment {
                                             req.packageValue = data.getString("package");
                                             req.sign = data.getString("sign");
                                             req.extData = "app data"; // optional
-                                            AppToastMgr.shortToast(getActivity(), "正常调起支付");
+                                            //AppToastMgr.shortToast(getActivity(), "正常调起支付");
                                             // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
                                             api.sendReq(req);
                                         }
@@ -313,6 +319,7 @@ public class PayDetailFragment extends DialogFragment {
                             }
                         });
                     }
+
                     break;
                 case R.id.close_one:
                     getDialog().dismiss();

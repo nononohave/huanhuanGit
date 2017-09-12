@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.AllExchangeActivity;
+import com.cos.huanhuan.activitys.LunBoActivity;
 import com.cos.huanhuan.fragments.IndexFragment;
 import com.cos.huanhuan.model.CardExchange;
 import com.cos.huanhuan.model.SlidePhotos;
@@ -25,6 +26,7 @@ import com.cos.huanhuan.views.CircleImageView;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
+import com.ta.utdid2.android.utils.StringUtils;
 
 import java.util.List;
 
@@ -195,13 +197,23 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
         }
 
         @Override
-        public View getView(ViewGroup container, int position) {
+        public View getView(ViewGroup container, final int position) {
             View view = View.inflate(context, R.layout.scroll_img, null);
             ImageView img = (ImageView) view.findViewById(R.id.scrollImg);
             float roundRadius = 0;
-            PicassoUtils.getinstance().LoadImage(context,listData.get(position).getImgUrl(),img,R.mipmap.ic_launcher,R.mipmap.ic_launcher,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,roundRadius);
+            PicassoUtils.getinstance().LoadImage(context,listData.get(position).getImgUrl(),img,R.mipmap.public_placehold,R.mipmap.public_placehold,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,roundRadius);
             //PicassoUtils.getinstance().LoadImage(context,imgs[position],img,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,roundRadius);
             img.setScaleType(ImageView.ScaleType.FIT_XY);
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(AppStringUtils.isNotEmpty(listData.get(position).getImgHref())) {
+                        Intent intentWebViewLunBo = new Intent(context, LunBoActivity.class);
+                        intentWebViewLunBo.putExtra("webUrl", listData.get(position).getImgHref());
+                        context.startActivity(intentWebViewLunBo);
+                    }
+                }
+            });
             return view;
         }
 

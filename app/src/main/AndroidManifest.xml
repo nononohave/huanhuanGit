@@ -142,12 +142,11 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!--聚合会话列表-->
+        <!-- 聚合会话列表 -->
         <activity
             android:name=".activitys.SubConversationListActivtiy"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -159,7 +158,6 @@
                     android:scheme="rong" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.umeng.socialize.media.WBShareCallBackActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -333,6 +331,8 @@
                 <action android:name="io.rong.push.intent.MI_MESSAGE_CLICKED" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".activitys.LunBoActivity"></activity>
     </application>
 
 </manifest>

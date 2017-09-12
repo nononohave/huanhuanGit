@@ -277,10 +277,17 @@ public class HttpRequest {
 
     public static void getCoopDetail(String id, String userId, StringCallback callback){
         String url = TEXT_HUANHUAN_HOST + "Cooperations/" + id;
-        OkHttpUtils.get().url(url)
-                .addParams("userId", userId)
-                .build()
-                .execute(callback);}
+        if(userId.equals("")){
+            OkHttpUtils.get().url(url)
+                    .build()
+                    .execute(callback);
+        }else{
+            OkHttpUtils.get().url(url)
+                    .addParams("userId", userId)
+                    .build()
+                    .execute(callback);
+             }
+         }
 
     public static void joinCoop(String id,String userId, Callback callback){
         String url = TEXT_HUANHUAN_HOST + "Cooperations/"  + id;

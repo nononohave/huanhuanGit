@@ -153,7 +153,7 @@ public class ViewUtils {
                 break;
             case 4:
                 popupWindow = new PopupWindow(popupView,
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
                 break;
             case 5:
                 popupWindow = new PopupWindow(popupView,
@@ -165,7 +165,7 @@ public class ViewUtils {
                 break;
             case 7:
                 popupWindow = new PopupWindow(popupView,
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
                 break;
             default:
                 popupWindow = new PopupWindow(popupView,
@@ -184,9 +184,9 @@ public class ViewUtils {
         }else if(paramsType == 6){
             popupWindow.showAtLocation(root, Gravity.CENTER, 0, 0);
         }else if(paramsType == 4){
-            popupWindow.showAtLocation(root, Gravity.CLIP_HORIZONTAL|Gravity.TOP, 0,DensityUtils.dip2px(context,65));
+            popupWindow.showAtLocation(root, Gravity.NO_GRAVITY, 0, 0);
         }else if(paramsType == 7){
-            popupWindow.showAsDropDown(root,60,0);
+            popupWindow.showAtLocation(root, Gravity.NO_GRAVITY, 0, 0);
         }else{
             popupWindow.showAsDropDown(root,-235,40);
             setBackgroundAlpha(0.8f,context);

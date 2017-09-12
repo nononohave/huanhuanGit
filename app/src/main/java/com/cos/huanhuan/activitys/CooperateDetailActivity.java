@@ -28,8 +28,10 @@ import com.cos.huanhuan.adapter.CoopDetailImageAdapter;
 import com.cos.huanhuan.model.CoopDetail;
 import com.cos.huanhuan.model.Image;
 import com.cos.huanhuan.model.JsonBean;
+import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppACache;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
 import com.cos.huanhuan.utils.FastBlur;
@@ -37,6 +39,7 @@ import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
 import com.cos.huanhuan.utils.MyListView;
 import com.cos.huanhuan.utils.ObservableScrollView;
+import com.cos.huanhuan.utils.SharedPreferencesHelper;
 import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.CircleImageView;
 import com.cos.huanhuan.views.ImagPagerUtil;
@@ -86,6 +89,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
     private List<Image> imgList;
     private CoopDetailImageAdapter coopDetailImageAdapter;
     private CoopDetail coopDetailItem;
+    private SharedPreferencesHelper sharedPreferencesHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,11 +99,17 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
         }
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
-        userId = getUserId();
+        sharedPreferencesHelper = new SharedPreferencesHelper(CooperateDetailActivity.this);
+        UserValueData userValueData = sharedPreferencesHelper.getObject("userData");
         coopId = getIntent().getExtras().getString("coopId");
+        if(userValueData != null){
+            userId = String.valueOf(userValueData.getId());
+            initData(0);
+        }else{
+            initData(1);
+        }
         initView();
         initListeners();
-        initData();
     }
 
     private void initView() {
@@ -157,11 +167,14 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
 
 
 
-    private void initData() {
+    private void initData(int type) {
+        if(type == 1) {
+            userId = "";
+        }
         HttpRequest.getCoopDetail(coopId, userId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(CooperateDetailActivity.this,"请求失败！");
+                AppToastMgr.shortToast(CooperateDetailActivity.this, "请求失败！");
             }
 
             @Override
@@ -170,12 +183,12 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                     JSONObject jsonObject = new JSONObject(response);
                     Boolean success = jsonObject.getBoolean("success");
                     String errorMsg = jsonObject.getString("errorMsg");
-                    if(success){
-                        JSONObject obj =jsonObject.getJSONObject("data");
+                    if (success) {
+                        JSONObject obj = jsonObject.getJSONObject("data");
                         CoopDetail coopDetail = JsonUtils.fromJson(obj.toString(), CoopDetail.class);
                         coopDetailItem = coopDetail;
                         setData(coopDetail);
-                    }else{
+                    } else {
                         AppToastMgr.shortToast(CooperateDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
@@ -316,52 +329,70 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                 appManager.finishActivity();
                 break;
             case R.id.tv_coop_evalu:
-                Intent intentComment = new Intent(CooperateDetailActivity.this,CommentActivity.class);
-                intentComment.putExtra("coopId",coopId);
-                startActivity(intentComment);
+                if(AppStringUtils.isNotEmpty(userId)) {
+                    Intent intentComment = new Intent(CooperateDetailActivity.this, CommentActivity.class);
+                    intentComment.putExtra("coopId", coopId);
+                    startActivity(intentComment);
+                }else{
+                    AppToastMgr.shortToast(CooperateDetailActivity.this,"请登录");
+                    Intent intentLogin = new Intent(CooperateDetailActivity.this,LoginActivity.class);
+                    startActivity(intentLogin);
+                }
                 break;
             case R.id.tv_coop_join:
-                HttpRequest.joinCoop(coopId, userId, new Callback() {
-                    @Override
-                    public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(CooperateDetailActivity.this,"请求失败！");
-                    }
-
-                    @Override
-                    public void onResponse(Response response) throws IOException {
-                        try {
-                            if (null != response.cacheResponse()) {
-                                String str = response.cacheResponse().toString();
-                            } else {
-                                try {
-                                    String str1 = response.body().string();
-                                    JSONObject jsonObject = new JSONObject(str1);
-                                    Boolean success = jsonObject.getBoolean("success");
-                                    if(success){
-                                        Message message=new Message();
-                                        handler.sendMessage(message);//发送message信息
-                                        message.what=3;//标志是哪个线程传数据
-                                    }else{
-                                        String errorMsg = jsonObject.getString("errorMsg");
-                                        AppToastMgr.shortToast(CooperateDetailActivity.this,"修改失败！原因：" + errorMsg);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                String str = response.networkResponse().toString();
-                                Log.i("wangshu3", "network---" + str);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                if(AppStringUtils.isNotEmpty(userId)) {
+                    HttpRequest.joinCoop(coopId, userId, new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+                            AppToastMgr.shortToast(CooperateDetailActivity.this, "请求失败！");
                         }
-                    }
-                });
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            try {
+                                if (null != response.cacheResponse()) {
+                                    String str = response.cacheResponse().toString();
+                                } else {
+                                    try {
+                                        String str1 = response.body().string();
+                                        JSONObject jsonObject = new JSONObject(str1);
+                                        Boolean success = jsonObject.getBoolean("success");
+                                        if (success) {
+                                            Message message = new Message();
+                                            handler.sendMessage(message);//发送message信息
+                                            message.what = 3;//标志是哪个线程传数据
+                                        } else {
+                                            String errorMsg = jsonObject.getString("errorMsg");
+                                            AppToastMgr.shortToast(CooperateDetailActivity.this, "修改失败！原因：" + errorMsg);
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    String str = response.networkResponse().toString();
+                                    Log.i("wangshu3", "network---" + str);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }else{
+                    AppToastMgr.shortToast(CooperateDetailActivity.this,"请登录");
+                    Intent intentLogin = new Intent(CooperateDetailActivity.this,LoginActivity.class);
+                    startActivity(intentLogin);
+                }
                 break;
             case R.id.btn_coop_chat:
-                if (RongIM.getInstance()!=null) {
-                    RongIM.getInstance().startPrivateChat(CooperateDetailActivity.this, coopDetailItem.getUserId(), coopDetailItem.getNickname());
+                if(AppStringUtils.isNotEmpty(userId)) {
+                    if (RongIM.getInstance() != null) {
+                        RongIM.getInstance().startPrivateChat(CooperateDetailActivity.this, coopDetailItem.getUserId(), coopDetailItem.getNickname());
+                    } else {
+                        AppToastMgr.shortToast(CooperateDetailActivity.this, "融云初始化为null");
+                    }
                 }else{
-                    AppToastMgr.shortToast(CooperateDetailActivity.this,"融云初始化为null");
+                    AppToastMgr.shortToast(CooperateDetailActivity.this,"请登录");
+                    Intent intentLogin = new Intent(CooperateDetailActivity.this,LoginActivity.class);
+                    startActivity(intentLogin);
                 }
                 break;
         }

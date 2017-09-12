@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ImageView
-        android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/popPublishColor2"
+    android:paddingTop="65dp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:src="@mipmap/publick_sanjiao"
-        android:layout_marginBottom="-2dp"
-        />
-    <ListView
-        android:id="@+id/popListView"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:background="@drawable/popwindow_corner"
-        android:divider="@color/greyDivideLine"
-        android:dividerHeight="1dp"
-        android:layout_gravity="center_horizontal"
-        ></ListView>
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/publick_sanjiao"
+            android:layout_marginBottom="-2dp"
+            />
+        <ListView
+            android:id="@+id/popListView"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/popwindow_corner"
+            android:divider="@color/greyDivideLine"
+            android:dividerHeight="1dp"
+            android:layout_gravity="center_horizontal"
+            ></ListView>
+    </LinearLayout>
 </LinearLayout>

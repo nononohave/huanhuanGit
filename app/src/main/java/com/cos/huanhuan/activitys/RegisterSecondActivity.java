@@ -1,5 +1,6 @@
 package com.cos.huanhuan.activitys;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.AppValidationMgr;
 import com.cos.huanhuan.utils.HttpRequest;
+import com.cos.huanhuan.utils.ViewUtils;
 import com.squareup.okhttp.Request;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -47,6 +49,9 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
 
     private Timer timer;
     private TimerTask timerTask;
+
+
+    private Dialog dialogLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +135,8 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.btn_register2_finish:
                 //点击完成校验验证码
+                dialogLoading = ViewUtils.createLoadingDialog(RegisterSecondActivity.this);
+                dialogLoading.show();
                 String verifyText = et_register2_code.getText().toString();
                 if(AppStringUtils.isNotEmpty(verifyText)){
                     if(returnVerifyCode.equals(verifyText)){
@@ -140,6 +147,7 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                                 @Override
                                 public void onError(Request request, Exception e) {
                                     AppToastMgr.shortToast(RegisterSecondActivity.this,"请求失败！");
+                                    dialogLoading.dismiss();
                                 }
 
                                 @Override
@@ -149,6 +157,7 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                                         JSONObject jsonObject = new JSONObject(response);
                                         Boolean success = jsonObject.getBoolean("success");
                                         if(success){
+                                            dialogLoading.dismiss();
                                             AppToastMgr.shortToast(RegisterSecondActivity.this,"注册成功！");
                                             Intent intent = new Intent(RegisterSecondActivity.this,LoginActivity.class);
                                             startActivity(intent);

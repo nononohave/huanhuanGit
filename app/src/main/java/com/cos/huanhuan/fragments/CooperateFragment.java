@@ -166,10 +166,10 @@ public class CooperateFragment extends Fragment implements View.OnClickListener,
             @Override
             public void performAction(View view) {
                 ViewUtils.showPopupWindow(getActivity(),titleBar,5,popPulishView);
-                Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.takeScreenShot(getActivity()), 15, true);
-                backBlurImg.setVisibility(View.VISIBLE);
-                rl.bringToFront();
-                backBlurImg.setImageBitmap(scaledBitmap);
+//                Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.takeScreenShot(getActivity()), 15, true);
+//                backBlurImg.setVisibility(View.VISIBLE);
+//                rl.bringToFront();
+//                backBlurImg.setImageBitmap(scaledBitmap);
             }
         });
         imageClose.setOnClickListener(this);
@@ -431,7 +431,7 @@ public class CooperateFragment extends Fragment implements View.OnClickListener,
                 startActivity(intentCoop);
                 break;
             case R.id.ll_request_classify:
-                ViewUtils.showPopupWindow(getActivity(),ll_request_classify,7,popupView);
+                ViewUtils.showPopupWindow(getActivity(),ll_request_classify,5,popupView);
                 break;
             case R.id.ll_address_choose:
                 if(options1Items != null && options1Items.size() > 0
