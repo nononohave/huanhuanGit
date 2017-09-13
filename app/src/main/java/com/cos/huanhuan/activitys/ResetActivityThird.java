@@ -178,7 +178,7 @@ public class ResetActivityThird extends BaseActivity implements View.OnClickList
                                     HttpRequest.resetPassword(password, verifyCode, phone, new Callback() {
                                         @Override
                                         public void onFailure(Request request, IOException e) {
-                                            AppToastMgr.shortToast(ResetActivityThird.this,"请求失败！");
+                                            toastErrorMsg(ResetActivityThird.this,"请求失败！");
                                         }
 
                                         @Override
@@ -200,7 +200,7 @@ public class ResetActivityThird extends BaseActivity implements View.OnClickList
                                                             startActivity(intent);
                                                         }else{
                                                             String errorMsg = jsonObject.getString("errorMsg");
-                                                            AppToastMgr.shortToast(ResetActivityThird.this,"修改失败！原因：" + errorMsg);
+                                                            toastErrorMsg(ResetActivityThird.this,errorMsg);
                                                         }
                                                     } catch (IOException e) {
                                                         e.printStackTrace();
@@ -219,10 +219,10 @@ public class ResetActivityThird extends BaseActivity implements View.OnClickList
                             }
                         });
                     }else{
-                        AppToastMgr.shortToast(ResetActivityThird.this,"请输入重设密码");
+                        toastErrorMsg(ResetActivityThird.this,"请输入重设密码");
                     }
                 }else{
-                    AppToastMgr.shortToast(ResetActivityThird.this,"两次输入的密码不一致");
+                    toastErrorMsg(ResetActivityThird.this,"两次输入的密码不一致");
                 }
                 break;
         }

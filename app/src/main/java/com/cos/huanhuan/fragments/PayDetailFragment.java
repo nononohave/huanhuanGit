@@ -208,6 +208,7 @@ public class PayDetailFragment extends DialogFragment {
                             public void onError(Request request, Exception e) {
                                 AppToastMgr.shortToast(getActivity(), "请求失败！");
                                 dialogLoading.dismiss();
+                                getDialog().dismiss();
                             }
 
                             @Override
@@ -217,13 +218,11 @@ public class PayDetailFragment extends DialogFragment {
                                     Boolean success = jsonObject.getBoolean("success");
                                     String errorMsg = jsonObject.getString("errorMsg");
                                     if (success) {
-                                        getDialog().dismiss();
                                         dialogLoading.dismiss();
                                         if (payType.equals("支付宝")) {
                                             //AppToastMgr.shortToast(getActivity(), "正常调起支付宝支付");
                                             final String orderInfo = jsonObject.getString("data");
                                             Runnable payRunnable = new Runnable() {
-
                                                 @Override
                                                 public void run() {
                                                     PayTask alipay = new PayTask(getActivity());
@@ -240,6 +239,7 @@ public class PayDetailFragment extends DialogFragment {
                                             Thread payThread = new Thread(payRunnable);
                                             payThread.start();
                                         } else {
+                                            getDialog().dismiss();
                                             JSONObject data = jsonObject.getJSONObject("data");
                                             PayReq req = new PayReq();
                                             req.appId = data.getString("appid");
@@ -255,7 +255,9 @@ public class PayDetailFragment extends DialogFragment {
                                             api.sendReq(req);
                                         }
                                     } else {
+                                        dialogLoading.dismiss();
                                         AppToastMgr.shortToast(getActivity(), " 获取充值信息失败！原因：" + errorMsg);
+                                        getDialog().dismiss();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -268,6 +270,7 @@ public class PayDetailFragment extends DialogFragment {
                             @Override
                             public void onError(Request request, Exception e) {
                                 AppToastMgr.shortToast(getActivity(), "请求失败！");
+                                dialogLoading.dismiss();
                             }
 
                             @Override
@@ -277,6 +280,7 @@ public class PayDetailFragment extends DialogFragment {
                                     Boolean success = jsonObject.getBoolean("success");
                                     String errorMsg = jsonObject.getString("errorMsg");
                                     if (success) {
+                                        dialogLoading.dismiss();
                                         if (payType.equals("支付宝")) {
                                             final String orderInfo = jsonObject.getString("data");
                                             Runnable payRunnable = new Runnable() {
@@ -297,6 +301,7 @@ public class PayDetailFragment extends DialogFragment {
                                             Thread payThread = new Thread(payRunnable);
                                             payThread.start();
                                         } else {
+                                            getDialog().dismiss();
                                             JSONObject data = jsonObject.getJSONObject("data");
                                             PayReq req = new PayReq();
                                             req.appId = data.getString("appid");
@@ -312,6 +317,7 @@ public class PayDetailFragment extends DialogFragment {
                                         }
                                     } else {
                                         AppToastMgr.shortToast(getActivity(), " 获取充值信息失败！原因：" + errorMsg);
+                                        dialogLoading.dismiss();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -373,6 +379,7 @@ public class PayDetailFragment extends DialogFragment {
                     } else {
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
                         AppToastMgr.shortToast(mContext,"支付失败");
+                        getDialog().dismiss();
                     }
                     break;
                 }

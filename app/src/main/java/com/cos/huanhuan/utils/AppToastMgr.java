@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.activitys.CooperateDetailActivity;
 
 
 /**
@@ -28,32 +29,26 @@ public class AppToastMgr {
 
 	//对话框时长号(毫秒)
 	private static int duration = 200;
-	
+
 	//自定义toast对象
 	private static Toast toast;
-	private static Handler mHandler = new Handler();
-	private static Runnable r = new Runnable() {
-		public void run() {
-			toast.cancel();
-		}
-	};
 	/**
 	 * 自定义短Toast调用
 	 * @param context 上下文
 	 * @param message 显示文本
-	 * @return void   
+	 * @return void
 	 */
 	public static void shortToast(final Context context, final String message) {
-		View view = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.sys_show_toast, null);
-		TextView textView = (TextView) view.findViewById(R.id.sys_show_toast_txt);
 		if (null == toast) {
 			toast = new Toast(context);
 			toast.setDuration(Toast.LENGTH_SHORT);
+			View view = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.sys_show_toast, null);
+			TextView textView = (TextView) view.findViewById(R.id.sys_show_toast_txt);
 			textView.setText(message);
 			toast.setView(view);
 			toast.show();
 		} else {
-			textView = (TextView) toast.getView().findViewById(R.id.sys_show_toast_txt);
+			TextView textView = (TextView) toast.getView().findViewById(R.id.sys_show_toast_txt);
 			textView.setText(message);
 			toast.show();
 		}
@@ -64,7 +59,7 @@ public class AppToastMgr {
 	 * 自定义长Toast调用
 	 * @param context 上下文
 	 * @param message 显示文本
-	 * @return void   
+	 * @return void
 	 */
 	public static void longToast(final Context context, final String message) {
 		if (null == toast) {
@@ -81,17 +76,17 @@ public class AppToastMgr {
 			toast.show();
 		}
 	}
-	
+
 	/**
 	 * 取消显示Toast
-	 * 
+	 *
 	 */
 	public static void cancelToast() {
 		if (null != toast) {
 			toast.cancel();
 		}
 	}
-	
+
 	/**
 	 * 默认Toast调用
 	 * @param context 上下文
@@ -378,5 +373,5 @@ public class AppToastMgr {
 		}
 	}
 
-	
+
 }

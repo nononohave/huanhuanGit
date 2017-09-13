@@ -200,7 +200,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
         HttpRequest.getCoopClass(new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(PublishCoopActivity.this,"请求分类接口失败！");
+                toastErrorMsg(PublishCoopActivity.this,"请求分类接口失败！");
             }
 
             @Override
@@ -223,7 +223,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                             listClassifyString.add(className);
                         }
                     }else{
-                        AppToastMgr.shortToast(PublishCoopActivity.this, " 请求分类接口失败！原因：" + errorMsg);
+                        toastErrorMsg(PublishCoopActivity.this, " 请求分类接口失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -268,7 +268,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                     addressOptionsPick.setPicker(options1Items, options2Items, options3Items);//添加数据源
                     addressOptionsPick.show();
                 }else{
-                    AppToastMgr.shortToast(PublishCoopActivity.this,"未获取到地址信息");
+                    toastErrorMsg(PublishCoopActivity.this,"未获取到地址信息");
                 }
                 break;
             case R.id.ll_publishCoop_time:
@@ -711,40 +711,40 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
         String cosClassify = tv_publish_coop_cosClassify.getText().toString();
 
         if(AppStringUtils.isEmpty(cosTitle)){
-            AppToastMgr.shortToast(PublishCoopActivity.this, "请输入合作主题名称");
+            toastErrorMsg(PublishCoopActivity.this, "请输入合作主题名称");
             return;
         }
         if(AppStringUtils.isEmpty(cosClassify)){
-            AppToastMgr.shortToast(PublishCoopActivity.this, "请选择物品类别");
+            toastErrorMsg(PublishCoopActivity.this, "请选择物品类别");
             return;
         }
         if(AppStringUtils.isEmpty(cosAddress)){
-            AppToastMgr.shortToast(PublishCoopActivity.this, "请选择地址");
+            toastErrorMsg(PublishCoopActivity.this, "请选择地址");
             return;
         }
         if(AppStringUtils.isEmpty(cosAddressDetail)){
-            AppToastMgr.shortToast(PublishCoopActivity.this, "请输入详细地址");
+            toastErrorMsg(PublishCoopActivity.this, "请输入详细地址");
             return;
         }
         if(AppStringUtils.isEmpty(cosRequest)){
-            AppToastMgr.shortToast(PublishCoopActivity.this, "请输入需求");
+            toastErrorMsg(PublishCoopActivity.this, "请输入需求");
             return;
         }
         if(AppStringUtils.isEmpty(cosTime)){
-            AppToastMgr.shortToast(PublishCoopActivity.this, "请选择活动时间");
+            toastErrorMsg(PublishCoopActivity.this, "请选择活动时间");
             return;
         }
         if(AppStringUtils.isEmpty(cosPersonNums)){
-            AppToastMgr.shortToast(PublishCoopActivity.this, "请设置人数");
+            toastErrorMsg(PublishCoopActivity.this, "请设置人数");
             return;
         }
         if(AppStringUtils.isEmpty(cosDetailDesc)){
-            AppToastMgr.shortToast(PublishCoopActivity.this, "请填写描述信息");
+            toastErrorMsg(PublishCoopActivity.this, "请填写描述信息");
             return;
         }
         int cosPersons = Integer.valueOf(cosPersonNums);
         if(cosPersons <= 0){
-            AppToastMgr.shortToast(PublishCoopActivity.this, "人数不能小于0");
+            toastErrorMsg(PublishCoopActivity.this, "人数不能小于0");
             return;
         }
         if(imagePaths != null && imagePaths.size() > 0) {
@@ -770,13 +770,13 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                     RequestQueue mSingleQueue = Volley.newRequestQueue(this, new MultiPartStack());
                     mSingleQueue.add(multipartRequest);
                 }else{
-                    AppToastMgr.shortToast(PublishCoopActivity.this, "请至少选择三张图片");
+                    toastErrorMsg(PublishCoopActivity.this, "请至少选择三张图片");
                 }
             }else{
-                AppToastMgr.shortToast(PublishCoopActivity.this, "请选择图片");
+                toastErrorMsg(PublishCoopActivity.this, "请选择图片");
             }
         }else{
-            AppToastMgr.shortToast(PublishCoopActivity.this, "请选择封面图片");
+            toastErrorMsg(PublishCoopActivity.this, "请选择封面图片");
         }
     }
 
@@ -795,7 +795,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                     Log.i("单张图片",String.valueOf(coverId));
                     upLoadMutiImag();
                 }else{
-                    AppToastMgr.shortToast(PublishCoopActivity.this, " 封面图片上传失败！原因：" + errorMsg);
+                    toastErrorMsg(PublishCoopActivity.this, " 封面图片上传失败！原因：" + errorMsg);
                     dialog.dismiss();
                 }
             } catch (JSONException e) {
@@ -809,7 +809,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            AppToastMgr.shortToast(PublishCoopActivity.this, " 封面图片上传接口调用失败！");
+            toastErrorMsg(PublishCoopActivity.this, " 封面图片上传接口调用失败！");
             dialog.dismiss();
             if (error != null) {
                 if (error.networkResponse != null)
@@ -876,7 +876,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                     PublishAllMessage(publishCoop);
                 }else{
                     dialog.dismiss();
-                    AppToastMgr.shortToast(PublishCoopActivity.this, " 多张图片上传失败！原因：" + errorMsg);
+                    toastErrorMsg(PublishCoopActivity.this, " 多张图片上传失败！原因：" + errorMsg);
                 }
             } catch (JSONException e) {
                 dialog.dismiss();
@@ -890,7 +890,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            AppToastMgr.shortToast(PublishCoopActivity.this, " 多张图片上传接口调用失败！");
+            toastErrorMsg(PublishCoopActivity.this, " 多张图片上传接口调用失败！");
             dialog.dismiss();
             if (error != null) {
                 if (error.networkResponse != null)
@@ -909,7 +909,7 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onError(Request request, Exception e) {
                 dialog.dismiss();
-                AppToastMgr.shortToast(PublishCoopActivity.this,"请求失败！");
+                toastErrorMsg(PublishCoopActivity.this,"请求失败！");
             }
 
             @Override
@@ -920,11 +920,11 @@ public class PublishCoopActivity extends BaseActivity implements View.OnClickLis
                     String errorMsg = jsonObject.getString("errorMsg");
                     if(success) {
                         dialog.dismiss();
-                        AppToastMgr.shortToast(PublishCoopActivity.this, " 发布成功");
+                        toastErrorMsg(PublishCoopActivity.this, " 发布成功");
                         appManager.finishActivity();
                     }else{
                         dialog.dismiss();
-                        AppToastMgr.shortToast(PublishCoopActivity.this, " 发布失败！原因：" + errorMsg);
+                        toastErrorMsg(PublishCoopActivity.this, " 发布失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     dialog.dismiss();

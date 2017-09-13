@@ -126,7 +126,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
                 HttpRequest.setDefaultAddress(String.valueOf(listAddress.get(position).getId()), new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(AddressManagerActivity.this,"请求失败！");
+                        toastErrorMsg(AddressManagerActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -147,7 +147,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
                                         message.what=1;//标志是哪个线程传数据
                                     }else{
                                         String errorMsg = jsonObject.getString("errorMsg");
-                                        AppToastMgr.shortToast(AddressManagerActivity.this,"修改失败！原因：" + errorMsg);
+                                        toastErrorMsg(AddressManagerActivity.this,errorMsg);
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -195,7 +195,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
                 dialog.show();
             }
 //                }else{
-//                    AppToastMgr.shortToast(AddressManagerActivity.this, "不能删除默认地址，请重新选择或者修改默认地址");
+//                    toastErrorMsg(AddressManagerActivity.this, "不能删除默认地址，请重新选择或者修改默认地址");
 //                }
         });
 
@@ -205,7 +205,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
         HttpRequest.deleteAddress(String.valueOf(listAddress.get(position).getId()), new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                AppToastMgr.shortToast(AddressManagerActivity.this, "请求失败！");
+                toastErrorMsg(AddressManagerActivity.this, "请求失败！");
             }
 
             @Override
@@ -226,7 +226,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
                                 message.what = 2;//标志是哪个线程传数据
                             } else {
                                 String errorMsg = jsonObject.getString("errorMsg");
-                                AppToastMgr.shortToast(AddressManagerActivity.this, "修改失败！原因：" + errorMsg);
+                                toastErrorMsg(AddressManagerActivity.this, errorMsg);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -243,7 +243,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
         HttpRequest.getMembersAddress(userId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(AddressManagerActivity.this,"请求失败！");
+                toastErrorMsg(AddressManagerActivity.this,"请求失败！");
             }
 
             @Override
@@ -262,7 +262,7 @@ public class AddressManagerActivity extends BaseActivity implements AdapterView.
                         }
                         addressAdapter.notifyDataSetChanged();
                     }else{
-                        AppToastMgr.shortToast(AddressManagerActivity.this, " 登录失败！原因：" + errorMsg);
+                        toastErrorMsg(AddressManagerActivity.this, " 登录失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

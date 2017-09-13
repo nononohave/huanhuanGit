@@ -39,7 +39,6 @@
                     android:id="@+id/tv_adapter_exchange_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="桃花妖异次元觉醒次元桃花妖异次元觉醒次元桃花妖异次元觉醒次元"
                     android:textSize="@dimen/phone_text_size" />
                 <LinearLayout
                     android:id="@+id/ll_author_myPublish_adapter"
@@ -58,7 +57,6 @@
                         android:id="@+id/tv_adapter_exchange_author"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="飛行的豬"
                         android:textColor="#ff82AEC7"
                         android:layout_marginLeft="5dp"
                         android:layout_gravity="center_vertical"
@@ -69,7 +67,6 @@
                     android:id="@+id/tv_adapter_exchange_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="审核完成：178元"
                     android:layout_marginTop="4dp"
                     android:textColor="@color/titleBarTextColor"
                     android:textSize="@dimen/forgetTextSize"
@@ -79,7 +76,6 @@
                 android:id="@+id/tv_adapter_exchange_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2017-12-30"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/greyText"
                 android:textSize="@dimen/small_text"

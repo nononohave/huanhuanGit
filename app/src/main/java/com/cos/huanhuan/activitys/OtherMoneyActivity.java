@@ -67,10 +67,10 @@ public class OtherMoneyActivity extends BaseActivity implements View.OnClickList
                         payDetailFragment.setArguments(args);
                         payDetailFragment.show(getSupportFragmentManager(), "payDetailFragment");
                     }else{
-                        AppToastMgr.shortToast(OtherMoneyActivity.this,"请输入正确的充值金额");
+                        toastErrorMsg(OtherMoneyActivity.this,"请输入正确的充值金额");
                     }
                 }else{
-                    AppToastMgr.shortToast(OtherMoneyActivity.this,"请输入充值金额");
+                    toastErrorMsg(OtherMoneyActivity.this,"请输入充值金额");
                 }
                 break;
         }

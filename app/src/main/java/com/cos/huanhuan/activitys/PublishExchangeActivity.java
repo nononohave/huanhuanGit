@@ -196,7 +196,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
         HttpRequest.getExchangeClass(new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(PublishExchangeActivity.this,"请求分类接口失败！");
+                toastErrorMsg(PublishExchangeActivity.this,"请求分类接口失败！");
             }
 
             @Override
@@ -219,7 +219,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                             listClassifyString.add(className);
                         }
                     }else{
-                        AppToastMgr.shortToast(PublishExchangeActivity.this, " 请求分类接口失败！原因：" + errorMsg);
+                        toastErrorMsg(PublishExchangeActivity.this, " 请求分类接口失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -631,40 +631,40 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
             selectClassifyId = listClassify.get(position).getClassifyId();
         }
         if(AppStringUtils.isEmpty(cosTitle)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入标题");
+            toastErrorMsg(PublishExchangeActivity.this, "请输入标题");
             return;
         }
         if(AppStringUtils.isEmpty(cosAuthor)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品原作");
+            toastErrorMsg(PublishExchangeActivity.this, "请输入物品原作");
             return;
         }
         if(AppStringUtils.isEmpty(cosRole)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品角色");
+            toastErrorMsg(PublishExchangeActivity.this, "请输入物品角色");
             return;
         }
         if(AppStringUtils.isEmpty(cosContain)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品包含");
+            toastErrorMsg(PublishExchangeActivity.this, "请输入物品包含");
             return;
         }
         if(AppStringUtils.isEmpty(cosFrom)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品来源");
+            toastErrorMsg(PublishExchangeActivity.this, "请输入物品来源");
             return;
         }
         if(AppStringUtils.isEmpty(cosPriceText)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请输入物品价格");
+            toastErrorMsg(PublishExchangeActivity.this, "请输入物品价格");
             return;
         }
         if(AppStringUtils.isEmpty(selectCosClassText)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请选择物品类别");
+            toastErrorMsg(PublishExchangeActivity.this, "请选择物品类别");
             return;
         }
         if(AppStringUtils.isEmpty(cosDetailDesc)){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请填写描述信息");
+            toastErrorMsg(PublishExchangeActivity.this, "请填写描述信息");
             return;
         }
         cosPrice = Double.parseDouble(cosPriceText);
         if(cosPrice <= 0){
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "物品价格不能小于0");
+            toastErrorMsg(PublishExchangeActivity.this, "物品价格不能小于0");
             return;
         }
         if(imagePaths != null && imagePaths.size() > 0) {
@@ -690,13 +690,13 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     RequestQueue mSingleQueue = Volley.newRequestQueue(this, new MultiPartStack());
                     mSingleQueue.add(multipartRequest);
                 }else{
-                    AppToastMgr.shortToast(PublishExchangeActivity.this, "请至少选择三张图片");
+                    toastErrorMsg(PublishExchangeActivity.this, "请至少选择三张图片");
                 }
             }else{
-                AppToastMgr.shortToast(PublishExchangeActivity.this, "请选择图片");
+                toastErrorMsg(PublishExchangeActivity.this, "请选择图片");
             }
         }else{
-            AppToastMgr.shortToast(PublishExchangeActivity.this, "请选择封面图片");
+            toastErrorMsg(PublishExchangeActivity.this, "请选择封面图片");
         }
     }
 
@@ -715,7 +715,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     Log.i("单张图片",String.valueOf(coverId));
                     upLoadMutiImag();
                 }else{
-                    AppToastMgr.shortToast(PublishExchangeActivity.this, " 封面图片上传失败！原因：" + errorMsg);
+                    toastErrorMsg(PublishExchangeActivity.this, " 封面图片上传失败！原因：" + errorMsg);
                     dialog.dismiss();
                 }
             } catch (JSONException e) {
@@ -729,7 +729,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            AppToastMgr.shortToast(PublishExchangeActivity.this, " 封面图片上传接口调用失败！");
+            toastErrorMsg(PublishExchangeActivity.this, " 封面图片上传接口调用失败！");
             dialog.dismiss();
             if (error != null) {
                 if (error.networkResponse != null)
@@ -796,7 +796,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     PublishAllMessage(publishExchanges);
                 }else{
                     dialog.dismiss();
-                    AppToastMgr.shortToast(PublishExchangeActivity.this, " 多张图片上传失败！原因：" + errorMsg);
+                    toastErrorMsg(PublishExchangeActivity.this, " 多张图片上传失败！原因：" + errorMsg);
                 }
             } catch (JSONException e) {
                 dialog.dismiss();
@@ -810,7 +810,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            AppToastMgr.shortToast(PublishExchangeActivity.this, " 多张图片上传接口调用失败！");
+            toastErrorMsg(PublishExchangeActivity.this, " 多张图片上传接口调用失败！");
             dialog.dismiss();
             if (error != null) {
                 if (error.networkResponse != null)
@@ -829,7 +829,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
             @Override
             public void onError(Request request, Exception e) {
                 dialog.dismiss();
-                AppToastMgr.shortToast(PublishExchangeActivity.this,"请求失败！");
+                toastErrorMsg(PublishExchangeActivity.this,"请求失败！");
             }
 
             @Override
@@ -840,11 +840,11 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     String errorMsg = jsonObject.getString("errorMsg");
                     if(success) {
                         dialog.dismiss();
-                        AppToastMgr.shortToast(PublishExchangeActivity.this, " 发布成功");
+                        toastErrorMsg(PublishExchangeActivity.this, " 发布成功");
                         appManager.finishActivity();
                     }else{
                         dialog.dismiss();
-                        AppToastMgr.shortToast(PublishExchangeActivity.this, " 发布失败！原因：" + errorMsg);
+                        toastErrorMsg(PublishExchangeActivity.this, " 发布失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     dialog.dismiss();

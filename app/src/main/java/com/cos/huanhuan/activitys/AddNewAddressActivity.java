@@ -135,7 +135,7 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
                     addressOptionsPick.setPicker(options1Items, options2Items, options3Items);//添加数据源
                     addressOptionsPick.show();
                 }else{
-                    AppToastMgr.shortToast(AddNewAddressActivity.this,"未获取到地址信息");
+                    toastErrorMsg(AddNewAddressActivity.this,"未获取到地址信息");
                 }
                 break;
             case R.id.ib_choose_isDefault:
@@ -229,19 +229,19 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
         String address = et_detail_address.getText().toString();
 
         if(AppStringUtils.isEmpty(consignee)){
-            AppToastMgr.shortToast(AddNewAddressActivity.this,"请输入收件人姓名");
+            toastErrorMsg(AddNewAddressActivity.this,"请输入收件人姓名");
             return;
         }
         if(AppStringUtils.isEmpty(phone)){
-            AppToastMgr.shortToast(AddNewAddressActivity.this,"请输入收件人手机号");
+            toastErrorMsg(AddNewAddressActivity.this,"请输入收件人手机号");
             return;
         }
         if(AppStringUtils.isEmpty(provice) && AppStringUtils.isEmpty(city) && AppStringUtils.isEmpty(district)){
-            AppToastMgr.shortToast(AddNewAddressActivity.this,"请选择省市区");
+            toastErrorMsg(AddNewAddressActivity.this,"请选择省市区");
             return;
         }
         if(AppStringUtils.isEmpty(address)){
-            AppToastMgr.shortToast(AddNewAddressActivity.this,"请输入详细地址");
+            toastErrorMsg(AddNewAddressActivity.this,"请输入详细地址");
             return;
         }
         AddressDTO addressDTO = new AddressDTO();
@@ -256,7 +256,7 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
         HttpRequest.addNewAddress(addressDTO, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(AddNewAddressActivity.this,"请求失败！");
+                toastErrorMsg(AddNewAddressActivity.this,"请求失败！");
             }
 
             @Override
@@ -271,7 +271,7 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
                             HttpRequest.setDefaultAddress(String.valueOf(addressId), new Callback() {
                                 @Override
                                 public void onFailure(Request request, IOException e) {
-                                    AppToastMgr.shortToast(AddNewAddressActivity.this,"请求失败！");
+                                    toastErrorMsg(AddNewAddressActivity.this,"请求失败！");
                                 }
 
                                 @Override
@@ -284,11 +284,11 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
                                                 JSONObject jsonObject = new JSONObject(str1);
                                                 Boolean success = jsonObject.getBoolean("success");
                                                 if(success){
-                                                    AppToastMgr.shortToast(AddNewAddressActivity.this, " 新增地址成功！" );
+                                                    toastErrorMsg(AddNewAddressActivity.this, " 新增地址成功！" );
                                                     appManager.finishActivity();
                                                 }else{
                                                     String errorMsg = jsonObject.getString("errorMsg");
-                                                    AppToastMgr.shortToast(AddNewAddressActivity.this,"修改失败！原因：" + errorMsg);
+                                                    toastErrorMsg(AddNewAddressActivity.this, errorMsg);
                                                 }
                                             } catch (IOException e) {
                                                 e.printStackTrace();
@@ -300,11 +300,11 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
                                 }
                             });
                         }else{
-                            AppToastMgr.shortToast(AddNewAddressActivity.this, " 新增地址成功！" );
+                            toastErrorMsg(AddNewAddressActivity.this, " 新增地址成功！" );
                             appManager.finishActivity();
                         }
                     }else{
-                        AppToastMgr.shortToast(AddNewAddressActivity.this, " 请求失败！原因：" + errorMsg);
+                        toastErrorMsg(AddNewAddressActivity.this, " 请求失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

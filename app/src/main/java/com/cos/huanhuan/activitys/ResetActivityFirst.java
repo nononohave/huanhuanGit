@@ -125,7 +125,7 @@ public class ResetActivityFirst extends  BaseActivity implements View.OnClickLis
                                 @Override
                                 public void onError(Request request, Exception e)
                                 {
-                                    AppToastMgr.shortToast(ResetActivityFirst.this,"请求失败！");
+                                    toastErrorMsg(ResetActivityFirst.this,"请求失败！");
                                 }
 
                                 @Override
@@ -145,7 +145,7 @@ public class ResetActivityFirst extends  BaseActivity implements View.OnClickLis
                                             intentNext.putExtra("intentPhone",phone);
                                             startActivity(intentNext);
                                         }else{
-                                            AppToastMgr.shortToast(ResetActivityFirst.this,"请求失败！原因：" + errMsg);
+                                            toastErrorMsg(ResetActivityFirst.this,"请求失败！原因：" + errMsg);
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -157,10 +157,10 @@ public class ResetActivityFirst extends  BaseActivity implements View.OnClickLis
                             e.printStackTrace();
                         }
                     }else{
-                        AppToastMgr.shortToast(ResetActivityFirst.this, " 手机号有误！");
+                        toastErrorMsg(ResetActivityFirst.this, " 手机号有误！");
                     }
                 }else{
-                    AppToastMgr.shortToast(ResetActivityFirst.this, " 请输入手机号!");
+                    toastErrorMsg(ResetActivityFirst.this, " 请输入手机号!");
                 }
                 break;
         }

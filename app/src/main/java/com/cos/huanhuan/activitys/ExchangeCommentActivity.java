@@ -115,7 +115,7 @@ public class ExchangeCommentActivity extends BaseActivity implements View.OnClic
                     HttpRequest.getExchangeCommentList(commentDto, new StringCallback() {
                         @Override
                         public void onError(Request request, Exception e) {
-                            AppToastMgr.shortToast(ExchangeCommentActivity.this,"请求失败！");
+                            toastErrorMsg(ExchangeCommentActivity.this,"请求失败！");
                         }
 
                         @Override
@@ -134,7 +134,7 @@ public class ExchangeCommentActivity extends BaseActivity implements View.OnClic
                                     }
                                     commentAdapter.notifyDataSetChanged();
                                 }else{
-                                    AppToastMgr.shortToast(ExchangeCommentActivity.this, " 请求失败！原因：" + errorMsg);
+                                    toastErrorMsg(ExchangeCommentActivity.this, " 请求失败！原因：" + errorMsg);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -178,7 +178,7 @@ public class ExchangeCommentActivity extends BaseActivity implements View.OnClic
         HttpRequest.getExchangeCommentList(commentDto, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(ExchangeCommentActivity.this,"请求失败！");
+                toastErrorMsg(ExchangeCommentActivity.this,"请求失败！");
             }
 
             @Override
@@ -199,7 +199,7 @@ public class ExchangeCommentActivity extends BaseActivity implements View.OnClic
                         commentAdapter.notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
                     }else{
-                        AppToastMgr.shortToast(ExchangeCommentActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        toastErrorMsg(ExchangeCommentActivity.this, " 接口调用失败！原因：" + errorMsg);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 } catch (JSONException e) {
@@ -222,7 +222,7 @@ public class ExchangeCommentActivity extends BaseActivity implements View.OnClic
                 HttpRequest.publishExchangeComment(exchangeId, userId, commentMessage, parentId, new StringCallback() {
                     @Override
                     public void onError(Request request, Exception e) {
-                        AppToastMgr.shortToast(ExchangeCommentActivity.this,"请求失败！");
+                        toastErrorMsg(ExchangeCommentActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -238,7 +238,7 @@ public class ExchangeCommentActivity extends BaseActivity implements View.OnClic
                                 parentId = -1;
                                 recyclerview.smoothScrollToPosition(0);
                             }else{
-                                AppToastMgr.shortToast(ExchangeCommentActivity.this, " 评论失败！原因：" + errorMsg);
+                                toastErrorMsg(ExchangeCommentActivity.this,errorMsg);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

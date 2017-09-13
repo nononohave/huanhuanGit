@@ -174,7 +174,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
         HttpRequest.getCoopDetail(coopId, userId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(CooperateDetailActivity.this, "请求失败！");
+                toastErrorMsg(CooperateDetailActivity.this, "请求失败！");
             }
 
             @Override
@@ -189,7 +189,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                         coopDetailItem = coopDetail;
                         setData(coopDetail);
                     } else {
-                        AppToastMgr.shortToast(CooperateDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        toastErrorMsg(CooperateDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -270,6 +270,10 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                     tv_coop_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_red),null,null);
                     isLike = true;
                 }
+            }else if(msg.what == 4){
+                Bundle data = msg.getData();
+                String errorMsg = data.getString("errorMsg");
+                toastErrorMsg(CooperateDetailActivity.this,errorMsg);
             }
 
         }
@@ -334,7 +338,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                     intentComment.putExtra("coopId", coopId);
                     startActivity(intentComment);
                 }else{
-                    AppToastMgr.shortToast(CooperateDetailActivity.this,"请登录");
+                    toastErrorMsg(CooperateDetailActivity.this,"请登录");
                     Intent intentLogin = new Intent(CooperateDetailActivity.this,LoginActivity.class);
                     startActivity(intentLogin);
                 }
@@ -344,7 +348,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                     HttpRequest.joinCoop(coopId, userId, new Callback() {
                         @Override
                         public void onFailure(Request request, IOException e) {
-                            AppToastMgr.shortToast(CooperateDetailActivity.this, "请求失败！");
+                            toastErrorMsg(CooperateDetailActivity.this, "请求失败！");
                         }
 
                         @Override
@@ -363,7 +367,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                                             message.what = 3;//标志是哪个线程传数据
                                         } else {
                                             String errorMsg = jsonObject.getString("errorMsg");
-                                            AppToastMgr.shortToast(CooperateDetailActivity.this, "修改失败！原因：" + errorMsg);
+                                            toastErrorMsg(CooperateDetailActivity.this,errorMsg);
                                         }
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -377,7 +381,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                         }
                     });
                 }else{
-                    AppToastMgr.shortToast(CooperateDetailActivity.this,"请登录");
+                    toastErrorMsg(CooperateDetailActivity.this,"请登录");
                     Intent intentLogin = new Intent(CooperateDetailActivity.this,LoginActivity.class);
                     startActivity(intentLogin);
                 }
@@ -387,10 +391,10 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                     if (RongIM.getInstance() != null) {
                         RongIM.getInstance().startPrivateChat(CooperateDetailActivity.this, coopDetailItem.getUserId(), coopDetailItem.getNickname());
                     } else {
-                        AppToastMgr.shortToast(CooperateDetailActivity.this, "融云初始化为null");
+                        toastErrorMsg(CooperateDetailActivity.this, "融云初始化为null");
                     }
                 }else{
-                    AppToastMgr.shortToast(CooperateDetailActivity.this,"请登录");
+                    toastErrorMsg(CooperateDetailActivity.this,"请登录");
                     Intent intentLogin = new Intent(CooperateDetailActivity.this,LoginActivity.class);
                     startActivity(intentLogin);
                 }
@@ -414,7 +418,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
          */
         @Override
         public void onResult(SHARE_MEDIA platform) {
-            AppToastMgr.shortToast(CooperateDetailActivity.this,"分享成功");
+            toastErrorMsg(CooperateDetailActivity.this,"分享成功");
         }
 
         /**
@@ -424,7 +428,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
          */
         @Override
         public void onError(SHARE_MEDIA platform, Throwable t) {
-            AppToastMgr.shortToast(CooperateDetailActivity.this,"分享失败");
+            toastErrorMsg(CooperateDetailActivity.this,"分享失败");
         }
 
         /**
@@ -433,7 +437,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
          */
         @Override
         public void onCancel(SHARE_MEDIA platform) {
-            AppToastMgr.shortToast(CooperateDetailActivity.this,"取消分享");
+            toastErrorMsg(CooperateDetailActivity.this,"取消分享");
         }
     };
 }

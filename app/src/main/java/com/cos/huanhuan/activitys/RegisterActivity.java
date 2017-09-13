@@ -192,7 +192,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                     @Override
                                     public void onError(Request request, Exception e)
                                     {
-                                        AppToastMgr.shortToast(RegisterActivity.this,"请求失败！");
+                                        toastErrorMsg(RegisterActivity.this,"请求失败！");
                                     }
 
                                     @Override
@@ -213,7 +213,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                                 intentNext.putExtra("password",password);
                                                 startActivity(intentNext);
                                             }else{
-                                                AppToastMgr.shortToast(RegisterActivity.this,"请求失败！原因：" + errMsg);
+                                                toastErrorMsg(RegisterActivity.this,"请求失败！原因：" + errMsg);
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -227,13 +227,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 //                            Intent intentNext = new Intent(RegisterActivity.this,RegisterSecondActivity.class);
 //                            startActivity(intentNext);
                         } else {
-                            AppToastMgr.shortToast(RegisterActivity.this, " 手机号有误！");
+                            toastErrorMsg(RegisterActivity.this, " 手机号有误！");
                         }
                     }else{
-                        AppToastMgr.shortToast(RegisterActivity.this, " 请输入密码!");
+                        toastErrorMsg(RegisterActivity.this, " 请输入密码!");
                     }
                 }else{
-                    AppToastMgr.shortToast(RegisterActivity.this, " 请输入手机号!");
+                    toastErrorMsg(RegisterActivity.this, " 请输入手机号!");
                 }
                 break;
         }

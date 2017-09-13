@@ -64,7 +64,7 @@ public class UserAgreeActivity extends BaseActivity {
                 HttpRequest.getUserAgreeMent(isUserAgree,new StringCallback() {
                     @Override
                     public void onError(Request request, Exception e) {
-                        AppToastMgr.shortToast(UserAgreeActivity.this,"请求失败！");
+                        toastErrorMsg(UserAgreeActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -77,7 +77,7 @@ public class UserAgreeActivity extends BaseActivity {
                                 String html = jsonObject.getString("data");
                                 wv_userAgree.loadDataWithBaseURL(null,html,"text/html","utf-8",null);
                             }else{
-                                AppToastMgr.shortToast(UserAgreeActivity.this,"请求失败！原因：" + errMsg);
+                                toastErrorMsg(UserAgreeActivity.this,"请求失败！原因：" + errMsg);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

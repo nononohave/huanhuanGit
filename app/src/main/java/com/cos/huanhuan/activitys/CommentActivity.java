@@ -124,7 +124,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     HttpRequest.getCommentList(commentDto, new StringCallback() {
                         @Override
                         public void onError(Request request, Exception e) {
-                            AppToastMgr.shortToast(CommentActivity.this,"请求失败！");
+                            toastErrorMsg(CommentActivity.this,"请求失败！");
                         }
 
                         @Override
@@ -143,7 +143,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                     }
                                     commentAdapter.notifyDataSetChanged();
                                 }else{
-                                    AppToastMgr.shortToast(CommentActivity.this, " 请求失败！原因：" + errorMsg);
+                                    toastErrorMsg(CommentActivity.this, " 请求失败！原因：" + errorMsg);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -187,7 +187,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         HttpRequest.getCommentList(commentDto, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(CommentActivity.this,"请求失败！");
+                toastErrorMsg(CommentActivity.this,"请求失败！");
             }
 
             @Override
@@ -208,7 +208,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                         commentAdapter.notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
                     }else{
-                        AppToastMgr.shortToast(CommentActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        toastErrorMsg(CommentActivity.this, " 接口调用失败！原因：" + errorMsg);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 } catch (JSONException e) {
@@ -231,7 +231,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 HttpRequest.publishCoopComment(coopId, userId, commentMessage, parentId, new StringCallback() {
                     @Override
                     public void onError(Request request, Exception e) {
-                        AppToastMgr.shortToast(CommentActivity.this,"请求失败！");
+                        toastErrorMsg(CommentActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -247,7 +247,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 parentId = -1;
                                 recyclerview.smoothScrollToPosition(0);
                             }else{
-                                AppToastMgr.shortToast(CommentActivity.this, " 评论失败！原因：" + errorMsg);
+                                toastErrorMsg(CommentActivity.this,errorMsg);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

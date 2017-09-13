@@ -77,7 +77,7 @@ public class PersonVIPActivity extends BaseActivity implements View.OnClickListe
         HttpRequest.getMembers(userId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(PersonVIPActivity.this,"请求失败！");
+                toastErrorMsg(PersonVIPActivity.this,"请求失败！");
             }
 
             @Override
@@ -99,7 +99,7 @@ public class PersonVIPActivity extends BaseActivity implements View.OnClickListe
                             vip_time.setText("已过期或未充值");
                         }
                     }else{
-                        AppToastMgr.shortToast(PersonVIPActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        toastErrorMsg(PersonVIPActivity.this, " 接口调用失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -136,7 +136,7 @@ public class PersonVIPActivity extends BaseActivity implements View.OnClickListe
                     payDetailFragment.setArguments(args);
                     payDetailFragment.show(getSupportFragmentManager(),"payDetailFragment");
                 }else{
-                    AppToastMgr.shortToast(PersonVIPActivity.this,"请选择充值金额");
+                    toastErrorMsg(PersonVIPActivity.this,"请选择充值金额");
                 }
                 break;
         }

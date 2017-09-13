@@ -146,7 +146,7 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                             HttpRequest.register(phonePre, "phone", password, verifyText, new StringCallback() {
                                 @Override
                                 public void onError(Request request, Exception e) {
-                                    AppToastMgr.shortToast(RegisterSecondActivity.this,"请求失败！");
+                                   toastErrorMsg(RegisterSecondActivity.this,"请求失败！");
                                     dialogLoading.dismiss();
                                 }
 
@@ -158,14 +158,14 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                                         Boolean success = jsonObject.getBoolean("success");
                                         if(success){
                                             dialogLoading.dismiss();
-                                            AppToastMgr.shortToast(RegisterSecondActivity.this,"注册成功！");
+                                           toastErrorMsg(RegisterSecondActivity.this,"注册成功！");
                                             Intent intent = new Intent(RegisterSecondActivity.this,LoginActivity.class);
                                             startActivity(intent);
                                             AppACache appACache = AppACache.get(RegisterSecondActivity.this);
                                             appACache.put("phone",phonePre);
                                         }else{
                                             String errorMsg = jsonObject.getString("errorMsg");
-                                            AppToastMgr.shortToast(RegisterSecondActivity.this,"注册失败！原因：" + errorMsg);
+                                           toastErrorMsg(RegisterSecondActivity.this,"注册失败！原因：" + errorMsg);
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -176,10 +176,10 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                             e.printStackTrace();
                         }
                     }else{
-                        AppToastMgr.shortToast(RegisterSecondActivity.this,"验证码有误");
+                       toastErrorMsg(RegisterSecondActivity.this,"验证码有误");
                     }
                 }else{
-                    AppToastMgr.shortToast(RegisterSecondActivity.this,"请输入验证码");
+                   toastErrorMsg(RegisterSecondActivity.this,"请输入验证码");
                 }
                 break;
         }

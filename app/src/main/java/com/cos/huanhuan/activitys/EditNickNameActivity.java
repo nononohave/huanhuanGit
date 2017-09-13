@@ -67,7 +67,7 @@ public class EditNickNameActivity extends BaseActivity implements View.OnClickLi
                 HttpRequest.changePersonData(personData, new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(EditNickNameActivity.this,"请求失败！");
+                        toastErrorMsg(EditNickNameActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -79,10 +79,10 @@ public class EditNickNameActivity extends BaseActivity implements View.OnClickLi
                             Boolean success = jsonObject.getBoolean("success");
                             if(success){
                                 appManager.finishActivity();
-                                AppToastMgr.shortToast(EditNickNameActivity.this,"保存成功！");
+                                toastErrorMsg(EditNickNameActivity.this,"保存成功！");
                             }else{
                                 String errorMsg = jsonObject.getString("errorMsg");
-                                AppToastMgr.shortToast(EditNickNameActivity.this,"修改失败！原因：" + errorMsg);
+                                toastErrorMsg(EditNickNameActivity.this, errorMsg);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();

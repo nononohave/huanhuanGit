@@ -126,7 +126,7 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
         HttpRequest.getMembers(userId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(PersonalDataActivity.this,"请求失败！");
+                toastErrorMsg(PersonalDataActivity.this,"请求失败！");
             }
 
             @Override
@@ -156,7 +156,7 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
                         tv_person_data_sex.setText(userValueDataItem.getGender());
                         userValueData = userValueDataItem;
                     }else{
-                        AppToastMgr.shortToast(PersonalDataActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        toastErrorMsg(PersonalDataActivity.this, " 接口调用失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -267,7 +267,7 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
         HttpRequest.changePersonData(personData, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                AppToastMgr.shortToast(PersonalDataActivity.this,"请求失败！");
+                toastErrorMsg(PersonalDataActivity.this,"请求失败！");
             }
 
             @Override
@@ -283,10 +283,10 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
                             JSONObject jsonObject = new JSONObject(str1);
                             Boolean success = jsonObject.getBoolean("success");
                             if(success){
-                                //AppToastMgr.shortToast(PersonalDataActivity.this,"修改成功！");
+                                toastErrorMsg(PersonalDataActivity.this,"修改成功！");
                             }else{
                                 String errorMsg = jsonObject.getString("errorMsg");
-                                //AppToastMgr.shortToast(PersonalDataActivity.this,"修改失败！原因：" + errorMsg);
+                                toastErrorMsg(PersonalDataActivity.this,errorMsg);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -463,7 +463,7 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
                 if(success){
                     Picasso.with(PersonalDataActivity.this).load(new File(imagePaths.get(0))).placeholder(R.mipmap.comment_grey).into(person_data_headImage);
                 }else{
-                    AppToastMgr.shortToast(PersonalDataActivity.this, " 头像上传失败！原因：" + errorMsg);
+                    toastErrorMsg(PersonalDataActivity.this, " 头像上传失败！原因：" + errorMsg);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -475,7 +475,7 @@ public class PersonalDataActivity extends BaseActivity implements View.OnClickLi
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            AppToastMgr.shortToast(PersonalDataActivity.this, " 头像上传接口调用失败！");
+            toastErrorMsg(PersonalDataActivity.this, " 头像上传接口调用失败！");
             if (error != null) {
                 if (error.networkResponse != null)
                     Log.i("3", " error "

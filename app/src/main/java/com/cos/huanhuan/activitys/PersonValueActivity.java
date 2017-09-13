@@ -61,7 +61,7 @@ public class PersonValueActivity extends BaseActivity implements View.OnClickLis
         HttpRequest.getMembers(userId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(PersonValueActivity.this,"请求失败！");
+                toastErrorMsg(PersonValueActivity.this,"请求失败！");
             }
 
             @Override
@@ -75,7 +75,7 @@ public class PersonValueActivity extends BaseActivity implements View.OnClickLis
                         UserValueData userValueData = JsonUtils.fromJson(obj.toString(), UserValueData.class);
                         tv_person_values.setText(String.valueOf(userValueData.getShenJia()));
                     }else{
-                        AppToastMgr.shortToast(PersonValueActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        toastErrorMsg(PersonValueActivity.this, " 接口调用失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -141,7 +141,7 @@ public class PersonValueActivity extends BaseActivity implements View.OnClickLis
                     payDetailFragment.setArguments(args);
                     payDetailFragment.show(getSupportFragmentManager(), "payDetailFragment");
                 }else{
-                    AppToastMgr.shortToast(PersonValueActivity.this,"请选择充值金额");
+                    toastErrorMsg(PersonValueActivity.this,"请选择充值金额");
                 }
                 break;
         }

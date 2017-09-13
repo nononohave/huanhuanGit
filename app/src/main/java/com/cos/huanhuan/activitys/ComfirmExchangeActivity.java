@@ -126,7 +126,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
             HttpRequest.getConfirmDetail(exchangeId,userId, examine,new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
-                    AppToastMgr.shortToast(ComfirmExchangeActivity.this,"请求失败！");
+                   toastErrorMsg(ComfirmExchangeActivity.this,"请求失败！");
                 }
 
                 @Override
@@ -141,7 +141,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                             confirmDetailItem = confirmDetail;
                             setData(confirmDetail);
                         }else{
-                            AppToastMgr.shortToast(ComfirmExchangeActivity.this, " 请求失败！原因：" + errorMsg);
+                           toastErrorMsg(ComfirmExchangeActivity.this, " 请求失败！原因：" + errorMsg);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -153,7 +153,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
             HttpRequest.getConfirmDetail(exchangeId,userId, examine,new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
-                    AppToastMgr.shortToast(ComfirmExchangeActivity.this,"请求失败！");
+                   toastErrorMsg(ComfirmExchangeActivity.this,"请求失败！");
                 }
 
                 @Override
@@ -168,7 +168,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                             confirmDetailItem = confirmDetail;
                             setData(confirmDetail);
                         }else{
-                            AppToastMgr.shortToast(ComfirmExchangeActivity.this, " 请求失败！原因：" + errorMsg);
+                           toastErrorMsg(ComfirmExchangeActivity.this, " 请求失败！原因：" + errorMsg);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -180,7 +180,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                 HttpRequest.getConfirmDetail(exchangeId,userId, examine,new StringCallback() {
                     @Override
                     public void onError(Request request, Exception e) {
-                        AppToastMgr.shortToast(ComfirmExchangeActivity.this,"请求失败！");
+                       toastErrorMsg(ComfirmExchangeActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -195,7 +195,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                                 confirmDetailItem = confirmDetail;
                                 setData(confirmDetail);
                             }else{
-                                AppToastMgr.shortToast(ComfirmExchangeActivity.this, " 请求失败！原因：" + errorMsg);
+                               toastErrorMsg(ComfirmExchangeActivity.this, " 请求失败！原因：" + errorMsg);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -228,7 +228,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                                     if(userValueData.getSurplus() > 0){
                                         initData(2);
                                     }else{
-                                        AppToastMgr.shortToast(ComfirmExchangeActivity.this,"没有会员次数");
+                                       toastErrorMsg(ComfirmExchangeActivity.this,"没有会员次数");
                                     }
                                     break;
                                 default:

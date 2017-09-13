@@ -135,10 +135,10 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
                         intent.putExtra("phone",intentPhone);
                         startActivity(intent);
                     }else{
-                        AppToastMgr.shortToast(ResetActivitySecond.this, " 验证码有误！");
+                        toastErrorMsg(ResetActivitySecond.this, " 验证码有误！");
                     }
                 }else{
-                    AppToastMgr.shortToast(ResetActivitySecond.this, " 请输入验证码！");
+                    toastErrorMsg(ResetActivitySecond.this, " 请输入验证码！");
                 }
                 break;
         }

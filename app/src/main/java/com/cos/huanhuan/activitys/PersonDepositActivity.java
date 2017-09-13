@@ -64,7 +64,7 @@ public class PersonDepositActivity extends BaseActivity implements View.OnClickL
         HttpRequest.getMembers(userId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(PersonDepositActivity.this,"请求失败！");
+                toastErrorMsg(PersonDepositActivity.this,"请求失败！");
             }
 
             @Override
@@ -83,7 +83,7 @@ public class PersonDepositActivity extends BaseActivity implements View.OnClickL
                         }
                         person_deposit.setText(userValueItem.getDeposit() + "元");
                     }else{
-                        AppToastMgr.shortToast(PersonDepositActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        toastErrorMsg(PersonDepositActivity.this, " 接口调用失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -103,7 +103,7 @@ public class PersonDepositActivity extends BaseActivity implements View.OnClickL
                         HttpRequest.returnDeposit(userInfo, new StringCallback() {
                             @Override
                             public void onError(Request request, Exception e) {
-                                AppToastMgr.shortToast(PersonDepositActivity.this, "请求失败！");
+                                toastErrorMsg(PersonDepositActivity.this, "请求失败！");
                             }
 
                             @Override
@@ -116,7 +116,7 @@ public class PersonDepositActivity extends BaseActivity implements View.OnClickL
                                         AppToastMgr.longToast(PersonDepositActivity.this, "已提交退还处理，请等待后台审核");
                                         initData();
                                     } else {
-                                        AppToastMgr.shortToast(PersonDepositActivity.this, " 接口调用失败！原因：" + errorMsg);
+                                        toastErrorMsg(PersonDepositActivity.this, " 接口调用失败！原因：" + errorMsg);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -124,10 +124,10 @@ public class PersonDepositActivity extends BaseActivity implements View.OnClickL
                             }
                         });
                     } else {
-                        AppToastMgr.shortToast(PersonDepositActivity.this, "您没有押金可退还");
+                        toastErrorMsg(PersonDepositActivity.this, "您没有押金可退还");
                     }
                 }else{
-                    AppToastMgr.shortToast(PersonDepositActivity.this, "您已提交退还押金处理，请等待后台审核");
+                    toastErrorMsg(PersonDepositActivity.this, "您已提交退还押金处理，请等待后台审核");
                 }
             break;
         }

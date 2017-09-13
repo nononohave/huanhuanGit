@@ -2,6 +2,7 @@ package com.cos.huanhuan.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
+import com.cos.huanhuan.activitys.BaseActivity;
 import com.cos.huanhuan.activitys.CooperateDetailActivity;
 import com.cos.huanhuan.model.Comment;
 import com.cos.huanhuan.utils.AppStringUtils;
@@ -126,7 +128,12 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         HttpRequest.goodComments(String.valueOf(listComments.get(position).getId()), String.valueOf(userId), new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                AppToastMgr.shortToast(context,"请求失败！");
+                Message message = new Message();
+                Bundle data = new Bundle();
+                data.putString("errorMsg","请求失败");
+                message.setData(data);
+                handler.sendMessage(message);//发送message信息
+                message.what = 3;//标志是哪个线程传数据
             }
 
             @Override
@@ -154,7 +161,12 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 message.what=1;//标志是哪个线程传数据
                             }else{
                                 String errorMsg = jsonObject.getString("errorMsg");
-                                AppToastMgr.shortToast(context,"修改失败！原因：" + errorMsg);
+                                Message message = new Message();
+                                Bundle data = new Bundle();
+                                data.putString("errorMsg",errorMsg);
+                                message.setData(data);
+                                handler.sendMessage(message);//发送message信息
+                                message.what = 3;//标志是哪个线程传数据
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -215,6 +227,10 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 CommentAdapter.this.notifyDataSetChanged();
             }else if(msg.what == 2){
                 AppToastMgr.shortToast(context,"您已经点过赞了！" );
+            }else if(msg.what == 3){
+                Bundle data = msg.getData();
+                String errorMsg = data.getString("errorMsg");
+                AppToastMgr.shortToast(context, errorMsg);
             }
         }
     }

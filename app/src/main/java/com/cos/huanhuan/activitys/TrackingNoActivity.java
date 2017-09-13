@@ -67,7 +67,7 @@ public class TrackingNoActivity extends BaseActivity implements View.OnClickList
             HttpRequest.commitTrackingNo(exchangeId, tracking, new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
-                    AppToastMgr.shortToast(TrackingNoActivity.this, "请求失败！");
+                    toastErrorMsg(TrackingNoActivity.this, "请求失败！");
                 }
 
                 @Override
@@ -86,7 +86,7 @@ public class TrackingNoActivity extends BaseActivity implements View.OnClickList
                                     appManager.finishActivity();
                                 }else{
                                     String errorMsg = jsonObject.getString("errorMsg");
-                                    AppToastMgr.shortToast(TrackingNoActivity.this,"修改失败！原因：" + errorMsg);
+                                    toastErrorMsg(TrackingNoActivity.this,errorMsg);
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();

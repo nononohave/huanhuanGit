@@ -191,7 +191,7 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
                             HttpRequest.changeBindPhone(bindPhone, new Callback() {
                                 @Override
                                 public void onFailure(Request request, IOException e) {
-                                    AppToastMgr.shortToast(BindPhoneActivity.this, "请求失败！");
+                                    toastErrorMsg(BindPhoneActivity.this, "请求失败！");
                                 }
 
                                 @Override
@@ -204,12 +204,12 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
                                                 JSONObject jsonObject = new JSONObject(str1);
                                                 Boolean success = jsonObject.getBoolean("success");
                                                 if (success) {
-                                                    AppToastMgr.shortToast(BindPhoneActivity.this, "修改成功！");
+                                                    toastErrorMsg(BindPhoneActivity.this,"修改成功！");
                                                     appManager.finishActivity(ExchangePhoneOrAlipayActivity.exchangeInstance);
                                                     appManager.finishActivity();
                                                 } else {
                                                     String errorMsg = jsonObject.getString("errorMsg");
-                                                    AppToastMgr.shortToast(BindPhoneActivity.this, "修改失败！原因：" + errorMsg);
+                                                    toastErrorMsg(BindPhoneActivity.this,errorMsg);
                                                 }
                                             } catch (IOException e) {
                                                 e.printStackTrace();
@@ -221,13 +221,13 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
                                 }
                             });
                         }else{
-                            AppToastMgr.shortToast(BindPhoneActivity.this,"请输入验证码");
+                            toastErrorMsg(BindPhoneActivity.this,"请输入验证码");
                         }
                     }else{
-                        AppToastMgr.shortToast(BindPhoneActivity.this,"手机号码有误");
+                        toastErrorMsg(BindPhoneActivity.this,"手机号码有误");
                     }
                 }else{
-                    AppToastMgr.shortToast(BindPhoneActivity.this,"请输入手机号");
+                    toastErrorMsg(BindPhoneActivity.this,"请输入手机号");
                 }
                 break;
             case R.id.ll_clearPhone:
@@ -245,7 +245,7 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
                                 @Override
                                 public void onError(Request request, Exception e)
                                 {
-                                    AppToastMgr.shortToast(BindPhoneActivity.this,"请求失败！");
+                                    toastErrorMsg(BindPhoneActivity.this,"请求失败！");
                                 }
 
                                 @Override
@@ -260,12 +260,12 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
                                             timer.schedule(timerTask, 0, 1000);
                                             tv_bind_getCode.setEnabled(false);
                                             et_bind_code.requestFocus();
-                                            AppToastMgr.shortToast(BindPhoneActivity.this,"已发送验证码至手机号");
+                                            toastErrorMsg(BindPhoneActivity.this,"已发送验证码至手机号");
 //                                            JSONObject returnObj = jsonObject.getJSONObject("data");
 //                                            String returnVerifyCode = returnObj.getString("verifyCode");
 //                                            String returnPhone = returnObj.getString("phone");
                                         }else{
-                                            AppToastMgr.shortToast(BindPhoneActivity.this,"请求失败！原因：" + errMsg);
+                                            toastErrorMsg(BindPhoneActivity.this,"请求失败！原因：" + errMsg);
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -277,10 +277,10 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
                             e.printStackTrace();
                         }
                     }else{
-                        AppToastMgr.shortToast(BindPhoneActivity.this,"手机号码有误");
+                        toastErrorMsg(BindPhoneActivity.this,"手机号码有误");
                     }
                 }else{
-                    AppToastMgr.shortToast(BindPhoneActivity.this,"请输入手机号");
+                    toastErrorMsg(BindPhoneActivity.this,"请输入手机号");
                 }
                 break;
         }

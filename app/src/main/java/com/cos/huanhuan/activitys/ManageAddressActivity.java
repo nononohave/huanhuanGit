@@ -117,7 +117,7 @@ public class ManageAddressActivity extends BaseActivity{
                 HttpRequest.setDefaultAddress(String.valueOf(listAddress.get(position).getId()), new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(ManageAddressActivity.this,"请求失败！");
+                        toastErrorMsg(ManageAddressActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -138,7 +138,7 @@ public class ManageAddressActivity extends BaseActivity{
                                         message.what=1;//标志是哪个线程传数据
                                     }else{
                                         String errorMsg = jsonObject.getString("errorMsg");
-                                        AppToastMgr.shortToast(ManageAddressActivity.this,"修改失败！原因：" + errorMsg);
+                                        toastErrorMsg(ManageAddressActivity.this, errorMsg);
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -191,7 +191,7 @@ public class ManageAddressActivity extends BaseActivity{
         HttpRequest.deleteAddress(String.valueOf(listAddress.get(position).getId()), new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                AppToastMgr.shortToast(ManageAddressActivity.this, "请求失败！");
+                toastErrorMsg(ManageAddressActivity.this, "请求失败！");
             }
 
             @Override
@@ -212,7 +212,7 @@ public class ManageAddressActivity extends BaseActivity{
                                 message.what = 2;//标志是哪个线程传数据
                             } else {
                                 String errorMsg = jsonObject.getString("errorMsg");
-                                AppToastMgr.shortToast(ManageAddressActivity.this, "修改失败！原因：" + errorMsg);
+                                toastErrorMsg(ManageAddressActivity.this,errorMsg);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -228,7 +228,7 @@ public class ManageAddressActivity extends BaseActivity{
         HttpRequest.getMembersAddress(userId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(ManageAddressActivity.this,"请求失败！");
+                toastErrorMsg(ManageAddressActivity.this,"请求失败！");
             }
 
             @Override
@@ -247,7 +247,7 @@ public class ManageAddressActivity extends BaseActivity{
                         }
                         addressAdapter.notifyDataSetChanged();
                     }else{
-                        AppToastMgr.shortToast(ManageAddressActivity.this, " 登录失败！原因：" + errorMsg);
+                        toastErrorMsg(ManageAddressActivity.this, " 登录失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

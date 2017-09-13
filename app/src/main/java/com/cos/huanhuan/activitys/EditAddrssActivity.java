@@ -141,7 +141,7 @@ public class EditAddrssActivity extends BaseActivity implements View.OnClickList
                     addressOptionsPick.setPicker(options1Items, options2Items, options3Items);//添加数据源
                     addressOptionsPick.show();
                 }else{
-                    AppToastMgr.shortToast(EditAddrssActivity.this,"未获取到地址信息");
+                    toastErrorMsg(EditAddrssActivity.this,"未获取到地址信息");
                 }
                 break;
         }
@@ -226,19 +226,19 @@ public class EditAddrssActivity extends BaseActivity implements View.OnClickList
         String address = et_detail_address.getText().toString();
 
         if(AppStringUtils.isEmpty(consignee)){
-            AppToastMgr.shortToast(EditAddrssActivity.this,"请输入收件人姓名");
+            toastErrorMsg(EditAddrssActivity.this,"请输入收件人姓名");
             return;
         }
         if(AppStringUtils.isEmpty(phone)){
-            AppToastMgr.shortToast(EditAddrssActivity.this,"请输入收件人手机号");
+            toastErrorMsg(EditAddrssActivity.this,"请输入收件人手机号");
             return;
         }
         if(AppStringUtils.isEmpty(provice) && AppStringUtils.isEmpty(city) && AppStringUtils.isEmpty(district)){
-            AppToastMgr.shortToast(EditAddrssActivity.this,"请选择省市区");
+            toastErrorMsg(EditAddrssActivity.this,"请选择省市区");
             return;
         }
         if(AppStringUtils.isEmpty(address)){
-            AppToastMgr.shortToast(EditAddrssActivity.this,"请输入详细地址");
+            toastErrorMsg(EditAddrssActivity.this,"请输入详细地址");
             return;
         }
         AddressVO addressDTO = new AddressVO();
@@ -254,7 +254,7 @@ public class EditAddrssActivity extends BaseActivity implements View.OnClickList
         HttpRequest.editAddress(addressDTO, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                AppToastMgr.shortToast(EditAddrssActivity.this,"请求失败！");
+                toastErrorMsg(EditAddrssActivity.this,"请求失败！");
             }
 
             @Override
@@ -267,11 +267,11 @@ public class EditAddrssActivity extends BaseActivity implements View.OnClickList
                             JSONObject jsonObject = new JSONObject(str1);
                             Boolean success = jsonObject.getBoolean("success");
                             if (success) {
-                                AppToastMgr.shortToast(EditAddrssActivity.this, "修改成功" );
+                                toastErrorMsg(EditAddrssActivity.this,"修改成功");
                                 appManager.finishActivity(EditAddrssActivity.this);
                             } else {
                                 String errorMsg = jsonObject.getString("errorMsg");
-                                AppToastMgr.shortToast(EditAddrssActivity.this, "修改失败！原因：" + errorMsg);
+                                toastErrorMsg(EditAddrssActivity.this,errorMsg);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();

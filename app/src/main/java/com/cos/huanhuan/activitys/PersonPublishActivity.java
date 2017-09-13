@@ -121,12 +121,12 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                //AppToastMgr.shortToast(getActivity(),"未选中的"+tab.getText());
+                //toastErrorMsg(getActivity(),"未选中的"+tab.getText());
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                //AppToastMgr.shortToast(getActivity(),"复选中的"+tab.getText() + tab.getPosition());
+                //toastErrorMsg(getActivity(),"复选中的"+tab.getText() + tab.getPosition());
             }
         });
 
@@ -153,7 +153,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                         HttpRequest.getPersonExchange(userId, String.valueOf(pageIndex), String.valueOf(pageSize), new StringCallback() {
                             @Override
                             public void onError(Request request, Exception e) {
-                                AppToastMgr.shortToast(PersonPublishActivity.this, "请求失败！");
+                                toastErrorMsg(PersonPublishActivity.this, "请求失败！");
                             }
 
                             @Override
@@ -171,7 +171,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                                         }
                                         adapterExchange.notifyDataSetChanged();
                                     } else {
-                                        AppToastMgr.shortToast(PersonPublishActivity.this, " 请求失败！原因：" + errorMsg);
+                                        toastErrorMsg(PersonPublishActivity.this, " 请求失败！原因：" + errorMsg);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -185,7 +185,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                         HttpRequest.getPersonCoop(userId, String.valueOf(pageIndexCoop), String.valueOf(pageSize), new StringCallback() {
                             @Override
                             public void onError(Request request, Exception e) {
-                                AppToastMgr.shortToast(PersonPublishActivity.this, "请求失败！");
+                                toastErrorMsg(PersonPublishActivity.this, "请求失败！");
                             }
 
                             @Override
@@ -203,7 +203,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                                         }
                                         adapterCoop.notifyDataSetChanged();
                                     } else {
-                                        AppToastMgr.shortToast(PersonPublishActivity.this, " 请求失败！原因：" + errorMsg);
+                                        toastErrorMsg(PersonPublishActivity.this, " 请求失败！原因：" + errorMsg);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -252,7 +252,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                 HttpRequest.refuseOrAgreeCoop(String.valueOf(listPublish.get(position).getId()), "同意", new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(PersonPublishActivity.this,"请求失败！");
+                        toastErrorMsg(PersonPublishActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -271,7 +271,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                                         startActivityForResult(intentTracking,111);
                                     }else{
                                         String errorMsg = jsonObject.getString("errorMsg");
-                                        AppToastMgr.shortToast(PersonPublishActivity.this,"修改失败！原因：" + errorMsg);
+                                        toastErrorMsg(PersonPublishActivity.this,errorMsg);
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -302,7 +302,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                 HttpRequest.refuseOrAgreeCoop(String.valueOf(listPublish.get(position).getId()), "拒绝", new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(PersonPublishActivity.this,"请求失败！");
+                        toastErrorMsg(PersonPublishActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -325,7 +325,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
 //                                        message.what=2;//标志是哪个线程传数据
                                     }else{
                                         String errorMsg = jsonObject.getString("errorMsg");
-                                        AppToastMgr.shortToast(PersonPublishActivity.this,"修改失败！原因：" + errorMsg);
+                                        toastErrorMsg(PersonPublishActivity.this,errorMsg);
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -364,7 +364,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
         HttpRequest.deleteExchange(String.valueOf(listPublish.get(position).getId()), new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                AppToastMgr.shortToast(PersonPublishActivity.this,"请求失败！");
+                toastErrorMsg(PersonPublishActivity.this,"请求失败！");
             }
 
             @Override
@@ -386,7 +386,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                                 message.what=1;//标志是哪个线程传数据
                             }else{
                                 String errorMsg = jsonObject.getString("errorMsg");
-                                AppToastMgr.shortToast(PersonPublishActivity.this,"修改失败！原因：" + errorMsg);
+                                toastErrorMsg(PersonPublishActivity.this,errorMsg);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -407,7 +407,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
             HttpRequest.getPersonExchange(userId, String.valueOf(pageIndex), String.valueOf(pageSize), new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
-                    AppToastMgr.shortToast(PersonPublishActivity.this, "请求失败！");
+                    toastErrorMsg(PersonPublishActivity.this, "请求失败！");
                 }
 
                 @Override
@@ -433,7 +433,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                             }
                             swipeRefreshLayout.setRefreshing(false);
                         } else {
-                            AppToastMgr.shortToast(PersonPublishActivity.this, " 请求失败！原因：" + errorMsg);
+                            toastErrorMsg(PersonPublishActivity.this, " 请求失败！原因：" + errorMsg);
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     } catch (JSONException e) {
@@ -446,7 +446,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
             HttpRequest.getPersonCoop(userId, String.valueOf(pageIndexCoop), String.valueOf(pageSize), new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
-                    AppToastMgr.shortToast(PersonPublishActivity.this, "请求失败！");
+                    toastErrorMsg(PersonPublishActivity.this, "请求失败！");
                 }
 
                 @Override
@@ -472,7 +472,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
                             }
                             swipeRefreshLayout.setRefreshing(false);
                         } else {
-                            AppToastMgr.shortToast(PersonPublishActivity.this, " 请求失败！原因：" + errorMsg);
+                            toastErrorMsg(PersonPublishActivity.this, " 请求失败！原因：" + errorMsg);
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     } catch (JSONException e) {

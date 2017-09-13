@@ -165,7 +165,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
 //        TimePickerView pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
 //            @Override
 //            public void onTimeSelect(Date date, View v) {//选中事件回调
-//                AppToastMgr.shortToast(AllExchangeActivity.this,date.toString());
+//                toastErrorMsg(AllExchangeActivity.this,date.toString());
 //            }
 //        })
 //        .setType(new boolean[]{true, true, true, true, true, false})
@@ -187,7 +187,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
         HttpRequest.getExchangeStatus(new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(AllExchangeActivity.this,"获取状态请求失败！");
+                toastErrorMsg(AllExchangeActivity.this,"获取状态请求失败！");
             }
 
             @Override
@@ -212,7 +212,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
                         }
                         adapter.notifyDataSetChanged();
                     }else{
-                        AppToastMgr.shortToast(AllExchangeActivity.this,"无数据！");
+                        toastErrorMsg(AllExchangeActivity.this,"无数据！");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -254,7 +254,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
                     HttpRequest.getExchangeList(exChange, new StringCallback() {
                         @Override
                         public void onError(Request request, Exception e) {
-                            AppToastMgr.shortToast(AllExchangeActivity.this,"请求失败！");
+                            toastErrorMsg(AllExchangeActivity.this,"请求失败！");
                         }
 
                         @Override
@@ -284,7 +284,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
                                     }
                                     cardGridAdapter.notifyDataSetChanged();
                                 }else{
-                                    AppToastMgr.shortToast(AllExchangeActivity.this, " 请求失败！原因：" + errorMsg);
+                                    toastErrorMsg(AllExchangeActivity.this, " 请求失败！原因：" + errorMsg);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -314,7 +314,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
         HttpRequest.getExchangeList(exChange, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(AllExchangeActivity.this,"请求失败！");
+                toastErrorMsg(AllExchangeActivity.this,"请求失败！");
             }
 
             @Override
@@ -346,7 +346,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
                         cardGridAdapter.notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
                     }else{
-                        AppToastMgr.shortToast(AllExchangeActivity.this, " 请求失败！原因：" + errorMsg);
+                        toastErrorMsg(AllExchangeActivity.this, " 请求失败！原因：" + errorMsg);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 } catch (JSONException e) {

@@ -67,7 +67,7 @@ public class EditPersonDataActivity extends BaseActivity {
                 HttpRequest.changePersonData(personData, new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
-                        AppToastMgr.shortToast(EditPersonDataActivity.this,"请求失败！");
+                        toastErrorMsg(EditPersonDataActivity.this,"请求失败！");
                     }
 
                     @Override
@@ -77,11 +77,11 @@ public class EditPersonDataActivity extends BaseActivity {
                             JSONObject jsonObject = new JSONObject(str1);
                             Boolean success = jsonObject.getBoolean("success");
                             if(success){
-                                //AppToastMgr.shortToast(EditPersonDataActivity.this,"保存成功！");
+                                toastErrorMsg(EditPersonDataActivity.this,"保存成功！");
                                 appManager.finishActivity();
                             }else{
                                 String errorMsg = jsonObject.getString("errorMsg");
-                                //AppToastMgr.shortToast(EditPersonDataActivity.this,"修改失败！原因：" + errorMsg);
+                                toastErrorMsg(EditPersonDataActivity.this,errorMsg);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();

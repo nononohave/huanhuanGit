@@ -98,7 +98,7 @@ public class MyExchangeActivity extends BaseActivity {
                     HttpRequest.getPersonExchange(userId, String.valueOf(pageIndex), String.valueOf(pageSize), new StringCallback() {
                         @Override
                         public void onError(Request request, Exception e) {
-                            AppToastMgr.shortToast(MyExchangeActivity.this, "请求失败！");
+                            toastErrorMsg(MyExchangeActivity.this, "请求失败！");
                         }
 
                         @Override
@@ -116,7 +116,7 @@ public class MyExchangeActivity extends BaseActivity {
                                     }
                                     adapterMyExchange.notifyDataSetChanged();
                                 } else {
-                                    AppToastMgr.shortToast(MyExchangeActivity.this, " 请求失败！原因：" + errorMsg);
+                                    toastErrorMsg(MyExchangeActivity.this, " 请求失败！原因：" + errorMsg);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -150,7 +150,7 @@ public class MyExchangeActivity extends BaseActivity {
         HttpRequest.getMyExchanges(userId, String.valueOf(pageIndex), String.valueOf(pageSize), new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(MyExchangeActivity.this, "请求失败！");
+                toastErrorMsg(MyExchangeActivity.this, "请求失败！");
             }
 
             @Override
@@ -174,7 +174,7 @@ public class MyExchangeActivity extends BaseActivity {
                         }
                         swipeRefreshLayout.setRefreshing(false);
                     } else {
-                        AppToastMgr.shortToast(MyExchangeActivity.this, " 请求失败！原因：" + errorMsg);
+                        toastErrorMsg(MyExchangeActivity.this, " 请求失败！原因：" + errorMsg);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 } catch (JSONException e) {

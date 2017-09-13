@@ -162,7 +162,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
             HttpRequest.getExchangeDetail(exchangeId, userId, new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
-                    AppToastMgr.shortToast(ExchangeDetailActivity.this, "请求失败！");
+                    toastErrorMsg(ExchangeDetailActivity.this, "请求失败！");
                 }
 
                 @Override
@@ -176,7 +176,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                             ExchangeDetail exchangeDetail = JsonUtils.fromJson(obj.toString(), ExchangeDetail.class);
                             setData(exchangeDetail);
                         } else {
-                            AppToastMgr.shortToast(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
+                            toastErrorMsg(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -186,7 +186,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
             HttpRequest.getMembers(userId, new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
-                    AppToastMgr.shortToast(ExchangeDetailActivity.this,"请求失败！");
+                    toastErrorMsg(ExchangeDetailActivity.this,"请求失败！");
                 }
 
                 @Override
@@ -199,7 +199,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                             JSONObject obj =jsonObject.getJSONObject("data");
                             userValueData = JsonUtils.fromJson(obj.toString(), UserValueData.class);
                         }else{
-                            AppToastMgr.shortToast(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
+                            toastErrorMsg(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -210,7 +210,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
             HttpRequest.getExchangeDetail(exchangeId, "", new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
-                    AppToastMgr.shortToast(ExchangeDetailActivity.this, "请求失败！");
+                    toastErrorMsg(ExchangeDetailActivity.this, "请求失败！");
                 }
 
                 @Override
@@ -224,7 +224,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                             ExchangeDetail exchangeDetail = JsonUtils.fromJson(obj.toString(), ExchangeDetail.class);
                             setData(exchangeDetail);
                         } else {
-                            AppToastMgr.shortToast(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
+                            toastErrorMsg(ExchangeDetailActivity.this, " 接口调用失败！原因：" + errorMsg);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -376,7 +376,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                     intentComment.putExtra("exchangeId", exchangeId);
                     startActivity(intentComment);
                 }else{
-                    AppToastMgr.shortToast(ExchangeDetailActivity.this,"未登录");
+                    toastErrorMsg(ExchangeDetailActivity.this,"未登录");
                     Intent intentLogin = new Intent(ExchangeDetailActivity.this,LoginActivity.class);
                     startActivity(intentLogin);
                 }
@@ -386,7 +386,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                     HttpRequest.attentionExchange(exchangeId, userId, new Callback() {
                         @Override
                         public void onFailure(Request request, IOException e) {
-                            AppToastMgr.shortToast(ExchangeDetailActivity.this, "请求失败！");
+                            toastErrorMsg(ExchangeDetailActivity.this, "请求失败！");
                         }
 
                         @Override
@@ -405,7 +405,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                                             message.what = 3;//标志是哪个线程传数据
                                         } else {
                                             String errorMsg = jsonObject.getString("errorMsg");
-                                            AppToastMgr.shortToast(ExchangeDetailActivity.this, "修改失败！原因：" + errorMsg);
+                                            toastErrorMsg(ExchangeDetailActivity.this,errorMsg);
                                         }
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -419,7 +419,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                         }
                     });
                 }else{
-                    AppToastMgr.shortToast(ExchangeDetailActivity.this,"未登录");
+                    toastErrorMsg(ExchangeDetailActivity.this,"未登录");
                     Intent intentLogin = new Intent(ExchangeDetailActivity.this,LoginActivity.class);
                     startActivity(intentLogin);
                 }
@@ -437,14 +437,14 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                                 intentConfirmBorrow.putExtra("isBorrow", 0);
                                 startActivity(intentConfirmBorrow);
                             } else {
-                                AppToastMgr.shortToast(ExchangeDetailActivity.this, "无法兑换自己发布的兑换！");
+                                toastErrorMsg(ExchangeDetailActivity.this, "无法兑换自己发布的兑换！");
                             }
                         }else{
-                            AppToastMgr.shortToast(ExchangeDetailActivity.this, "该产品暂不能租借");
+                            toastErrorMsg(ExchangeDetailActivity.this, "该产品暂不能租借");
                         }
                     }
                 }else{
-                    AppToastMgr.shortToast(ExchangeDetailActivity.this,"未登录");
+                    toastErrorMsg(ExchangeDetailActivity.this,"未登录");
                     Intent intentLogin = new Intent(ExchangeDetailActivity.this,LoginActivity.class);
                     startActivity(intentLogin);
                 }
@@ -462,14 +462,14 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
                                 intentConfirmExchange.putExtra("isBorrow", 1);
                                 startActivity(intentConfirmExchange);
                             } else {
-                                AppToastMgr.shortToast(ExchangeDetailActivity.this, "无法兑换自己发布的兑换！");
+                                toastErrorMsg(ExchangeDetailActivity.this, "无法兑换自己发布的兑换！");
                             }
                         }else{
-                            AppToastMgr.shortToast(ExchangeDetailActivity.this, "该产品暂不能兑换");
+                            toastErrorMsg(ExchangeDetailActivity.this, "该产品暂不能兑换");
                         }
                     }
                 }else{
-                    AppToastMgr.shortToast(ExchangeDetailActivity.this,"未登录");
+                    toastErrorMsg(ExchangeDetailActivity.this,"未登录");
                     Intent intentLogin = new Intent(ExchangeDetailActivity.this,LoginActivity.class);
                     startActivity(intentLogin);
                 }
@@ -493,7 +493,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
          */
         @Override
         public void onResult(SHARE_MEDIA platform) {
-            AppToastMgr.shortToast(ExchangeDetailActivity.this,"分享成功");
+            toastErrorMsg(ExchangeDetailActivity.this,"分享成功");
         }
 
         /**
@@ -503,7 +503,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
          */
         @Override
         public void onError(SHARE_MEDIA platform, Throwable t) {
-            AppToastMgr.shortToast(ExchangeDetailActivity.this,"分享失败");
+            toastErrorMsg(ExchangeDetailActivity.this,"分享失败");
         }
 
         /**
@@ -512,7 +512,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
          */
         @Override
         public void onCancel(SHARE_MEDIA platform) {
-            AppToastMgr.shortToast(ExchangeDetailActivity.this,"取消分享");
+            toastErrorMsg(ExchangeDetailActivity.this,"取消分享");
         }
     };
 

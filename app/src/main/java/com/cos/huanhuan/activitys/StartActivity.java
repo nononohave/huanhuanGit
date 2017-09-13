@@ -20,7 +20,7 @@ public class StartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start);
 
         Handler hd = new Handler();
-        hd.postDelayed(new splashhandler(), 800);
+        hd.postDelayed(new splashhandler(), 1500);
     }
 
     class splashhandler implements Runnable {

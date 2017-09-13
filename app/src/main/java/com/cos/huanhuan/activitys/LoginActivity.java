@@ -244,7 +244,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                             HttpRequest.login(phone, "phone", password, new StringCallback() {
                                 @Override
                                 public void onError(Request request, Exception e) {
-                                    AppToastMgr.shortToast(LoginActivity.this,"请求失败！");
+                                    toastErrorMsg(LoginActivity.this,"请求失败！");
                                 }
 
                                 @Override
@@ -266,7 +266,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                             Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
                                             startActivity(intent);
                                         }else{
-                                            AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
+                                            toastErrorMsg(LoginActivity.this,errorMsg);
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -275,10 +275,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                 }
                             });
                         } else {
-                            AppToastMgr.shortToast(LoginActivity.this, " 手机号有误！");
+                            toastErrorMsg(LoginActivity.this, " 手机号有误！");
                         }
                     }else{
-                        AppToastMgr.shortToast(LoginActivity.this, " 请输入密码!");
+                        toastErrorMsg(LoginActivity.this, " 请输入密码!");
                     }
                 }else{
                     AppToastMgr.longToast(LoginActivity.this, " 请输入手机号!");
@@ -311,7 +311,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         HttpRequest.reGetToken(String.valueOf(userValueData.getId()), userValueData.getNickname(), new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(LoginActivity.this,"请求失败！");
+                toastErrorMsg(LoginActivity.this,"请求失败！");
             }
 
             @Override
@@ -326,7 +326,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         sharedPreferencesHelper.saveObject("userData",userValueData);
                         reconnect(token);
                     }else{
-                        AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
+                        toastErrorMsg(LoginActivity.this, " 登录失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -380,7 +380,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
          */
         @Override
         public void onCancel(SHARE_MEDIA platform, int action) {
-            AppToastMgr.shortToast(LoginActivity.this,"取消授权");
+            toastErrorMsg(LoginActivity.this,"取消授权");
         }
     };
 
@@ -426,7 +426,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             HttpRequest.oauthLogin(uid, type,nickName,gender, figureUrl, new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
-                    AppToastMgr.shortToast(LoginActivity.this,"请求失败！");
+                    toastErrorMsg(LoginActivity.this,"请求失败！");
                 }
 
                 @Override
@@ -451,7 +451,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                 }
                             },true);
                         }else{
-                            AppToastMgr.shortToast(LoginActivity.this, " 登录失败！原因：" + errorMsg);
+                            toastErrorMsg(LoginActivity.this, " 登录失败！原因：" + errorMsg);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -477,7 +477,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
          */
         @Override
         public void onCancel(SHARE_MEDIA platform, int action) {
-            AppToastMgr.shortToast(LoginActivity.this,"取消授权");
+            toastErrorMsg(LoginActivity.this,"取消授权");
         }
     };
     private void reconnect(String token) {

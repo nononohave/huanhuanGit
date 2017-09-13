@@ -154,7 +154,7 @@ public class BindAlipayActivity extends BaseActivity implements View.OnClickList
                             HttpRequest.changeBindAlipay(bindAlipay, new Callback() {
                                 @Override
                                 public void onFailure(Request request, IOException e) {
-                                    AppToastMgr.shortToast(BindAlipayActivity.this, "请求失败！");
+                                    toastErrorMsg(BindAlipayActivity.this, "请求失败！");
                                 }
 
                                 @Override
@@ -167,12 +167,12 @@ public class BindAlipayActivity extends BaseActivity implements View.OnClickList
                                                 JSONObject jsonObject = new JSONObject(str1);
                                                 Boolean success = jsonObject.getBoolean("success");
                                                 if (success) {
-                                                    AppToastMgr.shortToast(BindAlipayActivity.this, "修改成功！");
+                                                    toastErrorMsg(BindAlipayActivity.this,"修改成功");
                                                     appManager.finishActivity(ExchangePhoneOrAlipayActivity.exchangeInstance);
                                                     appManager.finishActivity();
                                                 } else {
                                                     String errorMsg = jsonObject.getString("errorMsg");
-                                                    AppToastMgr.shortToast(BindAlipayActivity.this, "修改失败！原因：" + errorMsg);
+                                                    toastErrorMsg(BindAlipayActivity.this,errorMsg);
                                                 }
                                             } catch (IOException e) {
                                                 e.printStackTrace();
@@ -184,13 +184,13 @@ public class BindAlipayActivity extends BaseActivity implements View.OnClickList
                                 }
                             });
                         }else{
-                            AppToastMgr.shortToast(BindAlipayActivity.this,"真实姓名格式有误");
+                            toastErrorMsg(BindAlipayActivity.this,"真实姓名格式有误");
                         }
                     }else{
-                        AppToastMgr.shortToast(BindAlipayActivity.this,"请输入真实姓名");
+                        toastErrorMsg(BindAlipayActivity.this,"请输入真实姓名");
                     }
                 }else{
-                    AppToastMgr.shortToast(BindAlipayActivity.this,"请输入支付宝账户");
+                    toastErrorMsg(BindAlipayActivity.this,"请输入支付宝账户");
                 }
                 break;
         }

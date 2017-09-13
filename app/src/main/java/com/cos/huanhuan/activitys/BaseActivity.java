@@ -1,9 +1,13 @@
 package com.cos.huanhuan.activitys;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +28,9 @@ import com.cos.huanhuan.utils.AppNetworkMgr;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
+import com.cos.huanhuan.utils.FastBlur;
 import com.cos.huanhuan.utils.SharedPreferencesHelper;
+import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.TitleBar;
 
 import org.json.JSONException;
@@ -43,10 +49,12 @@ public class BaseActivity extends AppCompatActivity
     private String userId;
     private SharedPreferencesHelper sharedPreferencesHelper;
     private AppManager appManager;
+    private Handler handler;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_titlebar);
+        handler=new MyHandler();
         boolean isImmersive = false;
         if (hasKitKat() && !hasLollipop()) {
             isImmersive = true;
@@ -76,7 +84,14 @@ public class BaseActivity extends AppCompatActivity
         View view = LayoutInflater.from(BaseActivity.this).inflate(R.layout.activity_no_network,null);
         contentView.addView(view);
     }
-
+    public void toastErrorMsg(Context context, String errorMsg){
+        Message message = new Message();
+        Bundle data = new Bundle();
+        data.putString("errorMsg",errorMsg);
+        message.setData(data);
+        handler.sendMessage(message);//发送message信息
+        message.what = 1;//标志是哪个线程传数据
+    }
     public void setNoData(){
         View view = LayoutInflater.from(BaseActivity.this).inflate(R.layout.activity_no_data,null);
         contentView.addView(view);
@@ -244,5 +259,20 @@ public class BaseActivity extends AppCompatActivity
 
     public static boolean hasLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    class MyHandler extends Handler {
+        //接受message的信息
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            if (msg.what == 1) {
+                Bundle data = msg.getData();
+                String errorMsg = data.getString("errorMsg");
+                AppToastMgr.shortToast(BaseActivity.this, errorMsg);
+            }
+
+        }
     }
 }

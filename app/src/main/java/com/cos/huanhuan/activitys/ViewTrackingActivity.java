@@ -105,7 +105,7 @@ public class ViewTrackingActivity extends BaseActivity implements View.OnClickLi
         HttpRequest.getLogistics("00000000201708131", new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(ViewTrackingActivity.this,"请求失败！");
+                toastErrorMsg(ViewTrackingActivity.this,"请求失败！");
             }
 
             @Override
@@ -130,7 +130,7 @@ public class ViewTrackingActivity extends BaseActivity implements View.OnClickLi
                             setNoData();
                         }
                     }else{
-                        AppToastMgr.shortToast(ViewTrackingActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        toastErrorMsg(ViewTrackingActivity.this, " 接口调用失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -168,7 +168,7 @@ public class ViewTrackingActivity extends BaseActivity implements View.OnClickLi
 
     private void CallPhone() {
         if (AppStringUtils.isEmpty(phoneNum)) {
-            AppToastMgr.shortToast(ViewTrackingActivity.this,"未获取到客服号码");
+            toastErrorMsg(ViewTrackingActivity.this,"未获取到客服号码");
         } else {
 //            // 直接拨号
 //            Intent intent = new Intent(); // 意图对象：动作 + 数据

@@ -75,7 +75,7 @@ public class AccountSecurityActivity extends BaseActivity implements View.OnClic
         HttpRequest.getMembers(userId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                AppToastMgr.shortToast(AccountSecurityActivity.this,"请求失败！");
+                toastErrorMsg(AccountSecurityActivity.this,"请求失败！");
             }
 
             @Override
@@ -89,7 +89,7 @@ public class AccountSecurityActivity extends BaseActivity implements View.OnClic
                         userValueData = JsonUtils.fromJson(obj.toString(), UserValueData.class);
                         setData(userValueData);
                     }else{
-                        AppToastMgr.shortToast(AccountSecurityActivity.this, " 接口调用失败！原因：" + errorMsg);
+                        toastErrorMsg(AccountSecurityActivity.this, " 接口调用失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
