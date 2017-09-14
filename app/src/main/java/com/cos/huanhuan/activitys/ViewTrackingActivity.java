@@ -102,7 +102,7 @@ public class ViewTrackingActivity extends BaseActivity implements View.OnClickLi
     private void initData() {
         //trackingId
         //00000000201708131
-        HttpRequest.getLogistics("00000000201708131", new StringCallback() {
+        HttpRequest.getLogistics(trackingId, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
                 toastErrorMsg(ViewTrackingActivity.this,"请求失败！");

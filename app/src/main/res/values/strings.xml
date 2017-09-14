@@ -120,7 +120,7 @@
     <string name="person_vip">我的会员</string>
     <string name="person_money">我的押金</string>
     <string name="person_publish">我的发布</string>
-    <string name="person_exchange">我的兑换</string>
+    <string name="person_exchange">租赁与兑换</string>
     <string name="personal_data">个人资料</string>
     <string name="edit_nickName">修改昵称</string>
     <string name="edit_personDesc">个性签名</string>
@@ -150,4 +150,7 @@
     <string name="system_message">系统消息</string>
     <string name="confirm_borrow">确认租借</string>
     <string name="all">全部</string>
+    <string name="my_borrow">我的租赁</string>
+    <string name="return_exchange">退还兑换</string>
+    <string name="sendgoods">立即发货</string>
 </resources>

@@ -2,6 +2,7 @@ package com.cos.huanhuan.activitys;
 
 import android.content.Intent;
 import android.os.Build;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +12,6 @@ import android.widget.EditText;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppStringUtils;
-import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class TrackingNoActivity extends BaseActivity implements View.OnClickListener{
+public class ReturnExchangeActivity extends BaseActivity implements View.OnClickListener{
 
     private AppManager appManager;
     private EditText et_tracking;
@@ -39,8 +39,8 @@ public class TrackingNoActivity extends BaseActivity implements View.OnClickList
         setDividerColor(R.color.dividLineColor);
         setRightTextColor(R.color.titleBarTextColor);
         setTitleTextColor(R.color.titleBarTextColor);
-        setTitle(this.getResources().getString(R.string.tracking_no));
-        setBaseContentView(R.layout.activity_tracking_no);
+        setTitle(this.getResources().getString(R.string.return_exchange));
+        setBaseContentView(R.layout.activity_return_exchange);
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
         exchangeId = getIntent().getExtras().getString("exchangeId");
@@ -64,10 +64,10 @@ public class TrackingNoActivity extends BaseActivity implements View.OnClickList
     public void onClick(View view) {
         String tracking = et_tracking.getText().toString();
         if(AppStringUtils.isNotEmpty(tracking)){
-            HttpRequest.commitTrackingNo(exchangeId, tracking, new Callback() {
+            HttpRequest.returnTrackingNo(exchangeId, tracking, new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
-                    toastErrorMsg(TrackingNoActivity.this, "请求失败！");
+                    toastErrorMsg(ReturnExchangeActivity.this, "请求失败！");
                 }
 
                 @Override
@@ -86,7 +86,7 @@ public class TrackingNoActivity extends BaseActivity implements View.OnClickList
                                     appManager.finishActivity();
                                 }else{
                                     String errorMsg = jsonObject.getString("errorMsg");
-                                    toastErrorMsg(TrackingNoActivity.this,errorMsg);
+                                    toastErrorMsg(ReturnExchangeActivity.this,errorMsg);
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -100,7 +100,7 @@ public class TrackingNoActivity extends BaseActivity implements View.OnClickList
                 }
             });
         }else{
-            toastErrorMsg(TrackingNoActivity.this, "请输入单号！");
+            toastErrorMsg(ReturnExchangeActivity.this, "请输入单号！");
         }
     }
 }

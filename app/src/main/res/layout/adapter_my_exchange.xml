@@ -23,7 +23,6 @@
                 android:id="@+id/tv_adapter_exchangeNo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="兑换编号：11200031"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:layout_alignParentLeft="true"
@@ -33,7 +32,6 @@
                 android:id="@+id/tv_adapter_exchangeStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="已发货"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
@@ -63,7 +61,7 @@
                 />
             <LinearLayout
                 android:id="@+id/ll_adapter_personDesc"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/iv_adapter_my_exchange_cover"
                 android:layout_marginLeft="10dp"
@@ -72,9 +70,8 @@
 
                 <TextView
                     android:id="@+id/tv_adapter_my_exchange_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="桃花妖异次元觉醒次元桃花妖异次元觉醒次元桃花妖异次元觉醒次元"
                     android:textColor="@color/grey_text_desc"
                     android:textSize="@dimen/phone_text_size" />
 
@@ -83,6 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
                     >
                     <com.cos.huanhuan.views.CircleImageView
                         android:id="@+id/iv_myExchange_headImg"
@@ -95,28 +93,17 @@
                         android:id="@+id/tv_adapter_my_exchange_author"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="飛行的豬"
                         android:textColor="#ff82AEC7"
                         android:layout_marginLeft="5dp"
                         android:layout_gravity="center_vertical"
                         android:textSize="@dimen/text_size_small"
                         />
                 </LinearLayout>
-                <TextView
-                    android:id="@+id/tv_adapter_my_exchange_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="￥190.00"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/grey_text_desc"
-                    android:textSize="@dimen/text_size_xlarge"
-                    />
             </LinearLayout>
             <TextView
                 android:id="@+id/tv_adapter_my_exchange_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2017-12-30"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/greyText"
                 android:textSize="@dimen/small_text"
@@ -130,7 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="@color/greyDivideLine"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             />
         <RelativeLayout
             android:id="@+id/rl_adapter_edit"
@@ -153,6 +140,20 @@
                 android:gravity="center_vertical"
                 android:textColor="@color/grey_text_desc"
                 android:visibility="visible"
+                />
+            <TextView
+                android:id="@+id/tv_adapter_view_return_exchange"
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:background="@drawable/btn_agress"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:text="退还兑换"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:textColor="@color/grey_text_desc"
+                android:visibility="gone"
                 />
         </RelativeLayout>
     </RelativeLayout>

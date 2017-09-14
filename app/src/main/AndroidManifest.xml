@@ -332,7 +332,10 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activitys.LunBoActivity"></activity>
+        <activity android:name=".activitys.LunBoActivity" />
+        <activity android:name=".activitys.BorrowAndExchangeActivity" />
+        <activity android:name=".activitys.PersonBorrowActivity" />
+        <activity android:name=".activitys.ReturnExchangeActivity"></activity>
     </application>
 
 </manifest>

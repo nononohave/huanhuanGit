@@ -735,18 +735,38 @@ public class HttpRequest {
     }
 
     /**
+     * 退还物流单号
+     * @param id
+     * @param callback
+     */
+    public static void returnTrackingNo(String id, String code,Callback callback){
+        String url = TEXT_HUANHUAN_HOST + "ExchangePersons/LogisticCode/" + id + "?code=" +code;
+        OkHttpClient client = new OkHttpClient();
+        TrackingCode trackingCode = new TrackingCode();
+        trackingCode.setCode(code);
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(trackingCode));
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+
+    /**
      * 获取我的兑换
      * @param userId
      * @param pageIndex
      * @param pageSize
      * @param callback
      */
-    public static void getMyExchanges(String userId,String pageIndex, String pageSize, StringCallback callback){
+    public static void getMyExchanges(String userId,String pageIndex, String pageSize, String type, StringCallback callback){
         String url = TEXT_HUANHUAN_HOST + "ExchangePersons";
         OkHttpUtils.get().url(url)
                 .addParams("userId", userId)
                 .addParams("pageIndex", pageIndex)
                 .addParams("pageSize", pageSize)
+                .addParams("Type",type)
                 .build()
                 .execute(callback);}
 

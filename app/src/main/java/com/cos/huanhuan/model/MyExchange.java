@@ -17,6 +17,15 @@ public class MyExchange {
     private String nickname;//昵称
     private String addTime;//时间
     private String portrait;//头像
+    private int examineId;//兑换状态，租赁时，如果为4则需要输入物流单号
+
+    public int getExamineId() {
+        return examineId;
+    }
+
+    public void setExamineId(int examineId) {
+        this.examineId = examineId;
+    }
 
     public String getPortrait() {
         return HttpRequest.IMG_HUANHUAN_HOST +portrait;

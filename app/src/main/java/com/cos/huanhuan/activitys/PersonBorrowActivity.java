@@ -14,14 +14,9 @@ import android.view.View;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.adapter.MyExchangeAdapter;
 import com.cos.huanhuan.model.MyExchange;
-import com.cos.huanhuan.model.PersonCoop;
-import com.cos.huanhuan.model.PersonPublish;
 import com.cos.huanhuan.utils.AppManager;
-import com.cos.huanhuan.utils.AppToastMgr;
-import com.cos.huanhuan.utils.DensityUtils;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
-import com.cos.huanhuan.views.SpacesItemDecoration;
 import com.squareup.okhttp.Request;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -32,7 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyExchangeActivity extends BaseActivity {
+public class PersonBorrowActivity extends BaseActivity {
 
     private AppManager appManager;
     private String userId;
@@ -54,30 +49,30 @@ public class MyExchangeActivity extends BaseActivity {
         setDividerColor(R.color.dividLineColor);
         setRightTextColor(R.color.titleBarTextColor);
         setTitleTextColor(R.color.titleBarTextColor);
-        setTitle(this.getResources().getString(R.string.my_exchange));
-        setBaseContentView(R.layout.activity_my_exchange);
+        setBaseContentView(R.layout.activity_person_borrow);
+        setTitle(this.getResources().getString(R.string.my_borrow));
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
-        userId = getUserId();
         leftButtonClick(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 appManager.finishActivity();
             }
         });
+        userId = getUserId();
         initView();
         initData();
     }
 
     private void initView() {
-        recyclerview = (RecyclerView) findViewById(R.id.grid_recycle_myExchange);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_myExchange);
+        recyclerview = (RecyclerView) findViewById(R.id.grid_recycle_personBorrow);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_personBorrow);
         mLayoutManager=new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false);//设置为一个2列的纵向网格布局
         recyclerview.setLayoutManager(mLayoutManager);
         swipeRefreshLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
 
         listMyExchange = new ArrayList<>();
-        adapterMyExchange = new MyExchangeAdapter(MyExchangeActivity.this,listMyExchange,true);
+        adapterMyExchange = new MyExchangeAdapter(PersonBorrowActivity.this,listMyExchange,false);
         recyclerview.setAdapter(adapterMyExchange);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -95,10 +90,10 @@ public class MyExchangeActivity extends BaseActivity {
                 //判断RecyclerView的状态 是空闲时，同时，是最后一个可见的ITEM时才加载
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapterMyExchange.getItemCount()) {
                     pageIndex = pageIndex + 1;
-                    HttpRequest.getMyExchanges(userId, String.valueOf(pageIndex), String.valueOf(pageSize),"1", new StringCallback() {
+                    HttpRequest.getMyExchanges(userId, String.valueOf(pageIndex), String.valueOf(pageSize),"2", new StringCallback() {
                         @Override
                         public void onError(Request request, Exception e) {
-                            toastErrorMsg(MyExchangeActivity.this, "请求失败！");
+                            toastErrorMsg(PersonBorrowActivity.this, "请求失败！");
                         }
 
                         @Override
@@ -116,7 +111,7 @@ public class MyExchangeActivity extends BaseActivity {
                                     }
                                     adapterMyExchange.notifyDataSetChanged();
                                 } else {
-                                    toastErrorMsg(MyExchangeActivity.this, " 请求失败！原因：" + errorMsg);
+                                    toastErrorMsg(PersonBorrowActivity.this, " 请求失败！原因：" + errorMsg);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -135,22 +130,28 @@ public class MyExchangeActivity extends BaseActivity {
             }
         });
 
-        adapterMyExchange.setViewTracking(new MyExchangeAdapter.ViewTrackingClick() {
+        adapterMyExchange.setReturnExchange(new MyExchangeAdapter.ReturnExchangeClick() {
             @Override
-            public void viewTrackingClick(View view, int position) {
-                Intent intentTracking = new Intent(MyExchangeActivity.this,ViewTrackingActivity.class);
-                intentTracking.putExtra("trackingId",listMyExchange.get(position).getLogisticCode());
-                intentTracking.putExtra("imgUrl",listMyExchange.get(position).getCover());
-                startActivity(intentTracking);
+            public void returnExchangeClick(View view, int position) {
+                Intent intentReturn = new Intent(PersonBorrowActivity.this,ReturnExchangeActivity.class);
+                intentReturn.putExtra("exchangeId",String.valueOf(listMyExchange.get(position).getId()));
+                startActivityForResult(intentReturn,111);
             }
         });
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 111 && resultCode == 222) {
+            initData();
+        }
+    }
     private void initData() {
         pageIndex = 1;
-        HttpRequest.getMyExchanges(userId, String.valueOf(pageIndex), String.valueOf(pageSize), "1",new StringCallback() {
+        HttpRequest.getMyExchanges(userId, String.valueOf(pageIndex), String.valueOf(pageSize), "2",new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
-                toastErrorMsg(MyExchangeActivity.this, "请求失败！");
+                toastErrorMsg(PersonBorrowActivity.this, "请求失败！");
             }
 
             @Override
@@ -174,7 +175,7 @@ public class MyExchangeActivity extends BaseActivity {
                         }
                         swipeRefreshLayout.setRefreshing(false);
                     } else {
-                        toastErrorMsg(MyExchangeActivity.this, " 请求失败！原因：" + errorMsg);
+                        toastErrorMsg(PersonBorrowActivity.this, " 请求失败！原因：" + errorMsg);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 } catch (JSONException e) {

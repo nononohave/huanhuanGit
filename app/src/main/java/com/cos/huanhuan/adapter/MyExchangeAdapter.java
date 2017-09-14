@@ -26,10 +26,12 @@ public class MyExchangeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Context context;
     private List<MyExchange> listMyExchange;
+    private Boolean isExchange;
 
-    public MyExchangeAdapter(Context context, List<MyExchange> listMyExchange) {
+    public MyExchangeAdapter(Context context, List<MyExchange> listMyExchange, Boolean isExchange) {
         this.context = context;
         this.listMyExchange = listMyExchange;
+        this.isExchange = isExchange;
     }
 
     @Override
@@ -44,7 +46,6 @@ public class MyExchangeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         {
             //加载数据
-
             PicassoUtils.getinstance().LoadImage(context, listMyExchange.get(position).getPortrait(), ((MyExchangeAdapter.ViewHolder) holder).iv_myExchange_headImg, R.mipmap.public_placehold, R.mipmap.public_placehold, PicassoUtils.PICASSO_BITMAP_SHOW_NORMAL_TYPE, 0);
             PicassoUtils.getinstance().LoadImage(context, listMyExchange.get(position).getCover(), ((MyExchangeAdapter.ViewHolder) holder).iv_adapter_my_exchange_cover, R.mipmap.public_placehold, R.mipmap.public_placehold, PicassoUtils.PICASSO_BITMAP_SHOW_NORMAL_TYPE, 0);
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_exchangeNo.setText("兑换编号：" + listMyExchange.get(position).getSerialNum());
@@ -52,13 +53,34 @@ public class MyExchangeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             String author = "<font color='#4083A9'>" + listMyExchange.get(position).getNickname() + "</font>";
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_my_exchange_author.setText(Html.fromHtml(author));
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_my_exchange_time.setText(listMyExchange.get(position).getAddTime());
-
+            ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_my_exchange_title.setText(listMyExchange.get(position).getTitle());
+            if(listMyExchange.get(position).getExamineId() == 4){
+                ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_return_exchange.setVisibility(View.VISIBLE);
+                ((MyExchangeAdapter.ViewHolder) holder).adapter_address_line.setVisibility(View.VISIBLE);
+            }else{
+                ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_return_exchange.setVisibility(View.GONE);
+                ((MyExchangeAdapter.ViewHolder) holder).adapter_address_line.setVisibility(View.GONE);
+            }
+            if(isExchange){
+                ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_exchange.setVisibility(View.VISIBLE);
+                ((MyExchangeAdapter.ViewHolder) holder).adapter_address_line.setVisibility(View.VISIBLE);
+            }else{
+                ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_exchange.setVisibility(View.GONE);
+            }
             //点击事件监听
             final TextView viewTrackingTv = ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_exchange;
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_exchange.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     viewTrackingClickListener.viewTrackingClick(viewTrackingTv,position);
+                }
+            });
+            //点击事件监听
+            final TextView viewReturnExchange = ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_return_exchange;
+            ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_return_exchange.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    returnExchangeClickListener.returnExchangeClick(viewReturnExchange,position);
                 }
             });
         }
@@ -72,8 +94,8 @@ public class MyExchangeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     {
         public CircleImageView iv_myExchange_headImg;
        public ImageView iv_adapter_my_exchange_cover;
-       public TextView tv_adapter_exchangeNo,tv_adapter_exchangeStatus,tv_adapter_my_exchange_title,tv_adapter_my_exchange_author,tv_adapter_my_exchange_value,tv_adapter_my_exchange_time,tv_adapter_view_exchange;
-
+       public TextView tv_adapter_exchangeNo,tv_adapter_exchangeStatus,tv_adapter_my_exchange_title,tv_adapter_my_exchange_author,tv_adapter_my_exchange_time,tv_adapter_view_exchange,tv_adapter_view_return_exchange;
+        public View adapter_address_line;
         public ViewHolder(View itemView) {
             super(itemView);
             iv_myExchange_headImg = (CircleImageView) itemView.findViewById(R.id.iv_myExchange_headImg);
@@ -82,9 +104,10 @@ public class MyExchangeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tv_adapter_exchangeStatus = (TextView) itemView.findViewById(R.id.tv_adapter_exchangeStatus);
             tv_adapter_my_exchange_author = (TextView) itemView.findViewById(R.id.tv_adapter_my_exchange_author);
             tv_adapter_my_exchange_title = (TextView) itemView.findViewById(R.id.tv_adapter_my_exchange_title);
-            tv_adapter_my_exchange_value = (TextView) itemView.findViewById(R.id.tv_adapter_my_exchange_value);
             tv_adapter_my_exchange_time = (TextView) itemView.findViewById(R.id.tv_adapter_my_exchange_time);
             tv_adapter_view_exchange = (TextView)itemView.findViewById(R.id.tv_adapter_view_exchange);
+            tv_adapter_view_return_exchange = (TextView) itemView.findViewById(R.id.tv_adapter_view_return_exchange);
+            adapter_address_line = (View) itemView.findViewById(R.id.adapter_address_line);
         }
     }
 
@@ -95,5 +118,13 @@ public class MyExchangeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private ViewTrackingClick viewTrackingClickListener;
     public void setViewTracking(ViewTrackingClick listener){
         this.viewTrackingClickListener = listener;
+    }
+    //退还点击
+    public interface ReturnExchangeClick{
+        void returnExchangeClick(View view, int position);
+    }
+    private ReturnExchangeClick returnExchangeClickListener;
+    public void setReturnExchange(ReturnExchangeClick listener){
+        this.returnExchangeClickListener = listener;
     }
 }

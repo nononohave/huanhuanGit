@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.BaseActivity;
+import com.cos.huanhuan.activitys.BorrowAndExchangeActivity;
 import com.cos.huanhuan.activitys.ExchangeDetailActivity;
 import com.cos.huanhuan.activitys.LoginActivity;
 import com.cos.huanhuan.activitys.MyExchangeActivity;
@@ -238,7 +239,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
                 startActivity(intentPublish);
                 break;
             case R.id.rl_person_exchange:
-                Intent intentMyExchange = new Intent(getActivity(),MyExchangeActivity.class);
+                Intent intentMyExchange = new Intent(getActivity(),BorrowAndExchangeActivity.class);
                 startActivity(intentMyExchange);
                 break;
         }
