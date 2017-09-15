@@ -265,6 +265,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                             }
                                             Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
                                             startActivity(intent);
+                                            appManager.finishActivity();
                                         }else{
                                             toastErrorMsg(LoginActivity.this,errorMsg);
                                         }

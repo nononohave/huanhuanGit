@@ -296,8 +296,8 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
             super.handleMessage(msg);
             if(msg.what==1)
             {
-                Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.createViewBitmap(imageView_head_blur), 16, true);
-                imageView_head_blur.setImageBitmap(scaledBitmap);
+//                Bitmap scaledBitmap = FastBlur.doBlur(ViewUtils.createViewBitmap(imageView_head_blur), 16, true);
+//                imageView_head_blur.setImageBitmap(scaledBitmap);
             }else if(msg.what == 3){
                 if(isLike){
                     tv_exchange_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_grey),null,null);
