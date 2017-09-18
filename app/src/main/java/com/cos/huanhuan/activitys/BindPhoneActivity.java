@@ -45,7 +45,7 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
     private Button btn_bind_phone_finish;
     private TextView tv_bind_getCode;
     //倒计时
-    private int recLen = 10;
+    private int recLen = 60;
 
     private Timer timer;
     private TimerTask timerTask;
@@ -142,7 +142,7 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
         });
     }
     private void initTimer() {
-        recLen = 10;
+        recLen = 60;
         timer = new Timer();
         timerTask = new TimerTask() {
 

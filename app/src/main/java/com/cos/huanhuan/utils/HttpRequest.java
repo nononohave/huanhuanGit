@@ -11,6 +11,7 @@ import com.cos.huanhuan.model.CommentMuti;
 import com.cos.huanhuan.model.CommentSimple;
 import com.cos.huanhuan.model.CoopDetail;
 import com.cos.huanhuan.model.CoopList;
+import com.cos.huanhuan.model.CouponDTO;
 import com.cos.huanhuan.model.ExchangeAdd;
 import com.cos.huanhuan.model.ExchangeList;
 import com.cos.huanhuan.model.PersonData;
@@ -45,10 +46,10 @@ import static com.cos.huanhuan.R.string.recharge;
 
 public class HttpRequest {
 
-    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
-    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn";
-//    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn:8081/api/v1/";
-//    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn:8081";
+//    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
+//    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn";
+    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn:8081/api/v1/";
+    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn:8081";
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -147,6 +148,9 @@ public class HttpRequest {
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
                 .content(new Gson().toJson(userLogin))
                 .build()
+                .connTimeOut(3000000)
+                .writeTimeOut(3000000)
+                .readTimeOut(3000000)
                 .execute(callback);
     }
 
@@ -791,6 +795,32 @@ public class HttpRequest {
         OkHttpUtils.get().url(url)
                 .addParams("userId", userId)
                 .addParams("nickname",nickname)
+                .build()
+                .execute(stringCallback);
+    }
+
+    /**
+     * 获取优惠券
+     * @param stringCallback
+     */
+    public static void getCoupon( String userId,String pageIndex, String pageSize, StringCallback stringCallback) {
+        String url = TEXT_HUANHUAN_HOST + "Vouchers/" + userId;
+        OkHttpUtils.get().url(url)
+                .addParams("userId", userId)
+                .addParams("pageIndex",pageIndex)
+                .addParams("pageSize",pageSize)
+                .build()
+                .execute(stringCallback);
+    }
+
+    public static void addNewCoupon(String userId,String code, StringCallback stringCallback){
+        String url = TEXT_HUANHUAN_HOST + "Vouchers/" + userId;
+        CouponDTO couponDTO = new CouponDTO();
+        couponDTO.setUserId(userId);
+        couponDTO.setCode(code);
+        OkHttpUtils.postString().url(url)
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .content(new Gson().toJson(couponDTO))
                 .build()
                 .execute(stringCallback);
     }

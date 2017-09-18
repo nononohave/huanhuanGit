@@ -37,7 +37,7 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
     private String phone = "";
 
     //倒计时
-    private int recLen = 10;
+    private int recLen = 60;
 
     private Timer timer;
     private TimerTask timerTask;
@@ -145,7 +145,7 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
     }
 
     private void initTimer() {
-        recLen = 10;
+        recLen = 60;
         timer = new Timer();
         timerTask = new TimerTask() {
 

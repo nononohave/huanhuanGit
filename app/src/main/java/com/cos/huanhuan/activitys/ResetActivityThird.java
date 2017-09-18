@@ -186,11 +186,9 @@ public class ResetActivityThird extends BaseActivity implements View.OnClickList
                                             try {
                                                 if (null != response.cacheResponse()) {
                                                     String str = response.cacheResponse().toString();
-                                                    Log.i("wangshu1", "cache---" + str);
                                                 } else {
                                                     try {
                                                         String str1 = response.body().string();
-                                                        Log.i("地方撒阿达啥打法是否", "1111111111111111111111111---" + str1);
                                                         JSONObject jsonObject = new JSONObject(str1);
                                                         Boolean success = jsonObject.getBoolean("success");
                                                         if(success){
@@ -205,8 +203,6 @@ public class ResetActivityThird extends BaseActivity implements View.OnClickList
                                                     } catch (IOException e) {
                                                         e.printStackTrace();
                                                     }
-                                                    String str = response.networkResponse().toString();
-                                                    Log.i("wangshu3", "network---" + str);
                                                 }
                                             } catch (JSONException e) {
                                                 e.printStackTrace();

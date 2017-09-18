@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.activitys.BaseActivity;
 import com.cos.huanhuan.activitys.BorrowAndExchangeActivity;
+import com.cos.huanhuan.activitys.CouponActivity;
 import com.cos.huanhuan.activitys.ExchangeDetailActivity;
 import com.cos.huanhuan.activitys.LoginActivity;
 import com.cos.huanhuan.activitys.MyExchangeActivity;
@@ -47,7 +48,7 @@ import org.json.JSONObject;
 public class PersonFragment extends Fragment implements View.OnClickListener{
 
     private TitleBar titleBar;
-    private RelativeLayout rl_person_login,rl_person_noLogin,rl_person_value,rl_person_vip,rl_person_money,rl_person_publish,rl_person_exchange;
+    private RelativeLayout rl_person_login,rl_person_noLogin,rl_person_value,rl_person_vip,rl_person_money,rl_person_publish,rl_person_exchange,rl_person_coupon;
     private TextView person_nickName,person_Desc;
     private ImageView person_sex;
     private CircleImageView person_headImage,person_headImage_noLogin;
@@ -108,6 +109,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
         rl_person_money = (RelativeLayout) getActivity().findViewById(R.id.rl_person_money);
         rl_person_publish = (RelativeLayout) getActivity().findViewById(R.id.rl_person_publish);
         rl_person_exchange = (RelativeLayout) getActivity().findViewById(R.id.rl_person_exchange);
+        rl_person_coupon = (RelativeLayout) getActivity().findViewById(R.id.rl_person_coupon);
         person_nickName = (TextView) getActivity().findViewById(R.id.tv_person_nickName);
         person_sex = (ImageView) getActivity().findViewById(R.id.iv_person_sex);
         person_Desc = (TextView) getActivity().findViewById(R.id.tv_person_personDesc);
@@ -121,6 +123,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
         rl_person_money.setOnClickListener(this);
         rl_person_publish.setOnClickListener(this);
         rl_person_exchange.setOnClickListener(this);
+        rl_person_coupon.setOnClickListener(this);
 
         initData();
     }
@@ -241,6 +244,10 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
             case R.id.rl_person_exchange:
                 Intent intentMyExchange = new Intent(getActivity(),BorrowAndExchangeActivity.class);
                 startActivity(intentMyExchange);
+                break;
+            case R.id.rl_person_coupon:
+                Intent intentCoupon = new Intent(getActivity(),CouponActivity.class);
+                startActivity(intentCoupon);
                 break;
         }
     }

@@ -153,4 +153,7 @@
     <string name="my_borrow">我的租赁</string>
     <string name="return_exchange">退还兑换</string>
     <string name="sendgoods">立即发货</string>
+    <string name="person_coupon">我的优惠券</string>
+    <string name="pass_disabled">过期无效，请及时使用</string>
+    <string name="add_coupon">添加优惠券</string>
 </resources>

@@ -96,7 +96,10 @@ public class BaseActivity extends AppCompatActivity
         View view = LayoutInflater.from(BaseActivity.this).inflate(R.layout.activity_no_data,null);
         contentView.addView(view);
     }
-
+    public void setNoCoupon(){
+        View view = LayoutInflater.from(BaseActivity.this).inflate(R.layout.activity_no_coupon,null);
+        contentView.addView(view);
+    }
     public String getUserId(){
         UserValueData userValueData = sharedPreferencesHelper.getObject("userData");
         if(userValueData != null){

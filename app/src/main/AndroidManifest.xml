@@ -335,7 +335,9 @@
         <activity android:name=".activitys.LunBoActivity" />
         <activity android:name=".activitys.BorrowAndExchangeActivity" />
         <activity android:name=".activitys.PersonBorrowActivity" />
-        <activity android:name=".activitys.ReturnExchangeActivity"></activity>
+        <activity android:name=".activitys.ReturnExchangeActivity" />
+        <activity android:name=".activitys.CouponActivity" />
+        <activity android:name=".activitys.AddNewCouponActivity"></activity>
     </application>
 
 </manifest>
