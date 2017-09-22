@@ -83,12 +83,13 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
     private GridLayoutManager mLayoutManager;
     private CardGridAdapter cardGridAdapter;
     private int pageIndex = 0;
-    private int pageNum = 4;
+    private int pageNum = 6;
     private List<CardExchange> listCard;
     private List<Classify> listClassify;
     private int selectedTab = 0;
     private List<SlidePhotos> listSlides;
     public static IndexFragment instance = null;
+    private Boolean isRec = false;
     /**
      * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
      */
@@ -175,6 +176,12 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
                 }
                 exChange.setEid("");
                 exChange.setSea(searchText);
+                if(selectedTab == 0){
+                    isRec = true;
+                }else{
+                    isRec = false;
+                }
+                exChange.setRec(isRec);
                 getData(exChange);
             }
 
@@ -267,11 +274,12 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
             }
         });
         initData();
-
+        isRec = true;
         ExchangeList exChange = new ExchangeList();
         exChange.setCid("");
         exChange.setEid("");
         exChange.setSea("");
+        exChange.setRec(isRec);
         getData(exChange);
     }
 
@@ -322,6 +330,7 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
                     exChange.setCid("");
                 }
                 exChange.setSea("");
+                exChange.setRec(isRec);
                 getData(exChange);
             }
         });
@@ -349,6 +358,7 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
                     }else{
                         exChange.setSea("");
                     }
+                    exChange.setRec(isRec);
                     HttpRequest.getExchangeList(exChange, new StringCallback() {
                         @Override
                         public void onError(Request request, Exception e) {

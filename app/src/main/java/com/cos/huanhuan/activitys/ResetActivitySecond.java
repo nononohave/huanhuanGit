@@ -16,6 +16,12 @@ import com.cos.huanhuan.R;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
+import com.cos.huanhuan.utils.HttpRequest;
+import com.squareup.okhttp.Request;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,14 +52,8 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        returnVerifyCode = getIntent().getExtras().getString("returnVerifyCode");
         intentPhone = getIntent().getExtras().getString("intentPhone");
-        returnPhone = getIntent().getExtras().getString("returnPhone");
-
         //从前一个界面获取手机号到这里
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             setImmersive(true);
         }
@@ -67,7 +67,7 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
         initViews();
-
+        initData();
         leftButtonClick(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -75,6 +75,42 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
             }
         });
     }
+
+    private void initData() {
+        try {
+            HttpRequest.loginSendMsgCode(intentPhone,new StringCallback(){
+                @Override
+                public void onError(Request request, Exception e)
+                {
+                    toastErrorMsg(ResetActivitySecond.this,"请求失败！");
+                }
+
+                @Override
+                public void onResponse(String response)
+                {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        Boolean success = jsonObject.getBoolean("success");
+                        String errMsg = jsonObject.getString("errorMsg");
+                        if(success){
+                            initTimer();
+                            timer.schedule(timerTask, 0, 1000);
+                            JSONObject returnObj = jsonObject.getJSONObject("data");
+                            returnVerifyCode = returnObj.getString("verifyCode");
+                            returnPhone = returnObj.getString("phone");
+                        }else{
+                            toastErrorMsg(ResetActivitySecond.this,"请求失败！原因：" + errMsg);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initViews() {
 
         tv_reset2_sendPhone = (TextView) findViewById(R.id.tv_reset2_sendPhone);
@@ -89,9 +125,6 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
 
         //设置传入的手机号
         tv_reset2_sendPhone.setText("+86" + intentPhone);
-
-        initTimer();
-        timer.schedule(timerTask, 0, 1000);
 
         //手机号文本框监听事件
         et_reset2_code.addTextChangedListener(new TextWatcher() {

@@ -97,12 +97,12 @@
                             android:layout_centerVertical="true"
                             />
                         <LinearLayout
+                            android:id="@+id/ll_tv_msg"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
                             android:layout_toRightOf="@id/civ_exchange_headImg"
                             android:layout_marginLeft="10dp"
-                            android:gravity="center_vertical"
                             >
                             <TextView
                                 android:id="@+id/tv_nickName"
@@ -123,6 +123,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/btnbg_tran"
+                            android:layout_alignTop="@+id/ll_tv_msg"
                             android:text="已认证"
                             android:paddingTop="5dp"
                             android:paddingBottom="5dp"
@@ -130,7 +131,6 @@
                             android:paddingRight="10dp"
                             android:textColor="@color/white"
                             android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
                             />
                     </RelativeLayout>
                 </RelativeLayout>

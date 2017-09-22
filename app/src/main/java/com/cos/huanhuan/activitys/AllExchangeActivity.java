@@ -65,7 +65,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
     private GridLayoutManager mLayoutManager;
     private CardGridAdapter cardGridAdapter;
     private int pageIndex = 0;
-    private int pageNum = 6;
+    private int pageNum = 8;
     private List<CardExchange> listCard;
     private List<ExchangeStatus> listExchangeStatus;
     private List<String> list;

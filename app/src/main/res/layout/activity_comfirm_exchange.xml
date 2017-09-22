@@ -234,6 +234,48 @@
             />
     </RelativeLayout>
     <RelativeLayout
+        android:id="@+id/rl_exchange_cardBorrow"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_below="@id/rl_exchange_prices"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:visibility="gone"
+        >
+        <TextView
+            android:id="@+id/tv_exchange_cardBorrow_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/card_borrow"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/action_text_size"
+            android:textColor="@color/grey_black"
+            />
+        <TextView
+            android:id="@+id/tv_exchange__cardBorrow_choose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/action_text_size"
+            android:layout_toLeftOf="@+id/iv_vip_borrow_next"
+            android:layout_marginRight="3dp"
+            />
+        <ImageView
+            android:id="@+id/iv_vip_borrow_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/back_grey"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/dividLineColor"
+            android:layout_alignParentBottom="true"
+            />
+    </RelativeLayout>
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"

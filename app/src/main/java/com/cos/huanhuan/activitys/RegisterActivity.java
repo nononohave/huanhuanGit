@@ -187,45 +187,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 if(AppStringUtils.isNotEmpty(phone)) {
                     if(AppStringUtils.isNotEmpty(password)) {
                         if (AppValidationMgr.isPhone(phone)) {
-                            try {
-                                HttpRequest.loginSendMsgCode(phone,new StringCallback(){
-                                    @Override
-                                    public void onError(Request request, Exception e)
-                                    {
-                                        toastErrorMsg(RegisterActivity.this,"请求失败！");
-                                    }
-
-                                    @Override
-                                    public void onResponse(String response)
-                                    {
-                                        try {
-                                            JSONObject jsonObject = new JSONObject(response);
-                                            Boolean success = jsonObject.getBoolean("success");
-                                            String errMsg = jsonObject.getString("errorMsg");
-                                            if(success){
-                                                JSONObject returnObj = jsonObject.getJSONObject("data");
-                                                String returnVerifyCode = returnObj.getString("verifyCode");
-                                                String returnPhone = returnObj.getString("phone");
-                                                Intent intentNext = new Intent(RegisterActivity.this,RegisterSecondActivity.class);
-                                                intentNext.putExtra("returnVerifyCode",returnVerifyCode);
-                                                intentNext.putExtra("returnPhone",returnPhone);
-                                                intentNext.putExtra("phone",phone);
-                                                intentNext.putExtra("password",password);
-                                                startActivity(intentNext);
-                                            }else{
-                                                toastErrorMsg(RegisterActivity.this,"请求失败！原因：" + errMsg);
-                                            }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-//
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-//                            Intent intentNext = new Intent(RegisterActivity.this,RegisterSecondActivity.class);
-//                            startActivity(intentNext);
+                            Intent intentNext = new Intent(RegisterActivity.this,RegisterSecondActivity.class);
+                            intentNext.putExtra("phone",phone);
+                            intentNext.putExtra("password",password);
+                            startActivity(intentNext);
                         } else {
                             toastErrorMsg(RegisterActivity.this, " 手机号有误！");
                         }

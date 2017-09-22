@@ -120,42 +120,9 @@ public class ResetActivityFirst extends  BaseActivity implements View.OnClickLis
                 final String phone = et_reset_phone.getText().toString();
                 if(AppStringUtils.isNotEmpty(phone)) {
                     if (AppValidationMgr.isPhone(phone)) {
-                        try {
-                            HttpRequest.loginSendMsgCode(phone,new StringCallback(){
-                                @Override
-                                public void onError(Request request, Exception e)
-                                {
-                                    toastErrorMsg(ResetActivityFirst.this,"请求失败！");
-                                }
-
-                                @Override
-                                public void onResponse(String response)
-                                {
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(response);
-                                        Boolean success = jsonObject.getBoolean("success");
-                                        String errMsg = jsonObject.getString("errorMsg");
-                                        if(success){
-                                            JSONObject returnObj = jsonObject.getJSONObject("data");
-                                            String returnVerifyCode = returnObj.getString("verifyCode");
-                                            String returnPhone = returnObj.getString("phone");
-                                            Intent intentNext = new Intent(ResetActivityFirst.this,ResetActivitySecond.class);
-                                            intentNext.putExtra("returnVerifyCode",returnVerifyCode);
-                                            intentNext.putExtra("returnPhone",returnPhone);
-                                            intentNext.putExtra("intentPhone",phone);
-                                            startActivity(intentNext);
-                                        }else{
-                                            toastErrorMsg(ResetActivityFirst.this,"请求失败！原因：" + errMsg);
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-//
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        Intent intentNext = new Intent(ResetActivityFirst.this,ResetActivitySecond.class);
+                        intentNext.putExtra("intentPhone",phone);
+                        startActivity(intentNext);
                     }else{
                         toastErrorMsg(ResetActivityFirst.this, " 手机号有误！");
                     }

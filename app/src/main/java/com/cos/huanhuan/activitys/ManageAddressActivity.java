@@ -90,6 +90,7 @@ public class ManageAddressActivity extends BaseActivity{
             @Override
             public void performAction(View view) {
                 Intent intentAdd = new Intent(ManageAddressActivity.this,AddNewAddressActivity.class);
+                intentAdd.putExtra("isConfirm",false);
                 startActivity(intentAdd);
             }
         });

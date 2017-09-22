@@ -11,6 +11,15 @@ public class ExchangeList {
     private String sea;//搜索关键词
     private String cid;//分类id
     private String Eid;//状态id
+    private Boolean rec;//是否是推荐
+
+    public Boolean getRec() {
+        return rec;
+    }
+
+    public void setRec(Boolean rec) {
+        this.rec = rec;
+    }
 
     public int getPageIndex() {
         return pageIndex;

@@ -57,8 +57,6 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        returnVerifyCode = this.getIntent().getExtras().getString("returnVerifyCode");
-        returnPhone = this.getIntent().getExtras().getString("returnPhone");
         phonePre = this.getIntent().getExtras().getString("phone");
         password = this.getIntent().getExtras().getString("password");
 
@@ -81,6 +79,42 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
         });
 
         initViews();
+        initData();
+    }
+
+    private void initData() {
+        try {
+            HttpRequest.loginSendMsgCode(phonePre,new StringCallback(){
+                @Override
+                public void onError(Request request, Exception e)
+                {
+                    toastErrorMsg(RegisterSecondActivity.this,"请求失败！");
+                }
+
+                @Override
+                public void onResponse(String response)
+                {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        Boolean success = jsonObject.getBoolean("success");
+                        String errMsg = jsonObject.getString("errorMsg");
+                        if(success){
+                            initTimer();
+                            timer.schedule(timerTask, 0, 1000);
+                            JSONObject returnObj = jsonObject.getJSONObject("data");
+                            returnVerifyCode = returnObj.getString("verifyCode");
+                            returnPhone = returnObj.getString("phone");
+                        }else{
+                            toastErrorMsg(RegisterSecondActivity.this,"请求失败！原因：" + errMsg);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initViews() {
@@ -96,9 +130,6 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
         btn_register2_finish.setOnClickListener(this);
 
         tv_register2_sendPhone.setText("+86" + phonePre);
-
-        initTimer();
-        timer.schedule(timerTask, 0, 1000);
 
         //手机号文本框监听事件
         et_register2_code.addTextChangedListener(new TextWatcher() {
@@ -136,13 +167,13 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
             case R.id.btn_register2_finish:
                 //点击完成校验验证码
                 dialogLoading = ViewUtils.createLoadingDialog(RegisterSecondActivity.this);
-                dialogLoading.show();
                 String verifyText = et_register2_code.getText().toString();
                 if(AppStringUtils.isNotEmpty(verifyText)){
                     if(returnVerifyCode.equals(verifyText)){
 //                        String UserName,String Type,String Password,String VerifyCode, StringCallback
 //                        stringCallback
                         try {
+                            dialogLoading.show();
                             HttpRequest.register(phonePre, "phone", password, verifyText, new StringCallback() {
                                 @Override
                                 public void onError(Request request, Exception e) {
@@ -166,13 +197,16 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                                         }else{
                                             String errorMsg = jsonObject.getString("errorMsg");
                                            toastErrorMsg(RegisterSecondActivity.this,"注册失败！原因：" + errorMsg);
+                                            dialogLoading.dismiss();
                                         }
                                     } catch (JSONException e) {
+                                        dialogLoading.dismiss();
                                         e.printStackTrace();
                                     }
                                 }
                             });
                         } catch (JSONException e) {
+                            dialogLoading.show();
                             e.printStackTrace();
                         }
                     }else{

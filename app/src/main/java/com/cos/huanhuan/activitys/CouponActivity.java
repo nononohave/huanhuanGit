@@ -31,18 +31,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CouponActivity extends BaseActivity {
+public class CouponActivity extends BaseActivity{
 
+    public static final int SELECTED_COUPON = 555;
     private AppManager appManager;
     private String userId;
     private RecyclerView recyclerview;
     private SwipeRefreshLayout swipeRefreshLayout;
     private GridLayoutManager mLayoutManager;
-    private CardGridAdapter cardGridAdapter;
     private int pageIndex = 0;
-    private int pageNum = 5;
+    private int pageNum = 6;
     private List<Coupon> listCoupon;
     private MyCouponAdapter adapter;
+    private Boolean isChoose;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +60,7 @@ public class CouponActivity extends BaseActivity {
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
         userId = getUserId();
+        isChoose = getIntent().getExtras().getBoolean("isChoose");
         leftButtonClick(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -142,6 +144,43 @@ public class CouponActivity extends BaseActivity {
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 //最后一个可见的ITEM
                 lastVisibleItem=layoutManager.findLastVisibleItemPosition();
+            }
+        });
+
+        adapter.setUseCouponClick(new MyCouponAdapter.UseCouponClick() {
+            @Override
+            public void useCouponClick(View view, int position) {
+                if(isChoose) {
+                    if(listCoupon.get(position).getValid()) {
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("couponId", listCoupon.get(position).getId());
+                        setResult(SELECTED_COUPON, returnIntent);
+                        appManager.finishActivity();
+                    }else{
+                        toastErrorMsg(CouponActivity.this, "该优惠券已过期");
+                    }
+                }else{
+                    Intent intentExchange = new Intent(CouponActivity.this,AllExchangeActivity.class);
+                    startActivity(intentExchange);
+                }
+            }
+        });
+
+        adapter.setOnItemClick(new MyCouponAdapter.OnItemClick() {
+            @Override
+            public void OnItemClick(View view, int position) {
+                if(isChoose) {
+                    if(listCoupon.get(position).getValid()) {
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("couponId", listCoupon.get(position).getId());
+                        setResult(SELECTED_COUPON, returnIntent);
+                        appManager.finishActivity();
+                    }else{
+                        toastErrorMsg(CouponActivity.this, "该优惠券已过期");
+                    }
+                }else{
+                    toastErrorMsg(CouponActivity.this, "no选择");
+                }
             }
         });
     }

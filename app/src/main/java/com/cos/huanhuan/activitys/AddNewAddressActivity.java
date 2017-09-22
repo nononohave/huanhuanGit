@@ -1,6 +1,8 @@
 package com.cos.huanhuan.activitys;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +26,7 @@ import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.GetJsonDataUtil;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
+import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.TitleBar;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
@@ -40,6 +43,7 @@ import java.util.ArrayList;
 
 public class AddNewAddressActivity extends BaseActivity implements View.OnClickListener{
 
+    public static final int SELECTED_NEWADDRESS = 666;
     private AppManager appManager;
 
     private EditText et_consignee,et_phone,et_detail_address;
@@ -55,6 +59,8 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
     private ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
     private int selectOptions1 = 0, selectOptions2 = 0, selectOptions3 = 0;
     private String provice,city,district;
+    private Boolean isConfirm;
+    private Dialog dialogLoading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +77,7 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
         appManager = AppManager.getAppManager();
         appManager.addActivity(this);
         userId = getUserId();
+        isConfirm = getIntent().getExtras().getBoolean("isConfirm");
         leftButtonClick(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -253,9 +260,12 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
         addressDTO.setZipCode("000000");
         addressDTO.setName(consignee);
         addressDTO.setPhone(phone);
+        dialogLoading = ViewUtils.createLoadingDialog(AddNewAddressActivity.this);
+        dialogLoading.show();
         HttpRequest.addNewAddress(addressDTO, new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
+                dialogLoading.dismiss();
                 toastErrorMsg(AddNewAddressActivity.this,"请求失败！");
             }
 
@@ -266,6 +276,7 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
                     Boolean success = jsonObject.getBoolean("success");
                     String errorMsg = jsonObject.getString("errorMsg");
                     if(success) {
+                        dialogLoading.dismiss();
                         int addressId = jsonObject.getInt("data");
                         if(isDefault){
                             HttpRequest.setDefaultAddress(String.valueOf(addressId), new Callback() {
@@ -284,7 +295,10 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
                                                 JSONObject jsonObject = new JSONObject(str1);
                                                 Boolean success = jsonObject.getBoolean("success");
                                                 if(success){
-                                                    toastErrorMsg(AddNewAddressActivity.this, " 新增地址成功！" );
+                                                    if(isConfirm){
+                                                        Intent returnIntent = new Intent();
+                                                        setResult(SELECTED_NEWADDRESS, returnIntent);
+                                                    }
                                                     appManager.finishActivity();
                                                 }else{
                                                     String errorMsg = jsonObject.getString("errorMsg");
@@ -300,13 +314,14 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
                                 }
                             });
                         }else{
-                            toastErrorMsg(AddNewAddressActivity.this, " 新增地址成功！" );
                             appManager.finishActivity();
                         }
                     }else{
+                        dialogLoading.dismiss();
                         toastErrorMsg(AddNewAddressActivity.this, " 请求失败！原因：" + errorMsg);
                     }
                 } catch (JSONException e) {
+                    dialogLoading.dismiss();
                     e.printStackTrace();
                 }
             }

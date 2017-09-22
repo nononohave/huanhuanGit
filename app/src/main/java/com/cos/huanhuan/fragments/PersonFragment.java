@@ -247,6 +247,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.rl_person_coupon:
                 Intent intentCoupon = new Intent(getActivity(),CouponActivity.class);
+                intentCoupon.putExtra("isChoose",false);
                 startActivity(intentCoupon);
                 break;
         }

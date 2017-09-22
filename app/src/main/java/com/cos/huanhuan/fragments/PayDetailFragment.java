@@ -75,7 +75,7 @@ public class PayDetailFragment extends DialogFragment {
     private Context mContext;
     private int type;//判断从哪个页面传过来的支付选中页面，通过type调用不同的接口
     private double rechargeMoney;
-    private int addressId,exId;
+    private int addressId,exId,VoucherId;
     private SharedPreferencesHelper sharedPreferencesHelper;
     private Dialog dialogLoading;
     @Override
@@ -84,9 +84,12 @@ public class PayDetailFragment extends DialogFragment {
         userId = getArguments().getString("userId");
         type = getArguments().getInt("type");
         sharedPreferencesHelper = new SharedPreferencesHelper(getActivity());
-        if(type == 3 || type == 4 || type == 5){
+        if(type == 3 || type == 4 || type == 5 || type == 6){
             addressId = getArguments().getInt("AddressId");
             exId = getArguments().getInt("ExId");
+        }
+        if(type == 6){
+            VoucherId = getArguments().getInt("VoucherId");
         }
         rechargeMoney = getArguments().getDouble("rechargeMoney");
         api = WXAPIFactory.createWXAPI(getActivity(), "wx34470b0a77faa852");
@@ -190,6 +193,9 @@ public class PayDetailFragment extends DialogFragment {
                         exchangeAdd.setExamine("会员租赁");
                     }else if(type == 5){
                         exchangeAdd.setExamine("单次租赁");
+                    }else if(type == 6){
+                        exchangeAdd.setExamine("兑换券");
+                        exchangeAdd.setVoucherId(VoucherId);
                     }
                     final String payType = tv_payWays.getText().toString().trim();
                     if(payType.equals("支付宝")){

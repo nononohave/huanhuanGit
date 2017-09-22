@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
@@ -69,6 +70,13 @@ public class MyCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     useCouponClickClickListener.useCouponClick(couponToUse,position);
                 }
             });
+            final LinearLayout itemLL = ((ViewHolder) holder).ll_adapter_itemClick;
+            ((MyCouponAdapter.ViewHolder) holder).ll_adapter_itemClick.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.OnItemClick(itemLL,position);
+                }
+            });
         }
     }
     @Override
@@ -80,6 +88,7 @@ public class MyCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     {
         public TextView coupon_title,coupon_desc,coupon_time,coupon_disabled;
         private Button couponToUse;
+        private LinearLayout ll_adapter_itemClick;
         public ViewHolder(View itemView) {
             super(itemView);
             coupon_title = (TextView) itemView.findViewById(R.id.tv_adapter_coupon_title);
@@ -87,6 +96,7 @@ public class MyCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             coupon_time = (TextView) itemView.findViewById(R.id.tv_adapter_coupon_time);
             coupon_disabled = (TextView) itemView.findViewById(R.id.tv_adapter_coupon_disabled);
             couponToUse = (Button) itemView.findViewById(R.id.btn_adapter_couponToUse);
+            ll_adapter_itemClick = (LinearLayout) itemView.findViewById(R.id.ll_adapter_itemClick);
         }
     }
 
@@ -97,5 +107,14 @@ public class MyCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private UseCouponClick useCouponClickClickListener;
     public void setUseCouponClick(UseCouponClick listener){
         this.useCouponClickClickListener = listener;
+    }
+
+    private OnItemClick onItemClickListener;
+
+    public interface OnItemClick{
+        void OnItemClick(View view,int position);
+    }
+    public void setOnItemClick(OnItemClick onClickListener){
+        this.onItemClickListener = onClickListener;
     }
 }

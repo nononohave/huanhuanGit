@@ -74,6 +74,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private UMShareAPI mShareAPI;
 
     private SharedPreferencesHelper sharedPreferencesHelper;
+    private Dialog dialogLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +153,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 et_phone.setText(phoneSp);
                 isPhoneEdit = true;
                 et_phone.setSelection(phoneSp.length());
+                iv_clearPhone.setVisibility(View.VISIBLE);
             }
         }
         //手机号文本框监听事件
@@ -246,7 +248,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                 public void onError(Request request, Exception e) {
                                     toastErrorMsg(LoginActivity.this,"请求失败！");
                                 }
-
                                 @Override
                                 public void onResponse(String response) {
                                     try {
@@ -403,6 +404,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
          */
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            dialogLoading = ViewUtils.createLoadingDialog(LoginActivity.this);
+            dialogLoading.show();
             String uid = data.get("uid");
             String type = "";
             String nickName = "";
@@ -427,6 +430,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             HttpRequest.oauthLogin(uid, type,nickName,gender, figureUrl, new StringCallback() {
                 @Override
                 public void onError(Request request, Exception e) {
+                    dialogLoading.dismiss();
                     toastErrorMsg(LoginActivity.this,"请求失败！");
                 }
 
@@ -437,12 +441,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         Boolean success = jsonObject.getBoolean("success");
                         String errorMsg = jsonObject.getString("errorMsg");
                         if(success){
+                            dialogLoading.dismiss();
                             JSONObject obj = jsonObject.getJSONObject("data");
-                            Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
-                            startActivity(intent);
                             final UserValueData userValueData = JsonUtils.fromJson(obj.toString(),UserValueData.class);
                             sharedPreferencesHelper.saveObject("userData",userValueData);
-                            reconnect(userValueData.getRongToken());
+                            if(userValueData.getRongToken() != null && AppStringUtils.isNotEmpty(userValueData.getRongToken())){
+                                reconnect(userValueData.getRongToken());
+                            }else{
+                                regetToken(userValueData);
+                            }
                             RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
                                 @Override
                                 public UserInfo getUserInfo(String s) {
@@ -451,10 +458,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                     return userInfo;
                                 }
                             },true);
+                            Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
+                            startActivity(intent);
                         }else{
+                            dialogLoading.dismiss();
                             toastErrorMsg(LoginActivity.this, " 登录失败！原因：" + errorMsg);
                         }
                     } catch (JSONException e) {
+                        dialogLoading.dismiss();
                         e.printStackTrace();
                     }
                 }

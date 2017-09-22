@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cos.huanhuan.R;
@@ -158,6 +159,9 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
     public interface OnUserClick{
         void OnUserClick(View view,int position);
     }
+
+
+
     private OnImageClick mOnItemClickListener;
     private OnUserClick mOnUserClickListener;
 

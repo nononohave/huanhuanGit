@@ -156,4 +156,5 @@
     <string name="person_coupon">我的优惠券</string>
     <string name="pass_disabled">过期无效，请及时使用</string>
     <string name="add_coupon">添加优惠券</string>
+    <string name="card_borrow">兑换券租赁</string>
 </resources>

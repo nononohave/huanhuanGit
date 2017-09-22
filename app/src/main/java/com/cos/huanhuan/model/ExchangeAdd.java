@@ -11,6 +11,15 @@ public class ExchangeAdd {
     private int ExId;//兑换id
     private String Examine;//兑换方式
     private String PayType;//支付类型
+    private int VoucherId;//选中的优惠券
+
+    public int getVoucherId() {
+        return VoucherId;
+    }
+
+    public void setVoucherId(int voucherId) {
+        VoucherId = voucherId;
+    }
 
     public int getAddressId() {
         return AddressId;

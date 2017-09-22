@@ -24,6 +24,7 @@ import com.cos.huanhuan.model.Comment;
 import com.cos.huanhuan.model.ConfirmDetail;
 import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
@@ -45,17 +46,21 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
 
     private AppManager appManager;
 
-    private RelativeLayout rl_address,rl_exchange_ways,rl_address_item,rl_exchange_singleBorrow;
+    private RelativeLayout rl_address,rl_exchange_ways,rl_address_item,rl_exchange_singleBorrow,rl_exchange_cardBorrow;
     private Button btn_create_address,btn_confirm;
-    private TextView tv_address_person,tv_address_phone,tv_address_detail,tv_exchange_ways,tv_exchange_expenses,tv_exchange_prices,tv_total_prices,tv_exchange_prices_text,tv_exchange__singleBorrow_prices;
+    private TextView tv_address_person,tv_address_phone,tv_address_detail,tv_exchange_ways,tv_exchange_expenses,tv_exchange_prices,tv_total_prices,tv_exchange_prices_text,tv_exchange__singleBorrow_prices,tv_exchange__cardBorrow_choose;
     private String exchangeId;
     private UserValueData userValueData;
     private String userId;
     private String examine;
     public static int CHOOSE_ADDRESS = 333;
+    public static int CHOOSE_COUPON = 444;
+    public static int CHOOSE_ADDNEWADDRESS = 555;
     private ConfirmDetail confirmDetailItem;
     private int isBorrow;
     private int typeItem;
+    private int VoucherId = -1;//兑换券id
+    private Boolean isNoChoose = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +98,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
         rl_address = (RelativeLayout) findViewById(R.id.rl_address_comfirmExchange);
         rl_exchange_ways = (RelativeLayout) findViewById(R.id.rl_exchange_ways);
         rl_address_item = (RelativeLayout) findViewById(R.id.rl_address_item);
+        rl_exchange_cardBorrow = (RelativeLayout) findViewById(R.id.rl_exchange_cardBorrow);
         btn_create_address = (Button) findViewById(R.id.btn_comfirm_exchange_createAddress);
         btn_confirm = (Button) findViewById(R.id.btn_confirm_exchange);
         tv_address_person = (TextView) findViewById(R.id.tv_address_person_name);
@@ -104,18 +110,13 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
         tv_total_prices = (TextView) findViewById(R.id.tv_total_prices);
         tv_exchange_prices_text = (TextView) findViewById(R.id.tv_exchange_prices_text);
         tv_exchange__singleBorrow_prices = (TextView) findViewById(R.id.tv_exchange__singleBorrow_prices);
+        tv_exchange__cardBorrow_choose = (TextView) findViewById(R.id.tv_exchange__cardBorrow_choose);
 
         rl_address.setOnClickListener(this);
         rl_exchange_ways.setOnClickListener(this);
         btn_create_address.setOnClickListener(this);
         btn_confirm.setOnClickListener(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        initData(typeItem);
+        rl_exchange_cardBorrow.setOnClickListener(this);
     }
 
     private void initData(int type) {
@@ -175,6 +176,33 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                     }
                 }
             });
+        }else if(type == 3){
+            examine = "兑换券";
+            HttpRequest.getConfirmDetail(exchangeId,userId, examine,new StringCallback() {
+                @Override
+                public void onError(Request request, Exception e) {
+                    toastErrorMsg(ComfirmExchangeActivity.this,"请求失败！");
+                }
+
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        Boolean success = jsonObject.getBoolean("success");
+                        String errorMsg = jsonObject.getString("errorMsg");
+                        if(success) {
+                            JSONObject obj =jsonObject.getJSONObject("data");
+                            ConfirmDetail confirmDetail = JsonUtils.fromJson(obj.toString(),ConfirmDetail.class);
+                            confirmDetailItem = confirmDetail;
+                            setData(confirmDetail);
+                        }else{
+                            toastErrorMsg(ComfirmExchangeActivity.this, " 请求失败！原因：" + errorMsg);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }else{
                 examine = "会员租赁";
                 HttpRequest.getConfirmDetail(exchangeId,userId, examine,new StringCallback() {
@@ -217,6 +245,7 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                     List<String> names = new ArrayList<>();
                     names.add("单次租赁");
                     names.add("会员租赁（剩余" + userValueData.getSurplus() + "次）");
+                    names.add("兑换券租赁");
                     showDialog(new SelectDialog.SelectDialogListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -230,6 +259,9 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                                     }else{
                                        toastErrorMsg(ComfirmExchangeActivity.this,"没有会员次数");
                                     }
+                                    break;
+                                case 2:
+                                    initData(3);
                                     break;
                                 default:
                                     break;
@@ -255,27 +287,46 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
                 break;
             case R.id.btn_comfirm_exchange_createAddress:
                 Intent intentCreateAddress = new Intent(ComfirmExchangeActivity.this,AddNewAddressActivity.class);
-                startActivity(intentCreateAddress);
+                intentCreateAddress.putExtra("isConfirm",true);
+                startActivityForResult(intentCreateAddress,CHOOSE_ADDNEWADDRESS);
                 break;
             case R.id.btn_confirm_exchange:
                // ComfirmExchangeActivity.this.finish();
-                String exchangeWays = tv_exchange_ways.getText().toString();
-                PayDetailFragment payDetailFragment=new PayDetailFragment();
-                Bundle args = new Bundle();
-                args.putString("userId", userId);
-                if(exchangeWays.equals("身家兑换")){
-                    args.putInt("type",3);
-                }else if(exchangeWays.equals("会员租赁")){
-                    args.putInt("type",4);
+                if(AppStringUtils.isNotEmpty(String.valueOf(confirmDetailItem.getAddressId())) && confirmDetailItem.getAddressId() != 0) {
+                    String exchangeWays = tv_exchange_ways.getText().toString();
+                    PayDetailFragment payDetailFragment = new PayDetailFragment();
+                    Bundle args = new Bundle();
+                    args.putString("userId", userId);
+                    if(exchangeWays.equals("兑换券")){
+                        if(VoucherId<=0){
+                            toastErrorMsg(ComfirmExchangeActivity.this,"请选择优惠券");
+                            return;
+                        }
+                    }
+                    if (exchangeWays.equals("身家兑换")) {
+                        args.putInt("type", 3);
+                    } else if (exchangeWays.equals("会员租赁")) {
+                        args.putInt("type", 4);
+                    } else if (exchangeWays.equals("兑换券")) {
+                        args.putInt("type", 6);
+                        args.putInt("VoucherId",VoucherId);
+                    } else {
+                        args.putInt("type", 5);
+                    }
+                    args.putDouble("rechargeMoney", confirmDetailItem.getPriceSum());
+                    // args.putDouble("rechargeMoney",0.01);
+                    args.putInt("AddressId", confirmDetailItem.getAddressId());
+                    args.putInt("ExId", Integer.valueOf(exchangeId));
+                    payDetailFragment.setArguments(args);
+                    payDetailFragment.show(getSupportFragmentManager(), "payDetailFragment");
                 }else{
-                    args.putInt("type",5);
+                    toastErrorMsg(ComfirmExchangeActivity.this,"请选择地址");
                 }
-                args.putDouble("rechargeMoney",confirmDetailItem.getPriceSum());
-                // args.putDouble("rechargeMoney",0.01);
-                args.putInt("AddressId",confirmDetailItem.getAddressId());
-                args.putInt("ExId",Integer.valueOf(exchangeId));
-                payDetailFragment.setArguments(args);
-                payDetailFragment.show(getSupportFragmentManager(),"payDetailFragment");
+                break;
+            case R.id.rl_exchange_cardBorrow:
+                Intent intentChooseCoupon = new Intent(ComfirmExchangeActivity.this, CouponActivity.class);
+                intentChooseCoupon.putExtra("isChoose",true);
+                startActivityForResult(intentChooseCoupon,CHOOSE_COUPON);
                 break;
         }
     }
@@ -283,15 +334,36 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CHOOSE_ADDRESS && resultCode == AddressManagerActivity.SELECTED_ADDRESS) {
-            AddressVO selectAddress = (AddressVO) data.getSerializableExtra("selectItem");
-            if(confirmDetailItem != null){
-                confirmDetailItem.setAddressId(selectAddress.getId());
-                confirmDetailItem.setConsignee(selectAddress.getName());
-                confirmDetailItem.setPhoneMob(selectAddress.getPhone());
-                confirmDetailItem.setAddress(selectAddress.getProvince() + selectAddress.getCity() + selectAddress.getCounty() + selectAddress.getAddress());
-                setData(confirmDetailItem);
+        if(data != null) {
+            if (requestCode == CHOOSE_ADDRESS && resultCode == AddressManagerActivity.SELECTED_ADDRESS) {
+                AddressVO selectAddress = (AddressVO) data.getSerializableExtra("selectItem");
+                if (confirmDetailItem != null) {
+                    confirmDetailItem.setAddressId(selectAddress.getId());
+                    confirmDetailItem.setConsignee(selectAddress.getName());
+                    confirmDetailItem.setPhoneMob(selectAddress.getPhone());
+                    confirmDetailItem.setAddress(selectAddress.getProvince() + selectAddress.getCity() + selectAddress.getCounty() + selectAddress.getAddress());
+                    setData(confirmDetailItem);
+                    isNoChoose = false;
+                } else {
+                    isNoChoose = true;
+                }
+            } else if (requestCode == CHOOSE_COUPON && resultCode == CouponActivity.SELECTED_COUPON) {
+                VoucherId = data.getIntExtra("couponId", -1);
+                if (VoucherId > 0) {
+                    tv_exchange__cardBorrow_choose.setText("已选择");
+                }
             }
+        }else{
+            isNoChoose = true;
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isNoChoose) {
+            initData(typeItem);
         }
     }
 
@@ -327,16 +399,26 @@ public class ComfirmExchangeActivity extends BaseActivity implements View.OnClic
             tv_exchange_prices_text.setText("最终值");
             tv_exchange_prices.setText(String.valueOf(data.getPrice()) + "身家");
             rl_exchange_singleBorrow.setVisibility(View.GONE);
+            rl_exchange_cardBorrow.setVisibility(View.GONE);
             btn_confirm.setText("确认兑换");
         }else if(data.getExamine().equals("会员租赁")){
             tv_exchange_prices_text.setText("押金");
             tv_exchange_prices.setText(String.valueOf(data.getDeposit()) + "元");
             rl_exchange_singleBorrow.setVisibility(View.GONE);
+            rl_exchange_cardBorrow.setVisibility(View.GONE);
+            btn_confirm.setText("确认租借");
+        }else if(data.getExamine().equals("兑换券")){
+            tv_exchange_prices_text.setText("押金");
+            tv_exchange_prices.setText(String.valueOf(data.getDeposit()) + "元");
+            rl_exchange_singleBorrow.setVisibility(View.GONE);
+            rl_exchange_cardBorrow.setVisibility(View.VISIBLE);
+            tv_exchange__cardBorrow_choose.setText("选择兑换券");
             btn_confirm.setText("确认租借");
         }else{
             tv_exchange_prices_text.setText("押金");
             tv_exchange_prices.setText(String.valueOf(data.getDeposit())  + "元");
             rl_exchange_singleBorrow.setVisibility(View.VISIBLE);
+            rl_exchange_cardBorrow.setVisibility(View.GONE);
             tv_exchange__singleBorrow_prices.setText(String.valueOf(data.getPrice())  + "元");
             btn_confirm.setText("确认租借");
         }
