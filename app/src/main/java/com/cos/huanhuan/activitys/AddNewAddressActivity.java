@@ -304,6 +304,7 @@ public class AddNewAddressActivity extends BaseActivity implements View.OnClickL
                                                     String errorMsg = jsonObject.getString("errorMsg");
                                                     toastErrorMsg(AddNewAddressActivity.this, errorMsg);
                                                 }
+
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             }
