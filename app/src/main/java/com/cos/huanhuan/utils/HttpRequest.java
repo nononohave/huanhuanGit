@@ -14,6 +14,7 @@ import com.cos.huanhuan.model.CoopList;
 import com.cos.huanhuan.model.CouponDTO;
 import com.cos.huanhuan.model.ExchangeAdd;
 import com.cos.huanhuan.model.ExchangeList;
+import com.cos.huanhuan.model.Logs;
 import com.cos.huanhuan.model.PersonData;
 import com.cos.huanhuan.model.PublishCoop;
 import com.cos.huanhuan.model.PublishExchanges;
@@ -37,6 +38,7 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import static com.cos.huanhuan.R.string.recharge;
 
@@ -46,10 +48,10 @@ import static com.cos.huanhuan.R.string.recharge;
 
 public class HttpRequest {
 
-    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
-    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn";
-//    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn:8081/api/v1/";
-//    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn:8081";
+//    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn/api/v1/";
+//    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn";
+    public static String TEXT_HUANHUAN_HOST = "http://api.52cos.cn:8081/api/v1/";
+    public static String IMG_HUANHUAN_HOST = "http://img.52cos.cn:8081";
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -871,5 +873,25 @@ public class HttpRequest {
                 .content(new Gson().toJson(couponDTO))
                 .build()
                 .execute(stringCallback);
+    }
+
+    /**
+     * 日志记录
+     * @param params
+     * @param callback
+     */
+    public static void Log(HashMap<String, String> params, StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "Loggings";
+        Logs logs = new Logs();
+        logs.setTerminal("android");
+        logs.setModel(params.get("device_info"));
+        logs.setVersion(params.get("version_name"));
+        logs.setRank("system");
+        logs.setInfo(params.get("exception_info"));
+        OkHttpUtils.postString().url(url)
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .content(new Gson().toJson(logs))
+                .build()
+                .execute(callback);
     }
 }

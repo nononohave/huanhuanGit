@@ -157,4 +157,5 @@
     <string name="pass_disabled">过期无效，请及时使用</string>
     <string name="add_coupon">添加优惠券</string>
     <string name="card_borrow">兑换券租赁</string>
+    <string name="crashExit">系统崩溃了</string>
 </resources>

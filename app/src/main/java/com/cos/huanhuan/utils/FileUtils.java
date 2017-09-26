@@ -1132,6 +1132,29 @@ public class FileUtils {
         intent.putExtra("fileurl", fileurl);
         context.startService(intent);
     }
+    /**
+     * 判断是够有SD卡
+     *
+     * @return
+     */
+    public static boolean hasSDCard() {
+        String status = Environment.getExternalStorageState();
+        if (!status.equals(Environment.MEDIA_MOUNTED)) {
+            return false;
+        }
+        return true;
+    }
 
-
+    /**
+     * 获取根目录
+     *
+     * @return
+     */
+    public static String getRootFilePath() {
+        if (hasSDCard()) {
+            return Environment.getExternalStorageDirectory().getAbsolutePath() + "/";// filePath:/sdcard/
+        } else {
+            return Environment.getDataDirectory().getAbsolutePath() + "/data/"; // filePath: /data/data/
+        }
+    }
 }

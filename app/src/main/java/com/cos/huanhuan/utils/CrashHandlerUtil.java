@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -44,6 +45,8 @@ import java.util.Map;
 
 public class CrashHandlerUtil implements Thread.UncaughtExceptionHandler {
 
+    private CrashUploader mCrashUploader;
+
     public static final String TAG = "CrashHandlerUtil";
 
     //系统默认的UncaughtException处理类
@@ -70,7 +73,7 @@ public class CrashHandlerUtil implements Thread.UncaughtExceptionHandler {
     /**
      * 保证只有一个CrashHandler实例
      */
-    private CrashHandlerUtil() {
+    public CrashHandlerUtil() {
     }
 
     /**
@@ -87,7 +90,8 @@ public class CrashHandlerUtil implements Thread.UncaughtExceptionHandler {
      *
      * @param context 上下文
      */
-    public void init(Context context) {
+    public void init(Context context, CrashUploader crashUploader) {
+        mCrashUploader = crashUploader;
         mContext = context;
         //获取系统默认的UncaughtException处理器
         mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
@@ -223,4 +227,19 @@ public class CrashHandlerUtil implements Thread.UncaughtExceptionHandler {
         return null;
     }
 
+    /**
+     * 上传崩溃信息到服务器
+     */
+    public void uploadCrashMessage(ConcurrentHashMap<String, Object> infos) {
+        mCrashUploader.uploadCrashMessage(infos);
+    }
+
+
+
+    /**
+     * 崩溃信息上传接口回调
+     */
+    public interface CrashUploader {
+        void uploadCrashMessage(ConcurrentHashMap<String, Object> infos);
+    }
 }

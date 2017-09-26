@@ -5,13 +5,24 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.cos.huanhuan.fragments.MessageFragment;
+import com.cos.huanhuan.utils.CrashHandlerUtil;
+import com.cos.huanhuan.utils.FileUtils;
+import com.cos.huanhuan.utils.HttpRequest;
+import com.cos.huanhuan.utils.RCrashHandler;
+import com.squareup.okhttp.Request;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareConfig;
 import com.umeng.socialize.common.QueuedWork;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.rong.imkit.RongIM;
 import io.rong.imkit.widget.provider.RealTimeLocationMessageProvider;
@@ -23,6 +34,8 @@ import io.rong.push.common.RongException;
  */
 public class MyApplication extends Application {
 
+    private RCrashHandler.CrashUploader mCrashUploader;
+    private Context mAppContext;
     @Override
     public void onCreate() {
 
@@ -34,6 +47,8 @@ public class MyApplication extends Application {
         if (getApplicationInfo().packageName.equals(getCurProcessName(getApplicationContext()))) {
             RongIM.init(this);
         }
+        mAppContext = getApplicationContext();
+        initCrashHandler();
     }
 
     //各个平台的配置，建议放在全局Application或者程序入口
@@ -53,5 +68,52 @@ public class MyApplication extends Application {
             }
         }
         return null;
+    }
+
+    /**
+     * 初始化崩溃处理器
+     */
+    private void initCrashHandler() {
+//        mCrashUploader = new CrashHandlerUtil.CrashUploader(){
+//
+//            @Override
+//            public void uploadCrashMessage(ConcurrentHashMap<String, Object> infos) {
+//                ConcurrentHashMap<String, String> packageInfos = (ConcurrentHashMap<String, String>) infos.get(RCrashHandler.PACKAGE_INFOS_MAP);
+//                HashMap<String, String> params = new HashMap<>();
+//                params.put("version_name", packageInfos.get(RCrashHandler.VERSION_NAME));
+//                params.put("version_code", packageInfos.get(RCrashHandler.VERSION_CODE));
+//                params.put("exception_info", (String) infos.get(RCrashHandler.EXCEPETION_INFOS_STRING));
+//                params.put("device_info",
+//                        RCrashHandler.getInfosStr((ConcurrentHashMap<String, String>) infos.get(RCrashHandler.BUILD_INFOS_MAP)).toString());
+//                Log.e("呵呵哈哈哈都是减肥都按地方建瓯盘",params.toString());
+//            }
+//        };
+//        CrashHandlerUtil.getInstance().init(mAppContext,mCrashUploader);
+        mCrashUploader = new RCrashHandler.CrashUploader() {
+            @Override
+            public void uploadCrashMessage(ConcurrentHashMap<String, Object> infos) {
+                ConcurrentHashMap<String, String> packageInfos = (ConcurrentHashMap<String, String>) infos.get(RCrashHandler.PACKAGE_INFOS_MAP);
+
+                HashMap<String, String> params = new HashMap<>();
+                params.put("version_name", packageInfos.get(RCrashHandler.VERSION_NAME));
+                params.put("version_code", packageInfos.get(RCrashHandler.VERSION_CODE));
+                params.put("exception_info", (String) infos.get(RCrashHandler.EXCEPETION_INFOS_STRING));
+                params.put("device_info",
+                        RCrashHandler.getInfosStr((ConcurrentHashMap<String, String>) infos.get(RCrashHandler.BUILD_INFOS_MAP)).toString());
+                params.put("system_infos_map",RCrashHandler.getInfosStr((ConcurrentHashMap<String, String>) infos.get(RCrashHandler.SYSTEM_INFOS_MAP)).toString());
+                Toast.makeText(mAppContext, "上传", Toast.LENGTH_LONG).show();
+                HttpRequest.Log(params, new StringCallback() {
+                    @Override
+                    public void onError(Request request, Exception e) {
+                    }
+
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                });
+            }
+        };
+        String CRASH = FileUtils.getRootFilePath() + "huanhuan/crashLog";
+        RCrashHandler.getInstance(CRASH).init(mAppContext, mCrashUploader);
     }
 }

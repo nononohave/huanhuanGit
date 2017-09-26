@@ -320,6 +320,8 @@
         <activity android:name=".activitys.TrackingNoActivity" />
         <activity android:name=".activitys.MyExchangeActivity" />
         <activity android:name=".activitys.ViewTrackingActivity" />
+        <activity android:name=".activitys.CrashActivity" />
+
 
         <receiver
             android:name=".notifications.RongPushNotificationReceiver"
