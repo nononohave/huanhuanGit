@@ -152,7 +152,7 @@ public class PersonValueActivity extends BaseActivity implements View.OnClickLis
         chargeValue = 0.0;//每次点击置为0
         for (int i = 0; i < listRecharge.size(); i++) {
             if(position == i){
-                listRecharge.get(10000).setClick(true);
+                listRecharge.get(i).setClick(true);
                 tv_person_value_pay.setText(String.valueOf(listRecharge.get(i).getMoney()) + "元");
                 chargeValue = Double.valueOf(listRecharge.get(i).getMoney());
             }else{

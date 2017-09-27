@@ -178,8 +178,6 @@ public class CouponActivity extends BaseActivity{
                     }else{
                         toastErrorMsg(CouponActivity.this, "该优惠券已过期");
                     }
-                }else{
-                    toastErrorMsg(CouponActivity.this, "no选择");
                 }
             }
         });
