@@ -43,6 +43,7 @@ import com.cos.huanhuan.views.SpacesItemDecoration;
 import com.cos.huanhuan.views.TitleBar;
 import com.foamtrace.photopicker.Image;
 import com.squareup.okhttp.Request;
+import com.squareup.picasso.Picasso;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONArray;
@@ -55,6 +56,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+
 public class AllExchangeActivity extends BaseActivity implements AdapterView.OnItemClickListener,View.OnClickListener{
 
     private AppManager appManager;
@@ -65,7 +68,7 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
     private GridLayoutManager mLayoutManager;
     private CardGridAdapter cardGridAdapter;
     private int pageIndex = 0;
-    private int pageNum = 8;
+    private int pageNum = 6;
     private List<CardExchange> listCard;
     private List<ExchangeStatus> listExchangeStatus;
     private List<String> list;
@@ -133,6 +136,8 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
         recyclerview = (RecyclerView) findViewById(R.id.grid_recycle_allExchanger);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_allExchange);
 
+        recyclerview.setHasFixedSize(true);//如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
+
         mLayoutManager=new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false);//设置为一个2列的纵向网格布局
         recyclerview.setLayoutManager(mLayoutManager);
         swipeRefreshLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
@@ -182,7 +187,11 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
 //        pvTime.setDate(Calendar.getInstance());//注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
 //        pvTime.show();
     }
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Picasso.with(this).cancelTag("PhotoTag");
+    }
     private void initData() {
         HttpRequest.getExchangeStatus(new StringCallback() {
             @Override
@@ -239,6 +248,13 @@ public class AllExchangeActivity extends BaseActivity implements AdapterView.OnI
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 //判断RecyclerView的状态 是空闲时，同时，是最后一个可见的ITEM时才加载
+                final Picasso picasso = Picasso.with(AllExchangeActivity.this);
+
+                if (newState == SCROLL_STATE_IDLE) {
+                    picasso.resumeTag("PhotoTag");
+                } else {
+                    picasso.pauseTag("PhotoTag");
+                }
                 if(newState==RecyclerView.SCROLL_STATE_IDLE&&lastVisibleItem+1==cardGridAdapter.getItemCount()){
                     pageIndex  = pageIndex + 1;
                     ExchangeList exChange = new ExchangeList();

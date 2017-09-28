@@ -7,6 +7,7 @@ import android.graphics.PorterDuff.Mode;
 import android.widget.ImageView;
 
 import com.cos.huanhuan.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -99,11 +100,11 @@ public class PicassoUtils {
      */
     public void LoadImage(Context context,String path,ImageView imageView,int placeholderimage,int errorimage,String bitmapShowType,float roundRadius){
         if(bitmapShowType.equals(PICASSO_BITMAP_SHOW_CIRCLE_TYPE)){
-            Picasso.with(context).load(path).placeholder(placeholderimage).error(errorimage).transform(new CircleTransform()).into(imageView);
+            Picasso.with(context).load(path).placeholder(placeholderimage).error(errorimage).transform(new CircleTransform()).config(Bitmap.Config.RGB_565).tag("PhotoTag").into(imageView);
         }else if(bitmapShowType.equals(PICASSO_BITMAP_SHOW_ROUND_TYPE)){
-            Picasso.with(context).load(path).placeholder(placeholderimage).error(errorimage).transform(new RoundTransform(roundRadius)).into(imageView);
+            Picasso.with(context).load(path).placeholder(placeholderimage).error(errorimage).transform(new RoundTransform(roundRadius)).config(Bitmap.Config.RGB_565).tag("PhotoTag").into(imageView);
         }else {
-            Picasso.with(context).load(path).placeholder(placeholderimage).error(errorimage).into(imageView);
+            Picasso.with(context).load(path).placeholder(placeholderimage).error(errorimage).config(Bitmap.Config.RGB_565).tag("PhotoTag").fit().into(imageView);
         }
     }
     /**

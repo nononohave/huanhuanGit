@@ -20,6 +20,9 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.squareup.picasso.MemoryPolicy.NO_CACHE;
+import static com.squareup.picasso.MemoryPolicy.NO_STORE;
+
 /**
  * Created by mine on 2015/9/24.
  */
@@ -148,7 +151,7 @@ public class ImagPagerUtil {
 
     private void showPic(ImageView imageView, String url) {
         imageView.setImageBitmap(null);
-        Picasso.with(mActivity).load(url).placeholder(R.mipmap.public_placehold).into(imageView);
+        Picasso.with(mActivity).load(url) .memoryPolicy(NO_CACHE, NO_STORE).placeholder(R.mipmap.public_placehold).into(imageView);
         dialog.show();
     }
 

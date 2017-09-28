@@ -105,7 +105,7 @@ public class CardGridAdapter extends Adapter<RecyclerView.ViewHolder>{
             final int pos = getRealPosition(holder);
 
             PicassoUtils.getinstance().LoadImage(mContext,cardList.get(pos).getPortrait(),((MyViewHolder) holder).iv_headImg,R.mipmap.public_placehold,R.mipmap.public_placehold,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,0);
-            PicassoUtils.getinstance().LoadImage(mContext,cardList.get(pos).getCardImgUrl(),((MyViewHolder) holder).card_img_adapter,R.mipmap.public_placehold,R.mipmap.public_placehold,PicassoUtils.PICASSO_BITMAP_SHOW_ROUND_TYPE,0);
+            PicassoUtils.getinstance().LoadImage(mContext,cardList.get(pos).getCardImgUrl(),((MyViewHolder) holder).card_img_adapter,R.mipmap.public_placehold,R.mipmap.public_placehold,PicassoUtils.PICASSO_BITMAP_SHOW_NORMAL_TYPE,0);
             ((MyViewHolder) holder).card_title_adapter.setText(cardList.get(pos).getCardTitle());
             ((MyViewHolder) holder).card_user_adapter.setText(cardList.get(pos).getCreateName());
 

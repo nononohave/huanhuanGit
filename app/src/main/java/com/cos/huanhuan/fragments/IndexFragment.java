@@ -57,6 +57,7 @@ import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
 import com.squareup.okhttp.Request;
+import com.squareup.picasso.Picasso;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONArray;
@@ -65,6 +66,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 /**
  * Created by Administrator on 2017/8/11.
@@ -283,6 +286,12 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
         getData(exChange);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Picasso.with(getActivity()).cancelTag("PhotoTag");
+    }
+
     private void initData() {
         listClassify = new ArrayList<Classify>();
         HttpRequest.getExchangeClass(new StringCallback() {
@@ -340,8 +349,15 @@ public class IndexFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                final Picasso picasso = Picasso.with(getActivity());
+
+                if (newState == SCROLL_STATE_IDLE) {
+                    picasso.resumeTag("PhotoTag");
+                } else {
+                    picasso.pauseTag("PhotoTag");
+                }
                 //判断RecyclerView的状态 是空闲时，同时，是最后一个可见的ITEM时才加载
-                if(newState==RecyclerView.SCROLL_STATE_IDLE&&lastVisibleItem+1==cardGridAdapter.getItemCount()){
+                if(newState== SCROLL_STATE_IDLE&&lastVisibleItem+1==cardGridAdapter.getItemCount()){
                     pageIndex  = pageIndex + 1;
                     ExchangeList exChange = new ExchangeList();
                     String searchText = titleBar.getEtText();

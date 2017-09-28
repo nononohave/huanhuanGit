@@ -54,6 +54,7 @@ import com.cos.huanhuan.views.SpacesItemDecoration;
 import com.cos.huanhuan.views.TitleBar;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Request;
+import com.squareup.picasso.Picasso;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONArray;
@@ -62,6 +63,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class CooperateFragment extends Fragment implements View.OnClickListener,AdapterView.OnItemClickListener{
 
@@ -212,7 +215,11 @@ public class CooperateFragment extends Fragment implements View.OnClickListener,
         cid = "";
         cityStr = "";
     }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Picasso.with(getActivity()).cancelTag("PhotoTag");
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -243,6 +250,13 @@ public class CooperateFragment extends Fragment implements View.OnClickListener,
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                final Picasso picasso = Picasso.with(getActivity());
+
+                if (newState == SCROLL_STATE_IDLE) {
+                    picasso.resumeTag("PhotoTag");
+                } else {
+                    picasso.pauseTag("PhotoTag");
+                }
                 //判断RecyclerView的状态 是空闲时，同时，是最后一个可见的ITEM时才加载
                 if(newState==RecyclerView.SCROLL_STATE_IDLE&&lastVisibleItem+1==coopCardGridAdapter.getItemCount()) {
                     CoopList coopList = new CoopList();

@@ -169,48 +169,52 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                 dialogLoading = ViewUtils.createLoadingDialog(RegisterSecondActivity.this);
                 String verifyText = et_register2_code.getText().toString();
                 if(AppStringUtils.isNotEmpty(verifyText)){
-                    if(returnVerifyCode.equals(verifyText)){
+                    if(AppStringUtils.isNotEmpty(returnVerifyCode)) {
+                        if (returnVerifyCode.equals(verifyText)) {
 //                        String UserName,String Type,String Password,String VerifyCode, StringCallback
 //                        stringCallback
-                        try {
-                            dialogLoading.show();
-                            HttpRequest.register(phonePre, "phone", password, verifyText, new StringCallback() {
-                                @Override
-                                public void onError(Request request, Exception e) {
-                                   toastErrorMsg(RegisterSecondActivity.this,"请求失败！");
-                                    dialogLoading.dismiss();
-                                }
-
-                                @Override
-                                public void onResponse(String response) {
-                                    //{"success":"true","error":200,"errorMsg":null}
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(response);
-                                        Boolean success = jsonObject.getBoolean("success");
-                                        if(success){
-                                            dialogLoading.dismiss();
-                                           toastErrorMsg(RegisterSecondActivity.this,"注册成功！");
-                                            Intent intent = new Intent(RegisterSecondActivity.this,LoginActivity.class);
-                                            startActivity(intent);
-                                            AppACache appACache = AppACache.get(RegisterSecondActivity.this);
-                                            appACache.put("phone",phonePre);
-                                        }else{
-                                            String errorMsg = jsonObject.getString("errorMsg");
-                                           toastErrorMsg(RegisterSecondActivity.this,"注册失败！原因：" + errorMsg);
-                                            dialogLoading.dismiss();
-                                        }
-                                    } catch (JSONException e) {
+                            try {
+                                dialogLoading.show();
+                                HttpRequest.register(phonePre, "phone", password, verifyText, new StringCallback() {
+                                    @Override
+                                    public void onError(Request request, Exception e) {
+                                        toastErrorMsg(RegisterSecondActivity.this, "请求失败！");
                                         dialogLoading.dismiss();
-                                        e.printStackTrace();
                                     }
-                                }
-                            });
-                        } catch (JSONException e) {
-                            dialogLoading.show();
-                            e.printStackTrace();
+
+                                    @Override
+                                    public void onResponse(String response) {
+                                        //{"success":"true","error":200,"errorMsg":null}
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(response);
+                                            Boolean success = jsonObject.getBoolean("success");
+                                            if (success) {
+                                                dialogLoading.dismiss();
+                                                toastErrorMsg(RegisterSecondActivity.this, "注册成功！");
+                                                Intent intent = new Intent(RegisterSecondActivity.this, LoginActivity.class);
+                                                startActivity(intent);
+                                                AppACache appACache = AppACache.get(RegisterSecondActivity.this);
+                                                appACache.put("phone", phonePre);
+                                            } else {
+                                                String errorMsg = jsonObject.getString("errorMsg");
+                                                toastErrorMsg(RegisterSecondActivity.this, "注册失败！原因：" + errorMsg);
+                                                dialogLoading.dismiss();
+                                            }
+                                        } catch (JSONException e) {
+                                            dialogLoading.dismiss();
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            } catch (JSONException e) {
+                                dialogLoading.show();
+                                e.printStackTrace();
+                            }
+                        } else {
+                            toastErrorMsg(RegisterSecondActivity.this, "请等待获取验证码");
                         }
                     }else{
-                       toastErrorMsg(RegisterSecondActivity.this,"验证码有误");
+                        toastErrorMsg(RegisterSecondActivity.this, "验证码有误");
                     }
                 }else{
                    toastErrorMsg(RegisterSecondActivity.this,"请输入验证码");

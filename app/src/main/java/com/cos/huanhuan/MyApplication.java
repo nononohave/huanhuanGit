@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,6 +16,8 @@ import com.cos.huanhuan.utils.FileUtils;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.RCrashHandler;
 import com.squareup.okhttp.Request;
+import com.squareup.picasso.LruCache;
+import com.squareup.picasso.Picasso;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
@@ -23,6 +27,8 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.rong.imkit.RongIM;
 import io.rong.imkit.widget.provider.RealTimeLocationMessageProvider;
@@ -49,6 +55,12 @@ public class MyApplication extends Application {
         }
         mAppContext = getApplicationContext();
         initCrashHandler();
+
+        //控制字体不系统变化
+        Resources res = super.getResources();
+        Configuration config = new Configuration();
+        config.setToDefaults();
+        res.updateConfiguration(config, res.getDisplayMetrics());
     }
 
     //各个平台的配置，建议放在全局Application或者程序入口
