@@ -1,16 +1,19 @@
 package com.cos.huanhuan.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.model.Image;
 import com.cos.huanhuan.utils.AppBigDecimal;
 import com.cos.huanhuan.utils.AppScreenMgr;
+import com.cos.huanhuan.utils.PicassoUtils;
 import com.cos.huanhuan.utils.ViewUtils;
 import com.squareup.picasso.Picasso;
 
@@ -51,14 +54,18 @@ public class CoopDetailImageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
-        convertView = LayoutInflater.from(context).inflate(R.layout.coop_detail_image, null);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.coop_detail_image, null);
+        }
         imageView = (ImageView) convertView.findViewById(R.id.imageView);
         convertView.setTag(imageView);
         if(getItem(position).getWidth() != 0 && getItem(position).getHeight() != 0) {
             imgHeight = new Double(AppBigDecimal.multiply(AppBigDecimal.divide(Double.valueOf(screenWidth), Double.valueOf(getItem(position).getWidth())), Double.valueOf(getItem(position).getHeight()), 0)).intValue();
-            Picasso.with(context).load(getItem(position).getImgPath()).placeholder(R.mipmap.public_placehold).resize(screenWidth, imgHeight).into(imageView);
+            //Picasso.with(context).load(getItem(position).getImgPath()).placeholder(R.mipmap.public_placehold).resize(screenWidth, imgHeight).into(imageView);//部分jpg图片无法用Picasso加载出来
+            Glide.with(context).load(getItem(position).getImgPath()).placeholder(R.mipmap.public_placehold).override(screenWidth,imgHeight).into(imageView);
         }else{
-            Picasso.with(context).load(getItem(position).getImgPath()).placeholder(R.mipmap.public_placehold).into(imageView);
+            //Picasso.with(context).load(getItem(position).getImgPath()).placeholder(R.mipmap.public_placehold).into(imageView);
+            Glide.with(context).load(getItem(position).getImgPath()).placeholder(R.mipmap.public_placehold).into(imageView);
         }
         return convertView;
     }

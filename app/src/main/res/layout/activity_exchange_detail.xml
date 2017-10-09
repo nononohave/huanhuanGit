@@ -167,7 +167,6 @@
                         android:id="@+id/tv_exchange_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="可兑换"
                         android:layout_marginLeft="10dp"
                         android:textColor="@color/grey_black"
                         android:textSize="@dimen/popTextSize"
@@ -184,7 +183,6 @@
                         android:id="@+id/tv_exchange_classify"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="动漫"
                         android:layout_marginLeft="10dp"
                         android:textColor="@color/titleBarTextColor"
                         android:textSize="@dimen/popTextSize"
@@ -201,11 +199,49 @@
                         android:id="@+id/tv_exchange_finalValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="125元"
                         android:layout_marginLeft="10dp"
                         android:textColor="@color/phone_text"
                         android:textSize="@dimen/popTextSize"
                         />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="15dp"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="来源"
+                        android:textColor="@color/greyText"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                    <TextView
+                        android:id="@+id/tv_exchange_from"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/grey_black"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="尺寸"
+                        android:textColor="@color/greyText"
+                        android:layout_marginLeft="30dp"
+                        android:textSize="@dimen/popTextSize"
+                        />
+                    <TextView
+                        android:id="@+id/tv_exchange_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/titleBarTextColor"
+                        android:textSize="@dimen/popTextSize"
+                        />
+
                 </LinearLayout>
                 <TextView
                     android:id="@+id/tv_exchange_detailDesc"

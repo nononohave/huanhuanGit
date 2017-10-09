@@ -58,7 +58,8 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
 
     private ObservableScrollView scrollView;
     private ImageView imageView_head_blur,img_exchange_share,img_exchange_back;
-    private TextView nickName,personDesc,detailTitle,tv_exchange_status,tv_exchange_classify,tv_exchange_finalValue,tv_exchange_detailDesc,tv_exchange_evalu,tv_exchange_join;
+    private TextView nickName,personDesc,detailTitle,tv_exchange_status,tv_exchange_classify,tv_exchange_finalValue,tv_exchange_detailDesc,tv_exchange_evalu,tv_exchange_join
+            ,tv_exchange_from,tv_exchange_size;
     private CircleImageView headCircleImg;
     private MyListView listView;
     private RelativeLayout ll_titleBar_exchange;
@@ -117,6 +118,9 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
         tv_exchange_detailDesc = (TextView) findViewById(R.id.tv_exchange_detailDesc);
         tv_exchange_evalu = (TextView) findViewById(R.id.tv_exchange_evalu);
         tv_exchange_join = (TextView) findViewById(R.id.tv_exchange_join);
+        tv_exchange_from = (TextView) findViewById(R.id.tv_exchange_from);
+        tv_exchange_size = (TextView) findViewById(R.id.tv_exchange_size);
+
         btn_exchange_borrow = (Button) findViewById(R.id.btn_exchange_borrow);
         btn_exchange_now = (Button) findViewById(R.id.btn_exchange_now);
         headCircleImg = (CircleImageView) findViewById(R.id.civ_exchange_headImg);
@@ -250,6 +254,8 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
         tv_exchange_finalValue.setText(exchangeDetail.getOfficial());
         tv_exchange_detailDesc.setText(exchangeDetail.getDescribe());
         tv_exchange_evalu.setText(String.valueOf(exchangeDetail.getCommentNum()));
+        tv_exchange_from.setText(exchangeDetail.getSource());
+        tv_exchange_size.setText(exchangeDetail.getSize());
 
         if(exchangeDetail.getHeed()){
             tv_exchange_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_red),null,null);
@@ -258,7 +264,7 @@ public class ExchangeDetailActivity extends BaseActivity implements ObservableSc
             tv_exchange_join.setCompoundDrawablesWithIntrinsicBounds(null,getResources().getDrawable(R.mipmap.join_grey),null,null);
             isLike = false;
         }
-
+        imgList.removeAll(imgList);
         imgList.addAll(exchangeDetail.getImgList());
         coopDetailImageAdapter.notifyDataSetChanged();
         listStrImg = new ArrayList<>();

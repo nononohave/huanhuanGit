@@ -167,6 +167,17 @@ public class HttpRequest {
                 .execute(callback);
     }
 
+    /**
+     * 获取兑换尺寸
+     * @param callback
+     */
+    public static void getExchangeSize(StringCallback callback){
+        String url = TEXT_HUANHUAN_HOST + "SysParas/Size";
+        OkHttpUtils.get().url(url)
+                .build()
+                .execute(callback);
+    }
+
     //获取合作分类
     public static void getCoopClass(StringCallback callback){
         String url = TEXT_HUANHUAN_HOST + "CooperationClasses";

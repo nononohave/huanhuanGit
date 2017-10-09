@@ -41,6 +41,7 @@ import com.bigkoo.pickerview.OptionsPickerView;
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.adapter.ImageGridAdapter;
 import com.cos.huanhuan.model.Classify;
+import com.cos.huanhuan.model.CosSize;
 import com.cos.huanhuan.model.MultiPartStack;
 import com.cos.huanhuan.model.MultipartRequest;
 import com.cos.huanhuan.model.PublishExchanges;
@@ -84,10 +85,10 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
     private OptionsPickerView pvNoLinkOptions;
 
     private EditText et_publish_cosTitle, et_publish_cosAuthor, et_publish_cosRole, et_publish_cosContain, et_publish_cosFrom, et_publish_cosPrice, et_publish_cosDetailDesc;
-    private LinearLayout ll_publishExchange_classify;
+    private LinearLayout ll_publishExchange_classify,ll_publishExchange_size;
     private MyGridView gridView_publish;
     private ImageView select_img_page;
-    private TextView tv_publish_cosClassify;
+    private TextView tv_publish_cosClassify,tv_publish_cosSize;
 
     //单张图片返回码
     private static final int REQUEST_CAMERA_CODE = 11;
@@ -119,6 +120,9 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
 
     private List<Classify> listClassify;
     private List<String> listClassifyString;
+
+    private List<CosSize> listCosSize;
+    private List<String> listCosSizeString;
 
     private PopViewListAdapter adapter;
 
@@ -179,20 +183,69 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
         et_publish_cosDetailDesc = (EditText) findViewById(R.id.et_publish_cosDetailDesc);
 
         ll_publishExchange_classify = (LinearLayout) findViewById(R.id.ll_publishExchange_classify);
+        ll_publishExchange_size = (LinearLayout) findViewById(R.id.ll_publishExchange_size);
 
         gridView_publish = (MyGridView) findViewById(R.id.gridView_publish);
 
         select_img_page = (ImageView) findViewById(R.id.select_img_page);
 
         tv_publish_cosClassify = (TextView) findViewById(R.id.tv_publish_cosClassify);
+        tv_publish_cosSize = (TextView) findViewById(R.id.tv_publish_cosSize);
 
         select_img_page.setOnClickListener(this);
         gridView_publish.setOnItemClickListener(this);
         ll_publishExchange_classify.setOnClickListener(this);
+        ll_publishExchange_size.setOnClickListener(this);
 
         listClassify = new ArrayList<Classify>();
         listClassifyString = new ArrayList<>();
 
+        listCosSize = new ArrayList<CosSize>();
+        listCosSizeString = new ArrayList<>();
+
+        getClassify();
+        getCosSize();
+
+        userId = getUserId();
+        ArrayList<String> listItem = new ArrayList<String>();
+        loadAdpater(listItem);
+    }
+
+    private void getCosSize() {
+        HttpRequest.getExchangeSize(new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                toastErrorMsg(PublishExchangeActivity.this,"请求分类接口失败！");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Boolean success = jsonObject.getBoolean("success");
+                    String errorMsg = jsonObject.getString("errorMsg");
+                    if(success) {
+                        JSONArray arr = jsonObject.getJSONArray("data");
+                        for (int i = 0; i < arr.length(); i++) {
+                            CosSize cosSize = new CosSize();
+                            String value = arr.getJSONObject(i).getString("value");
+                            String text = arr.getJSONObject(i).getString("text");
+                            cosSize.setText(text);
+                            cosSize.setValue(value);
+                            listCosSize.add(cosSize);
+                            listCosSizeString.add(text);
+                        }
+                    }else{
+                        toastErrorMsg(PublishExchangeActivity.this, " 请求分类接口失败！原因：" + errorMsg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void getClassify() {
         HttpRequest.getExchangeClass(new StringCallback() {
             @Override
             public void onError(Request request, Exception e) {
@@ -226,9 +279,6 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                 }
             }
         });
-        userId = getUserId();
-        ArrayList<String> listItem = new ArrayList<String>();
-        loadAdpater(listItem);
     }
 
     @Override
@@ -300,6 +350,29 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                 .build();
                 pvOptions.setPicker(listClassifyString, null, null);
                 pvOptions.show();
+                break;
+            case R.id.ll_publishExchange_size:
+
+                int positionSize = 0;
+                String selectItemSize = tv_publish_cosSize.getText().toString();
+                if(AppStringUtils.isNotEmpty(selectItemSize) && listCosSizeString != null && listCosSizeString.size() > 0){
+                    positionSize = listCosSizeString.indexOf(selectItemSize);
+                }
+                //条件选择器
+                OptionsPickerView pvOptionsSize = new  OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int option2, int options3 ,View v) {
+                        //返回的分别是三个级别的选中位置
+                        String className = listCosSizeString.get(options1);
+                        tv_publish_cosSize.setText(className);
+                    }
+                }).setContentTextSize(20).isDialog(true)
+                        .setSelectOptions(positionSize)
+                        .setCancelColor(getResources().getColor(R.color.titleBarTextColor))
+                        .setSubmitColor(getResources().getColor(R.color.titleBarTextColor))
+                        .build();
+                pvOptionsSize.setPicker(listCosSizeString, null, null);
+                pvOptionsSize.show();
                 break;
         }
     }
@@ -630,6 +703,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
             int position = listClassifyString.indexOf(tv_publish_cosClassify.getText().toString());
             selectClassifyId = listClassify.get(position).getClassifyId();
         }
+        String selectCosSizeText = tv_publish_cosSize.getText().toString();
         if(AppStringUtils.isEmpty(cosTitle)){
             toastErrorMsg(PublishExchangeActivity.this, "请输入标题");
             return;
@@ -656,6 +730,10 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
         }
         if(AppStringUtils.isEmpty(selectCosClassText)){
             toastErrorMsg(PublishExchangeActivity.this, "请选择物品类别");
+            return;
+        }
+        if(AppStringUtils.isEmpty(selectCosSizeText)){
+            toastErrorMsg(PublishExchangeActivity.this, "请选择物品尺寸");
             return;
         }
         if(AppStringUtils.isEmpty(cosDetailDesc)){
@@ -781,6 +859,9 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     String selectClassifyId = "";
                     int position = listClassifyString.indexOf(tv_publish_cosClassify.getText().toString());
                     selectClassifyId = listClassify.get(position).getClassifyId();
+                    String selectCosSizeId = "";
+                    int positionSize = listCosSizeString.indexOf(tv_publish_cosSize.getText().toString());
+                    selectCosSizeId = listCosSize.get(positionSize).getValue();
                     PublishExchanges publishExchanges = new PublishExchanges();
                     publishExchanges.setTitle(cosTitle);
                     publishExchanges.setItemName(cosAuthor);
@@ -789,6 +870,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     publishExchanges.setSource(cosFrom);
                     publishExchanges.setPrice(Double.parseDouble(cosPriceText));
                     publishExchanges.setClassId(Integer.valueOf(selectClassifyId));
+                    publishExchanges.setSize(selectCosSizeId);
                     publishExchanges.setDescribe(cosDetailDesc);
                     publishExchanges.setCover(coverId);
                     publishExchanges.setImgList(mutiImgId);

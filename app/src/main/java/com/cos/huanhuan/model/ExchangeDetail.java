@@ -28,6 +28,24 @@ public class ExchangeDetail {
     private String portrait;//头像
     private String desc;//个人描述
     private String shareURL;//分享路径
+    private String source;//来源
+    private String size;//尺码
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
 
     public String getShareURL() {
         return shareURL;

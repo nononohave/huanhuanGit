@@ -16,6 +16,15 @@ public class PublishExchanges {
     private Double Price;//原价
     private int ClassId;//分类
     private String Source;//物品来源
+    private String Size;//物品尺寸
+
+    public String getSize() {
+        return Size;
+    }
+
+    public void setSize(String size) {
+        Size = size;
+    }
 
     public int getUserId() {
         return UserId;
