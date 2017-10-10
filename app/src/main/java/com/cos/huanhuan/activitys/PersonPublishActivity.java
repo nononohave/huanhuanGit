@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.adapter.PersonCoopAdapter;
@@ -27,12 +28,14 @@ import com.cos.huanhuan.adapter.PersonExchangeAdapter;
 import com.cos.huanhuan.model.PersonCoop;
 import com.cos.huanhuan.model.PersonPublish;
 import com.cos.huanhuan.utils.AppManager;
+import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
 import com.cos.huanhuan.utils.DensityUtils;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
 import com.cos.huanhuan.views.PublicView;
 import com.cos.huanhuan.views.SpacesItemDecoration;
+import com.cos.huanhuan.views.TitleBar;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -65,6 +68,8 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
     private String userId;
     private int selectedTab = 0;
     private Handler handler;
+    private String address = "";
+    private TextView right_button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +83,32 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
         userId = getUserId();
         initView();
         initData(0);
+        initAddress();
+    }
+
+    private void initAddress() {
+        HttpRequest.getUserAgreeMent(3,new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                toastErrorMsg(PersonPublishActivity.this,"请求失败！");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Boolean success = jsonObject.getBoolean("success");
+                    String errMsg = jsonObject.getString("errorMsg");
+                    if(success){
+                        address = jsonObject.getString("data");
+                    }else{
+                        toastErrorMsg(PersonPublishActivity.this,"请求失败！原因：" + errMsg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void initView() {
@@ -86,6 +117,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
         publish_tabLayout = (TabLayout) findViewById(R.id.tl_person_publish_tabLayout);
         recyclerview = (RecyclerView) findViewById(R.id.grid_recycle_personPublish);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_personPublish);
+        right_button = (TextView) findViewById(R.id.right_button);
         mLayoutManager=new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false);//设置为一个2列的纵向网格布局
         recyclerview.setLayoutManager(mLayoutManager);
         swipeRefreshLayout.setProgressViewOffset(false, 0,  (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
@@ -99,6 +131,7 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
             }
         });
         publish_back.setOnClickListener(this);
+        right_button.setOnClickListener(this);
         listPublish = new ArrayList<>();
         adapterExchange = new PersonExchangeAdapter(PersonPublishActivity.this,listPublish);
         recyclerview.setAdapter(adapterExchange);
@@ -496,6 +529,21 @@ public class PersonPublishActivity extends BaseActivity implements View.OnClickL
         switch (view.getId()){
             case R.id.img_person_publish_back:
                 appManager.finishActivity();
+                break;
+            case R.id.right_button:
+                if(AppStringUtils.isNotEmpty(address)){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(PersonPublishActivity.this);
+                    builder.setMessage(address);
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else{
+                    toastErrorMsg(PersonPublishActivity.this,"未获取到发货地址！");
+                }
                 break;
         }
     }

@@ -14,17 +14,18 @@
         >
         <ImageView
             android:id="@+id/img_person_publish_back"
-            android:layout_width="45dp"
+            android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_alignParentLeft="true"
             android:scaleType="center"
             android:src="@mipmap/nav_back"
             android:layout_marginTop="8dp"
+            android:layout_weight="1.5"
             />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tl_person_publish_tabLayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:tabBackground="@color/titleBarBack"
             app:tabIndicatorColor="@color/titleBarTextColor"
@@ -32,6 +33,17 @@
             app:tabTextColor="@color/black"
             app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
             android:layout_marginTop="8dp"
+            android:layout_weight="8"
+            />
+        <TextView
+            android:id="@+id/right_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/send_address"
+            android:layout_weight="2"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
             />
     </LinearLayout>
     <View

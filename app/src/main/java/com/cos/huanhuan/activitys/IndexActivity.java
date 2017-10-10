@@ -1,13 +1,19 @@
 package com.cos.huanhuan.activitys;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,7 +21,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +31,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.adapter.ConversationListAdapterEx;
+import com.cos.huanhuan.apksupdate.UpdateAgent;
 import com.cos.huanhuan.fragments.CooperateFragment;
 import com.cos.huanhuan.fragments.IndexFragment;
 import com.cos.huanhuan.fragments.MessageFragment;
@@ -42,12 +52,22 @@ import com.cos.huanhuan.views.BottomBarItem;
 import com.cos.huanhuan.views.BottomBarLayout;
 import com.cos.huanhuan.views.TabFragment;
 import com.cos.huanhuan.views.TitleBar;
+import com.pgyersdk.javabean.AppBean;
+import com.pgyersdk.update.PgyUpdateManager;
+import com.pgyersdk.update.UpdateManagerListener;
 import com.squareup.okhttp.Request;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +80,7 @@ import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.UserInfo;
 
 public class IndexActivity extends FragmentActivity implements RongIM.UserInfoProvider{
+
     private ViewPager mVpContent;
     private BottomBarLayout mBottomBarLayout;
 
@@ -73,6 +94,7 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
     private Handler handler;
     private static final int RETURN_CAMERA_CODE = 123;
     private static final int RETURN_PHOTOS_CODE = 124;
+    private UpdateAgent.OnProgressListener mOnProgressListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +109,48 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
         initView();
         initData();
         initListener();
+
+        //版本控制，回头看是否用后台管理还是蒲公英管理续写代码
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        PgyUpdateManager.register(IndexActivity.this, "com.cos.huanhuan.photos.fileprovider",
+//                                new UpdateManagerListener() {
+//                                    @Override
+//                                    public void onUpdateAvailable(final String result) {
+//
+//                                        // 将新版本信息封装到AppBean中
+//                                        final AppBean appBean = getAppBeanFromString(result);
+//                                        new AlertDialog.Builder(IndexActivity.this)
+//                                                .setTitle("更新")
+//                                                .setMessage("")
+//                                                .setNegativeButton(
+//                                                        "确定",
+//                                                        new DialogInterface.OnClickListener() {
+//
+//                                                            @Override
+//                                                            public void onClick(
+//                                                                    DialogInterface dialog,
+//                                                                    int which) {
+//                                                                if (mOnProgressListener == null) {
+//                                                                    mOnProgressListener = new UpdateAgent.DialogProgress(IndexActivity.this);
+//                                                                }
+//                                                                new MyLoadAsyncTask().execute(appBean.getDownloadURL());
+//                                                            }
+//                                         }).show();
+//                                    }
+//                                    @Override
+//                                    public void onNoUpdateAvailable() {
+//                                        Log.e("呵呵哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈","无更新信息");
+//                                    }
+//                                });
+//                    }
+//                });
+//            }
+//        }).start();
     }
 
     private void initView() {
@@ -132,6 +196,118 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
         PersonFragment meFragment = new PersonFragment();
         mFragmentList.add(meFragment);
     }
+
+     /* 异步任务，后台处理与更新UI */
+
+    class MyLoadAsyncTask extends AsyncTask<String, String, String> {
+      /* 后台线程 */
+
+        @Override
+        protected String doInBackground(String... params) {
+            final String fileName = "幻幻.apk";
+            File tmpFile = new File(IndexActivity.this.getExternalCacheDir() + "/huanhuan/");
+            if (!tmpFile.exists()) {
+                tmpFile.mkdir();
+            }
+            final File file = new File(IndexActivity.this.getExternalCacheDir()+ "/huanhuan/" + fileName);
+      /* 所下载文件的URL */
+
+            try {
+                URL url = new URL(params[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        /* URL属性设置 */
+                conn.setRequestMethod("GET");
+        /* URL建立连接 */
+
+                conn.connect();
+        /* 下载文件的大小 */
+                int fileOfLength = conn.getContentLength();
+        /* 每次下载的大小与总下载的大小 */
+
+                int totallength = 0;
+                int length = 0;
+        /* 输入流 */
+                InputStream in = conn.getInputStream();
+        /* 输出流 */
+                FileOutputStream out = new FileOutputStream(file);
+        /* 缓存模式，下载文件 */
+                byte[] buff = new byte[1024 * 1024];
+                while ((length = in.read(buff)) > 0) {
+                    totallength += length;
+                    String str1 = "" + (int) ((totallength * 100) / fileOfLength);
+                    publishProgress(str1);
+                    out.write(buff, 0, length);
+                }
+        /* 关闭输入输出流 */
+                in.close();
+                out.flush();
+                out.close();
+
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
+        }
+        /* 预处理UI线程 */
+        @Override
+        protected void onPreExecute() {
+            // showDialog(0);
+            mOnProgressListener.onStart();
+            super.onPreExecute();
+        }
+    /* 结束时的UI线程 */
+
+        @Override
+        protected void onPostExecute(String result) {
+            mOnProgressListener.onFinish();
+            File newFile = new File(IndexActivity.this.getExternalCacheDir() + "/huanhuan/", "幻幻.apk");
+            openFile(newFile);
+            super.onPostExecute(result);
+        }
+    /* 处理UI线程，会被多次调用,触发事件为publicProgress方法 */
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+      /* 进度显示 */
+            //pdialog.setProgress(Integer.parseInt(values[0]));
+            mOnProgressListener.onProgress(Integer.parseInt(values[0]));
+        }
+    }
+
+    //打开APK程序代码
+
+    private void openFile(File file) {
+        // TODO Auto-generated method stub
+        Log.e("OpenFile", file.getName());
+   /*Intent intent = new Intent();
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    intent.setAction(android.content.Intent.ACTION_VIEW);
+    intent.setDataAndType(Uri.fromFile(file),
+            "application/vnd.android.package-archive");*/
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        } else {
+            Uri uri = null;
+            try {
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                uri = FileProvider.getUriForFile(IndexActivity.this,"com.cos.huanhuan.photos.fileprovider", file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            intent.setDataAndType(uri, "application/vnd.android.package-archive");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     class MyHandler extends Handler
     {
         //接受message的信息

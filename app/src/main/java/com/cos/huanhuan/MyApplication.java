@@ -15,6 +15,7 @@ import com.cos.huanhuan.utils.CrashHandlerUtil;
 import com.cos.huanhuan.utils.FileUtils;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.RCrashHandler;
+import com.pgyersdk.crash.PgyCrashManager;
 import com.squareup.okhttp.Request;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
@@ -61,6 +62,7 @@ public class MyApplication extends Application {
         Configuration config = new Configuration();
         config.setToDefaults();
         res.updateConfiguration(config, res.getDisplayMetrics());
+        PgyCrashManager.register(this);
     }
 
     //各个平台的配置，建议放在全局Application或者程序入口
