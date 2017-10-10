@@ -127,7 +127,7 @@ public class PersonDepositActivity extends BaseActivity implements View.OnClickL
                         toastErrorMsg(PersonDepositActivity.this, "您没有押金可退还");
                     }
                 }else{
-                    toastErrorMsg(PersonDepositActivity.this, "您已提交退还押金处理，请等待后台审核");
+                    //toastErrorMsg(PersonDepositActivity.this, "您已提交退还押金处理，请等待后台审核");
                 }
             break;
         }

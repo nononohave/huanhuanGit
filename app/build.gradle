@@ -19,15 +19,9 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0.2"
+        versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-    }
-    allprojects {
-        repositories {
-            jcenter()
-            maven { url "https://raw.githubusercontent.com/Pgyer/mvn_repo_pgyer/master" }
-        }
     }
     sourceSets {
         main {
@@ -92,6 +86,5 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
-    compile 'com.pgyersdk:sdk:2.7.6'
     testCompile 'junit:junit:4.12'
 }

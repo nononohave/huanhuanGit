@@ -27,7 +27,15 @@ public class ApkUpdateInfoBean {
     private String versionName;
 
     private FileSize fileSize;
+    private Boolean isUpdate;
 
+    public Boolean getUpdate() {
+        return isUpdate;
+    }
+
+    public void setUpdate(Boolean update) {
+        isUpdate = update;
+    }
 
     public void getApkInfo() {
 

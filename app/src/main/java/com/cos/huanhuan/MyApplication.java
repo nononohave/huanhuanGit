@@ -6,35 +6,22 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.cos.huanhuan.fragments.MessageFragment;
-import com.cos.huanhuan.utils.CrashHandlerUtil;
 import com.cos.huanhuan.utils.FileUtils;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.RCrashHandler;
-import com.pgyersdk.crash.PgyCrashManager;
 import com.squareup.okhttp.Request;
-import com.squareup.picasso.LruCache;
-import com.squareup.picasso.Picasso;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
-import com.umeng.socialize.UMShareConfig;
 import com.umeng.socialize.common.QueuedWork;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import io.rong.imkit.RongIM;
-import io.rong.imkit.widget.provider.RealTimeLocationMessageProvider;
-import io.rong.push.RongPushClient;
-import io.rong.push.common.RongException;
 
 /**
  * @author wangfei
@@ -62,7 +49,6 @@ public class MyApplication extends Application {
         Configuration config = new Configuration();
         config.setToDefaults();
         res.updateConfiguration(config, res.getDisplayMetrics());
-        PgyCrashManager.register(this);
     }
 
     //各个平台的配置，建议放在全局Application或者程序入口

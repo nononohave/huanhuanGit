@@ -35,6 +35,9 @@ import android.widget.TextView;
 
 import com.cos.huanhuan.R;
 import com.cos.huanhuan.adapter.ConversationListAdapterEx;
+import com.cos.huanhuan.apksupdate.ApkUpdateInfoBean;
+import com.cos.huanhuan.apksupdate.ApkUpdateInfoLoadBiz;
+import com.cos.huanhuan.apksupdate.ApkUpdateInfoLoadBizImp;
 import com.cos.huanhuan.apksupdate.UpdateAgent;
 import com.cos.huanhuan.fragments.CooperateFragment;
 import com.cos.huanhuan.fragments.IndexFragment;
@@ -44,6 +47,7 @@ import com.cos.huanhuan.model.UserValueData;
 import com.cos.huanhuan.utils.AppManager;
 import com.cos.huanhuan.utils.AppStringUtils;
 import com.cos.huanhuan.utils.AppToastMgr;
+import com.cos.huanhuan.utils.GlobalStands;
 import com.cos.huanhuan.utils.HttpRequest;
 import com.cos.huanhuan.utils.JsonUtils;
 import com.cos.huanhuan.utils.PicassoUtils;
@@ -52,9 +56,6 @@ import com.cos.huanhuan.views.BottomBarItem;
 import com.cos.huanhuan.views.BottomBarLayout;
 import com.cos.huanhuan.views.TabFragment;
 import com.cos.huanhuan.views.TitleBar;
-import com.pgyersdk.javabean.AppBean;
-import com.pgyersdk.update.PgyUpdateManager;
-import com.pgyersdk.update.UpdateManagerListener;
 import com.squareup.okhttp.Request;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -81,6 +82,7 @@ import io.rong.imlib.model.UserInfo;
 
 public class IndexActivity extends FragmentActivity implements RongIM.UserInfoProvider{
 
+    ApkUpdateInfoBean infoBean;
     private ViewPager mVpContent;
     private BottomBarLayout mBottomBarLayout;
 
@@ -94,7 +96,9 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
     private Handler handler;
     private static final int RETURN_CAMERA_CODE = 123;
     private static final int RETURN_PHOTOS_CODE = 124;
+    private UpdateAgent.OnPromptListener2 mOnPromptListener;
     private UpdateAgent.OnProgressListener mOnProgressListener;
+    private UpdateAgent.OnProgressListener mOnNotificationListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,48 +113,25 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
         initView();
         initData();
         initListener();
-
-        //版本控制，回头看是否用后台管理还是蒲公英管理续写代码
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        PgyUpdateManager.register(IndexActivity.this, "com.cos.huanhuan.photos.fileprovider",
-//                                new UpdateManagerListener() {
-//                                    @Override
-//                                    public void onUpdateAvailable(final String result) {
-//
-//                                        // 将新版本信息封装到AppBean中
-//                                        final AppBean appBean = getAppBeanFromString(result);
-//                                        new AlertDialog.Builder(IndexActivity.this)
-//                                                .setTitle("更新")
-//                                                .setMessage("")
-//                                                .setNegativeButton(
-//                                                        "确定",
-//                                                        new DialogInterface.OnClickListener() {
-//
-//                                                            @Override
-//                                                            public void onClick(
-//                                                                    DialogInterface dialog,
-//                                                                    int which) {
-//                                                                if (mOnProgressListener == null) {
-//                                                                    mOnProgressListener = new UpdateAgent.DialogProgress(IndexActivity.this);
-//                                                                }
-//                                                                new MyLoadAsyncTask().execute(appBean.getDownloadURL());
-//                                                            }
-//                                         }).show();
-//                                    }
-//                                    @Override
-//                                    public void onNoUpdateAvailable() {
-//                                        Log.e("呵呵哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈","无更新信息");
-//                                    }
-//                                });
-//                    }
-//                });
-//            }
-//        }).start();
+        mOnPromptListener = new OnPrompt(this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!GlobalStands.isUpdateShow) {
+                    ApkUpdateInfoLoadBiz loadBiz = new ApkUpdateInfoLoadBizImp();
+                    infoBean = loadBiz.apkUpdateInfoLoad(getAppVersionName(IndexActivity.this));
+                    SystemClock.sleep(200);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (infoBean != null) {
+                                check();
+                            }
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
     private void initView() {
@@ -195,6 +176,110 @@ public class IndexActivity extends FragmentActivity implements RongIM.UserInfoPr
 
         PersonFragment meFragment = new PersonFragment();
         mFragmentList.add(meFragment);
+    }
+
+    void check() {
+        //如果版本不一致
+        if(infoBean.getUpdate() != null && infoBean.getApkUrl() != null) {
+            if (infoBean.getUpdate()) {
+                GlobalStands.isUpdateShow = true;
+                mOnPromptListener.onPrompt2(infoBean);
+            }
+        }
+    }
+
+    /**
+     * 返回当前程序版本名
+     */
+
+    public String getAppVersionName(Context context) {
+        String versionName = "";
+        int versioncode;
+        try {
+            // ---get the package info---
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            versionName = pi.versionName;
+            if (versionName == null || versionName.length() <= 0) {
+                return "";
+            }
+        } catch (Exception e) {
+            Log.e("VersionInfo", "Exception", e);
+        }
+        return versionName;
+    }
+
+    private class OnPrompt implements UpdateAgent.OnPromptListener2 {
+
+        private Context mContext;
+
+        public OnPrompt(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        public void onPrompt2(ApkUpdateInfoBean info) {
+            String content = String.format("");
+            //String content = String.format("最新版本：%1$s\n新版本大小：%2$s\n\n更新内容\n%3$s", info.getVersionName(), "未知大小", info.getNewFeature());
+            final AlertDialog dialog = new AlertDialog.Builder(mContext).create();
+
+            dialog.setTitle("应用更新");
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+
+
+            float density = mContext.getResources().getDisplayMetrics().density;
+            TextView tv = new TextView(mContext);
+            tv.setMovementMethod(new ScrollingMovementMethod());
+            tv.setVerticalScrollBarEnabled(true);
+            tv.setTextSize(14);
+            //tv.setMaxHeight((int) (250 * density));
+            tv.setMaxHeight((int) (50 * density));
+            dialog.setView(tv, (int) (25 * density), (int) (15 * density), (int) (25 * density), 0);
+
+            DialogInterface.OnClickListener listener = new OnPromptClick(true);
+            tv.setText(content);
+            dialog.setButton(DialogInterface.BUTTON_POSITIVE, "立即更新", listener);
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "以后再说", listener);
+            dialog.show();
+        }
+    }
+
+    public class OnPromptClick implements DialogInterface.OnClickListener {
+        private final boolean mIsAutoDismiss;
+
+        public OnPromptClick(boolean isAutoDismiss) {
+            mIsAutoDismiss = isAutoDismiss;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    onDownload();
+                    break;
+                case DialogInterface.BUTTON_NEUTRAL:
+                    dialog.dismiss();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    // not now
+                    break;
+            }
+            if (mIsAutoDismiss) {
+                dialog.dismiss();
+            }
+        }
+    }
+
+    protected void onDownload() {
+        if (mOnNotificationListener == null) {
+            mOnNotificationListener = new UpdateAgent.EmptyProgress();
+        }
+        if (mOnProgressListener == null) {
+            mOnProgressListener = new UpdateAgent.DialogProgress(IndexActivity.this);
+        }
+        new MyLoadAsyncTask().execute(infoBean.getApkUrl());
     }
 
      /* 异步任务，后台处理与更新UI */

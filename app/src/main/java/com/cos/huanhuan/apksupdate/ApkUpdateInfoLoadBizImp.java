@@ -16,12 +16,12 @@ import java.net.URL;
 
 public class ApkUpdateInfoLoadBizImp implements ApkUpdateInfoLoadBiz {
 
-    public ApkUpdateInfoBean apkUpdateInfoLoad() {
+    public ApkUpdateInfoBean apkUpdateInfoLoad(String versionNamePre) {
         ApkUpdateInfoBean infoBean = new ApkUpdateInfoBean();
         String verName="";
         try {
             // 1.创建一个URL对象,打开一个http类型的连接
-            URL url = new URL(url_webHtml);
+            URL url = new URL(url_webHtml + "&localVersion=" + versionNamePre);
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             // 2.给连接设置请求参数
@@ -35,11 +35,9 @@ public class ApkUpdateInfoLoadBizImp implements ApkUpdateInfoLoadBiz {
                 String html = convertStreamToString(conn.getInputStream());
                 JSONObject obj = new JSONObject(html);
                 JSONObject objData = obj.getJSONObject("data");
-                String versionName = objData.getString("version");
-                String newFeature = objData.getString("explain");
-                String apkUrl = "http://erp.9n19.com/release-"+ versionName + ".apk";
-                infoBean.setVersionName(versionName);
-                infoBean.setNewFeature(newFeature);
+                Boolean isUpdate = objData.getBoolean("isUpdate");
+                String apkUrl = objData.getString("url");
+                infoBean.setUpdate(isUpdate);
                 infoBean.setApkUrl(apkUrl);
             }
 
