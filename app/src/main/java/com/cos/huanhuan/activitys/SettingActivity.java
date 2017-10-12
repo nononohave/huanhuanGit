@@ -92,10 +92,13 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 initData();
                 break;
             case R.id.rl_setting_quit:
+                //这里需要清除原先的所有activity
                 sharedPreferencesHelper.remove("userData");
                 sharedPreferencesHelper.remove("userDataDetail");
+                appManager.finishAllActivity();
                 Intent intentLogin = new Intent(SettingActivity.this, LoginActivity.class);
                 startActivity(intentLogin);
+                SettingActivity.this.finish();
                 break;
         }
     }
