@@ -760,7 +760,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
                     MultipartRequest multipartRequest = new MultipartRequest(HttpRequest.TEXT_HUANHUAN_HOST + "Imgs", mErrorListener, mResonseListenerString, "files", listFile, params);
                     multipartRequest.setRetryPolicy(
                             new DefaultRetryPolicy(
-                                    500000,//默认超时时间，应设置一个稍微大点儿的，例如本处的500000
+                                    3000000,//默认超时时间，应设置一个稍微大点儿的，例如本处的500000
                                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,//默认最大尝试次数
                                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
                             )
@@ -828,7 +828,7 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
         MultipartRequest multipartRequest = new MultipartRequest(HttpRequest.TEXT_HUANHUAN_HOST + "Imgs", mErrorMutiListener, mResonseMutiListenerString, "files", listFile, params);
         multipartRequest.setRetryPolicy(
                 new DefaultRetryPolicy(
-                        500000,//默认超时时间，应设置一个稍微大点儿的，例如本处的500000
+                        3000000,//默认超时时间，应设置一个稍微大点儿的，例如本处的500000
                         DefaultRetryPolicy.DEFAULT_MAX_RETRIES,//默认最大尝试次数
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
                 )
