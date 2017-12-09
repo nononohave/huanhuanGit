@@ -162,14 +162,14 @@ public class ResetActivitySecond extends BaseActivity implements View.OnClickLis
                 //点击完成校验验证码
                 String verifyCode = et_reset2_code.getText().toString();
                 if(AppStringUtils.isNotEmpty(verifyCode)){
-                    if(verifyCode.equals(returnVerifyCode)) {
+//                    if(verifyCode.equals(returnVerifyCode)) {
                         Intent intent = new Intent(ResetActivitySecond.this, ResetActivityThird.class);
                         intent.putExtra("verifyCode",verifyCode);
                         intent.putExtra("phone",intentPhone);
                         startActivity(intent);
-                    }else{
-                        toastErrorMsg(ResetActivitySecond.this, " 验证码有误！");
-                    }
+//                    }else{
+//                        toastErrorMsg(ResetActivitySecond.this, " 验证码有误！");
+//                    }
                 }else{
                     toastErrorMsg(ResetActivitySecond.this, " 请输入验证码！");
                 }

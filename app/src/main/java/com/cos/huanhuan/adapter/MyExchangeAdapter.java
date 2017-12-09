@@ -55,15 +55,15 @@ public class MyExchangeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_my_exchange_time.setText(listMyExchange.get(position).getAddTime());
             ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_my_exchange_title.setText(listMyExchange.get(position).getTitle());
             if(listMyExchange.get(position).getExamineId() == 4){
-                ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_return_exchange.setVisibility(View.VISIBLE);
                 ((MyExchangeAdapter.ViewHolder) holder).adapter_address_line.setVisibility(View.VISIBLE);
-            }else{
                 ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_return_exchange.setVisibility(View.GONE);
-                ((MyExchangeAdapter.ViewHolder) holder).adapter_address_line.setVisibility(View.GONE);
+            }else{
+                ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_return_exchange.setVisibility(View.VISIBLE);
             }
             if(isExchange){
                 ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_exchange.setVisibility(View.VISIBLE);
                 ((MyExchangeAdapter.ViewHolder) holder).adapter_address_line.setVisibility(View.VISIBLE);
+                ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_return_exchange.setVisibility(View.GONE);
             }else{
                 ((MyExchangeAdapter.ViewHolder) holder).tv_adapter_view_exchange.setVisibility(View.GONE);
             }

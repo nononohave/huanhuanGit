@@ -169,8 +169,8 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                 dialogLoading = ViewUtils.createLoadingDialog(RegisterSecondActivity.this);
                 String verifyText = et_register2_code.getText().toString();
                 if(AppStringUtils.isNotEmpty(verifyText)){
-                    if(AppStringUtils.isNotEmpty(returnVerifyCode)) {
-                        if (returnVerifyCode.equals(verifyText)) {
+//                    if(AppStringUtils.isNotEmpty(returnVerifyCode)) {
+//                        if (returnVerifyCode.equals(verifyText)) {
 //                        String UserName,String Type,String Password,String VerifyCode, StringCallback
 //                        stringCallback
                             try {
@@ -210,12 +210,12 @@ public class RegisterSecondActivity extends BaseActivity implements View.OnClick
                                 dialogLoading.show();
                                 e.printStackTrace();
                             }
-                        } else {
-                            toastErrorMsg(RegisterSecondActivity.this, "请等待获取验证码");
-                        }
-                    }else{
-                        toastErrorMsg(RegisterSecondActivity.this, "验证码有误");
-                    }
+//                        } else {
+//                            toastErrorMsg(RegisterSecondActivity.this, "请等待获取验证码");
+//                        }
+//                    }else{
+//                        toastErrorMsg(RegisterSecondActivity.this, "验证码有误");
+//                    }
                 }else{
                    toastErrorMsg(RegisterSecondActivity.this,"请输入验证码");
                 }

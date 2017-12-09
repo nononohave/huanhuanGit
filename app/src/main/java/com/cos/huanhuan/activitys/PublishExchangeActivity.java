@@ -58,6 +58,7 @@ import com.cos.huanhuan.utils.ViewUtils;
 import com.cos.huanhuan.views.MyGridView;
 import com.cos.huanhuan.views.TitleBar;
 import com.foamtrace.photopicker.ImageCaptureManager;
+import com.foamtrace.photopicker.ImageConfig;
 import com.foamtrace.photopicker.PhotoPickerActivity;
 import com.foamtrace.photopicker.SelectModel;
 import com.foamtrace.photopicker.intent.PhotoPickerIntent;
@@ -415,6 +416,8 @@ public class PublishExchangeActivity extends BaseActivity implements View.OnClic
     }
 
     private void choosePhotos(int type){
+//        ImageConfig config = new ImageConfig();
+//        config.mimeType = new String[]{"image/jpeg", "image/png"}; // 图片类型 image/gif ...
         if (type == 1) {
             PhotoPickerIntent intent = new PhotoPickerIntent(PublishExchangeActivity.this);
             intent.setSelectModel(SelectModel.SINGLE);

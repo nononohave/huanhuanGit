@@ -265,24 +265,41 @@
             android:id="@+id/tv_coop_join"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="25dp"
             android:text="@string/join"
             android:drawableTop="@mipmap/join_grey"
             android:layout_centerVertical="true"
             android:paddingLeft="5dp"
             />
-        <Button
-            android:id="@+id/btn_coop_chat"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:text="@string/chatting"
-            android:background="@drawable/btnbg_chat"
-            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:textColor="@color/white"
-            android:layout_marginRight="20dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            />
+            android:layout_alignParentRight="true"
+            >
+            <Button
+                android:id="@+id/btn_coop_toAllExchange"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="@string/selectCfu"
+                android:background="@drawable/btnbg_chat"
+                android:textColor="@color/white"
+                android:layout_marginRight="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                />
+            <Button
+                android:id="@+id/btn_coop_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="@string/chatting"
+                android:background="@drawable/btnbg_chat"
+                android:layout_toRightOf="@+id/btn_coop_toAllExchange"
+                android:textColor="@color/white"
+                android:layout_marginRight="20dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                />
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

@@ -78,7 +78,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
     private MyListView listView;
     private RelativeLayout ll_titleBar_coop;
     private View divideLine;
-    private Button btn_coop_chat;
+    private Button btn_coop_chat,btn_coop_toAllExchange;
     private int imageHeight;
     private AppManager appManager;
     private String userId,coopId;
@@ -130,6 +130,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
         tv_coop_evalu = (TextView) findViewById(R.id.tv_coop_evalu);
         tv_coop_join = (TextView) findViewById(R.id.tv_coop_join);
         btn_coop_chat = (Button) findViewById(R.id.btn_coop_chat);
+        btn_coop_toAllExchange = (Button) findViewById(R.id.btn_coop_toAllExchange);
         headCircleImg = (CircleImageView) findViewById(R.id.civ_coop_headImg);
 
         ll_titleBar_coop.setFocusable(true);
@@ -142,6 +143,7 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
         tv_coop_evalu.setOnClickListener(this);
         tv_coop_join.setOnClickListener(this);
         btn_coop_chat.setOnClickListener(this);
+        btn_coop_toAllExchange.setOnClickListener(this);
 
         handler=new MyHandler();
 
@@ -398,6 +400,10 @@ public class CooperateDetailActivity extends BaseActivity implements ObservableS
                     Intent intentLogin = new Intent(CooperateDetailActivity.this,LoginActivity.class);
                     startActivity(intentLogin);
                 }
+                break;
+            case R.id.btn_coop_toAllExchange:
+                Intent intentToAllExchange = new Intent(CooperateDetailActivity.this,AllExchangeActivity.class);
+                startActivity(intentToAllExchange);
                 break;
         }
     }
